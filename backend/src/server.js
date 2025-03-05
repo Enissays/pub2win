@@ -4,7 +4,6 @@ const cors = require('cors');
 const dbName = ''; 
 
 function configMiddlewares(app) {
-    app.use(requestLogging());
     app.use(express.static('./public'));
     app.use(cors());
     app.use(express.json());
