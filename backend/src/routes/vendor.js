@@ -15,7 +15,7 @@ const router = express.Router();
 
 /**
  * @route   POST /vendor/subscribe
- * @desc    Subscribe vendor to a plan
+ * @desc    Subscribe vendor to a plan 
  * @access  Private (vendors only)
  */
 router.post('/subscribe', isVendor, async (req, res) => {

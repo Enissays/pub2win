@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, isVendor, isInfluencer, isAdmin } = require('../middlewares/auth');
+const authController = require('../controllers/authController');
 
 // Auth Routes
 router.post('/auth/register', authController.register);
@@ -17,7 +18,7 @@ router.delete('/vendor/:id/delete', authenticateToken, isAdmin, vendorController
 router.patch('/user/profile', authenticateToken, userController.updateProfile);
 router.delete('/user/profile/:id', authenticateToken, userController.deleteProfile);
 router.get('/user/wallet', authenticateToken, userController.getWallet);
-router.post('/user/wallet/withdraw', authenticateToken, userController.withdrawFunds);
+router.post('/user/wallet/withdraw', authenticateToken, userController.withdrawFunds); 
 
 // Influencer Routes
 router.get('/influencer/:id', authenticateToken, influencerController.getProfile);
