@@ -3,6 +3,7 @@ const router = express.Router();
 const { authenticateToken, isVendor, isInfluencer, isAdmin } = require('../middlewares/auth');
 const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
+const influencerController = require('../controllers/influencerController');
 
 // Auth Routes
 router.post('/auth/register', authController.register);
@@ -23,7 +24,7 @@ router.get('/user/wallet', authenticateToken, userController.getWallet);
 router.post('/user/wallet/withdraw', authenticateToken, userController.withdrawFunds); 
 router.get('/user/:username', authenticateToken, userController.getProfile);
 
-/*
+
 // Influencer Routes
 router.get('/influencer/:id', authenticateToken, influencerController.getProfile);
 router.post('/influencer/rate/:id', authenticateToken, influencerController.rateInfluencer);
@@ -31,7 +32,7 @@ router.post('/influencer/comment/:id', authenticateToken, influencerController.c
 router.post('/influencer/accept/:id', authenticateToken, isInfluencer, influencerController.acceptOffer);
 router.post('/influencer/:id/validate', authenticateToken, isAdmin, influencerController.validate);
 router.delete('/influencer/:id/delete', authenticateToken, isAdmin, influencerController.delete);
-*/
+
 
 /*
 // Offer Routes
