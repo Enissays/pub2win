@@ -1,0 +1,204 @@
+classDiagram
+    class User {
+        +int id
+        +String email
+        +String nom
+        +String prenom
+        +String username
+        +String password_hash
+        +Boolean isBanned
+        +Boolean isTimeouted
+        +Datetime finBan
+        +RoleEnum role
+    }
+
+    class Commercant {
+        +float coins
+        +createOffre()
+        +createClientOffre()
+    }
+
+    class Client {
+        +float coins
+        +bool isInfluenceur
+        +String lien_compte_instagram
+        +String username_instagram
+    }
+
+    class Rating {
+        +int id
+        +int auteur_id
+        +int user_rated_id
+        +String commentaire
+        +float rate
+        +DateTime date
+    }
+
+    class Transaction {
+        +int id
+        +int client_id
+        +int commercant_id
+        +float montant
+        +float commission_app
+        +DateTime date
+        +TransactionStatusEnum status
+        +String description
+    }
+
+    class Offre {
+        +int id
+        +int commercant_id
+        +String titre
+        +String description
+        +float montant_coins
+        +DateTime date_debut
+        +DateTime date_fin
+        +bool is_active
+    }
+
+    class ClientOffre {
+        +int id
+        +int client_id
+        +int offre_id
+        +bool is_completed
+        +DateTime date_utilisation
+    }
+
+    class Paiement {
+        +int id
+        +int user_id
+        +float montant
+        +PaiementTypeEnum type
+        +PaiementStatusEnum status
+        +DateTime date
+        +String reference_externe
+    }
+
+    class ConversionCoins {
+        +int id
+        +int user_id
+        +float montant_coins
+        +float montant_euros
+        +DateTime date
+        +ConversionStatusEnum status
+    }
+
+    class Commission {
+        +int id
+        +int transaction_id
+        +float pourcentage
+        +float montant
+        +DateTime date
+    }
+
+    class Conversation {
+        +int id
+        +String titre
+        +DateTime date_creation
+        +bool is_active
+    }
+
+    class Message {
+        +int id
+        +int conversation_id
+        +int expediteur_id
+        +String contenu
+        +DateTime date_envoi
+        +bool is_read
+        +DateTime date_lecture
+    }
+
+    class ConversationUser {
+        +int conversation_id
+        +int user_id
+        +DateTime date_ajout
+        +bool notifications_actives
+    }
+
+    class Groupe {
+        +int id
+        +String nom
+        +String description
+        +DateTime date_creation
+        +int createur_id
+    }
+
+    class GroupeUser {
+        +int groupe_id
+        +int user_id
+        +DateTime date_ajout
+        +GroupeRoleEnum role
+    }
+
+    class Endroit {
+        +int id
+        +int commercant_id
+        +String nom
+        +String adresse
+        +String coordonnees_gps
+        +String description
+    }
+
+    class FormuleAbonnement {
+        +int id
+        +String nom
+        +String description
+        +float prix_mensuel
+        +float prix_annuel
+        +int nb_offres_max
+        +int nb_endroits_max
+        +float commission_reduite
+        +bool analytics_avancees
+        +bool support_prioritaire
+        +bool visibilite_premium
+    }
+
+    class AbonnementCommercant {
+        +int id
+        +int commercant_id
+        +int formule_id
+        +DateTime date_debut
+        +DateTime date_fin
+        +bool auto_renouvellement
+        +AbonnementStatusEnum status
+        +DateTime date_dernier_paiement
+        +DateTime date_prochain_paiement
+    }
+
+    class HistoriqueFacturation {
+        +int id
+        +int abonnement_id
+        +float montant
+        +DateTime date
+        +String reference_paiement
+        +FacturationStatusEnum status
+    }
+
+    User <|-- Commercant
+    User <|-- Client
+    Commercant "1" -- "*" Offre : propose
+    Client "1" -- "*" ClientOffre : participe
+    Offre "1" -- "*" ClientOffre : est utilisée par
+    User "1" -- "*" Rating : note
+    User "1" -- "*" Rating : est noté par
+    Client "1" -- "*" Transaction : effectue
+    Commercant "1" -- "*" Transaction : reçoit
+    User "1" -- "*" Paiement : effectue/reçoit
+    Client "1" -- "*" ConversionCoins : convertit
+    Transaction "1" -- "1" Commission : génère
+    
+    Conversation "1" -- "*" Message : contient
+    User "1" -- "*" Message : envoie
+    Conversation "*" -- "*" User : participe
+    Conversation -- ConversationUser
+    User -- ConversationUser
+    
+    Groupe "1" -- "*" GroupeUser : contient
+    User "1" -- "*" GroupeUser : appartient
+    User "1" -- "*" Groupe : crée
+    
+    Commercant "1" -- "*" Endroit : possède
+
+    FormuleAbonnement "1" -- "*" AbonnementCommercant : propose
+    Commercant "1" -- "*" AbonnementCommercant : souscrit
+    AbonnementCommercant "1" -- "*" HistoriqueFacturation : génère
