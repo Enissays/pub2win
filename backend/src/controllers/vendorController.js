@@ -1,17 +1,27 @@
 
-const Vendor = require('../models/Vendor');
-const User = require('../models/User');
-const Offer = require('../models/Offer');
-const Subscription = require('../models/Subscription');
-const Influencer = require('../models/Influencer');
-const Application = require('../models/Application');
-const Transaction = require('../models/Transaction');
+const User = require('../models/user.model');
+const Client = require('../models/client.model');
+const Offer = require('../models/offre.model');
+
+/*
+
+const OffreSchema = new Schema({
+  commercant_id: { type: Schema.Types.ObjectId, ref: 'Commercant', required: true },
+  titre: { type: String, required: true },
+  description: { type: String, required: true },
+  montant_coins: { type: Number, required: true },
+  date_debut: { type: Date, required: true },
+  date_fin: { type: Date, required: true },
+  is_active: { type: Boolean, default: true },
+  clients: [{ type: Schema.Types.ObjectId, ref: 'Client', is_completed: { type: Boolean, default: false }, date_utilisation: { type: Date } }]
+});
+*/
 
 exports.subscribe = async (req, res) => { 
     try {
-        const vendor = await Vendor.findById(req.user.userId); // TODO: Get user ID from token
+        const user = await User.findById(req.user.userId); // TODO: Get user ID from token
         const subscription = new Subscription({
-            vendor: vendor._id,
+            user: user._id,
             status: 'active'
         });
         await subscription.save();
@@ -31,15 +41,27 @@ exports.subscribe = async (req, res) => {
 
 exports.announce = async (req, res) => {
     try {
-        const vendor = await Vendor.findById(req.user.userId); // TODO: Get user ID from token
-        const offer = new Offer({
-            vendor: vendor._id,
-            title: req.body.title,
-            description: req.body.description,
-            category: req.body.category,
-            price: req.body.price
-        });
+        const vendor = await User.findById(req.user.userId); // TODO: Get user ID from token
+        const offer = new Offer(
+            {
+                commercant_id: vendor._id,
+                titre: req.body.titre,
+                description: req.body.description,
+                montant_coins: req.body.montant_coins,
+                date_debut: req.body.date_debut,
+                date_fin: req.body.date_fin,
+                is_active: true,
+                clients: req.body.clients.map(client => {
+                    return {
+                        client: client,
+                        is_completed: false
+                    }
+                })
+            });
         await offer.save();
+
+
+
         res.status(200).json({
             success: true,
             message: 'Offer announced successfully'
@@ -56,7 +78,7 @@ exports.announce = async (req, res) => {
 
 exports.setupBanking = async (req, res) => {
     try {
-        const vendor = await Vendor.findById(req.user.userId); // TODO: Get user ID from token
+        const vendor = await User.findById(req.user.userId); // TODO: Get user ID from token
         vendor.iban = req.body.iban;
         await vendor.save();
         res.status(200).json({
@@ -75,7 +97,7 @@ exports.setupBanking = async (req, res) => {
 
 exports.validate = async (req, res) => {
     try {
-        const vendor = await Vendor.findById(req.params.id);
+        const vendor = await User.findById(req.params.id);
         vendor.status = 'validated';
         await vendor.save();
         res.status(200).json({
@@ -88,24 +110,6 @@ exports.validate = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Server error during validation'
-        });
-    }
-}
-
-exports.delete = async (req, res) => {
-    try {
-        const vendor = await Vendor.findById(req.params.id);
-        await vendor.remove();
-        res.status(200).json({
-            success: true,
-            message: 'Vendor deleted successfully'
-        });
-    }
-    catch (error) {
-        console.error('Deletion error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Server error during deletion'
         });
     }
 }
