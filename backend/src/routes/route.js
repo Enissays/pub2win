@@ -4,18 +4,18 @@ const { authenticateToken, isVendor, isInfluencer, isAdmin } = require('../middl
 const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
 const influencerController = require('../controllers/influencerController');
+const vendorController = require('../controllers/vendorController');
 
 // Auth Routes
 router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.login);
-/*
+
 // Vendor Routes
 router.post('/vendor/subscribe', authenticateToken, isVendor, vendorController.subscribe);
 router.post('/vendor/announce', authenticateToken, isVendor, vendorController.createAnnouncement);
 router.post('/vendor/banking', authenticateToken, isVendor, vendorController.setupBanking);
 router.post('/vendor/:id/validate', authenticateToken, isAdmin, vendorController.validate);
 router.delete('/vendor/:id/delete', authenticateToken, isAdmin, vendorController.delete);
-*/
 
 // User Profile Routes
 router.patch('/user/profile', authenticateToken, userController.updateProfile);
