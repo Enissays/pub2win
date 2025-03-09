@@ -1,4 +1,4 @@
-// File: routes/influencer.js
+/*// File: routes/influencer.js
 const express = require('express');
 const mongoose = require('mongoose');
 const Influencer = require('../models/Influencer');
@@ -10,11 +10,6 @@ const Vendor = require('../models/Vendor');
 const { authenticateToken, isInfluencer } = require('../middleware/auth');
 const router = express.Router();
 
-/**
- * @route   GET /influencer/:id
- * @desc    Get influencer profile by ID
- * @access  Public
- */
 router.get('/:id', async (req, res) => {
   try {
     const influencerId = req.params.id;
@@ -57,11 +52,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-/**
- * @route   POST /influencer/rate/:id
- * @desc    Rate an influencer
- * @access  Private (vendors only)
- */
 router.post('/rate/:id', authenticateToken, async (req, res) => {
   try {
     const { rating } = req.body;
@@ -131,11 +121,6 @@ router.post('/rate/:id', authenticateToken, async (req, res) => {
   }
 });
 
-/**
- * @route   POST /influencer/comment/:id
- * @desc    Comment on an influencer
- * @access  Private (vendors only)
- */
 router.post('/comment/:id', authenticateToken, async (req, res) => {
   try {
     const { comment } = req.body;
@@ -203,11 +188,7 @@ router.post('/comment/:id', authenticateToken, async (req, res) => {
   }
 });
 
-/**
- * @route   POST /influencer/accept/:id
- * @desc    Accept an offer
- * @access  Private (influencers only)
- */
+
 router.post('/accept/:id', isInfluencer, async (req, res) => {
   try {
     const offerId = req.params.id;
@@ -308,11 +289,6 @@ router.post('/accept/:id', isInfluencer, async (req, res) => {
   }
 });
 
-/**
- * @route   POST /influencer/:id/validate
- * @desc    Submit content for validation
- * @access  Private (influencers only)
- */
 router.post('/:id/validate', isInfluencer, async (req, res) => {
   try {
     const applicationId = req.params.id;
@@ -396,11 +372,7 @@ router.post('/:id/validate', isInfluencer, async (req, res) => {
   }
 });
 
-/**
- * @route   DELETE /influencer/:id/delete
- * @desc    Cancel an application
- * @access  Private (influencers only)
- */
+
 router.delete('/:id/delete', isInfluencer, async (req, res) => {
   try {
     const applicationId = req.params.id;
@@ -477,3 +449,4 @@ router.delete('/:id/delete', isInfluencer, async (req, res) => {
 });
 
 module.exports = router;
+*/

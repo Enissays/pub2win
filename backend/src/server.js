@@ -8,9 +8,10 @@ const authRoutes = require('./routes/auth');
 const vendorRoutes = require('./routes/vendor');
 const userRoutes = require('./routes/user');
 const influencerRoutes = require('./routes/influencer');
-const offerRoutes = require('./routes/offer');
-const adminRoutes = require('./routes/admin');
-const { authenticateToken } = require('./middleware/auth');
+const testRoutes = require('./routes/route');
+//const offerRoutes = require('./routes/offer');
+//const adminRoutes = require('./routes/admin');
+const { authenticateToken } = require('./middlewares/auth');
 
 // Load environment variables
 dotenv.config();
@@ -52,12 +53,15 @@ io.on('connection', (socket) => {
 });
 
 // Routes
-app.use('/auth', authRoutes);
-app.use('/vendor', authenticateToken, vendorRoutes);
-app.use('/user', authenticateToken, userRoutes);
-app.use('/influencer', authenticateToken, influencerRoutes);
-app.use('/offer', offerRoutes); // Some offer routes may need authentication
-app.use('/admin', authenticateToken, adminRoutes);
+//app.use('/auth', authRoutes);
+//app.use('/vendor', authenticateToken, vendorRoutes);
+//app.use('/user', authenticateToken, userRoutes);
+//app.use('/influencer', authenticateToken, influencerRoutes);
+//app.use('/offer', offerRoutes); // Some offer routes may need authentication
+//app.use('/admin', authenticateToken, adminRoutes);
+app.use('/', testRoutes);
+
+
 
 // Basic route
 app.get('/', (req, res) => {

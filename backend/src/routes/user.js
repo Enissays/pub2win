@@ -1,4 +1,4 @@
-// File: routes/user.js
+/*// File: routes/user.js
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
@@ -13,7 +13,7 @@ const router = express.Router();
  * @route   PATCH /user/profile
  * @desc    Update user profile
  * @access  Private
- */
+ 
 router.patch('/profile', validateProfileUpdate, async (req, res) => {
   try {
     const { email, pseudo, password, nom, prenom, currentPassword } = req.body;
@@ -98,7 +98,7 @@ router.patch('/profile', validateProfileUpdate, async (req, res) => {
  * @route   DELETE /user/profile/:id
  * @desc    Delete user account
  * @access  Private (own account) or Admin
- */
+ 
 router.delete('/profile/:id', async (req, res) => {
   try {
     const userId = req.params.id;
@@ -148,7 +148,7 @@ router.delete('/profile/:id', async (req, res) => {
  * @route   GET /user/wallet
  * @desc    Get user wallet information
  * @access  Private
- */
+ 
 router.get('/wallet', async (req, res) => {
   try {
     // Check user role
@@ -209,7 +209,7 @@ router.get('/wallet', async (req, res) => {
  * @route   POST /user/wallet/withdraw
  * @desc    Request a withdrawal
  * @access  Private (influencers only)
- */
+ 
 router.post('/wallet/withdraw', async (req, res) => {
   try {
     const { amount } = req.body;
@@ -278,4 +278,4 @@ router.post('/wallet/withdraw', async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = router;*/

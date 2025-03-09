@@ -1,4 +1,4 @@
-// File: routes/vendor.js
+/*// File: routes/vendor.js
 const express = require('express');
 const mongoose = require('mongoose');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -13,11 +13,6 @@ const { isVendor } = require('../middleware/auth');
 const { validateOffer } = require('../middleware/validation');
 const router = express.Router();
 
-/**
- * @route   POST /vendor/subscribe
- * @desc    Subscribe vendor to a plan 
- * @access  Private (vendors only)
- */
 router.post('/subscribe', isVendor, async (req, res) => {
   try {
     const { id_abonnement } = req.body;
@@ -81,11 +76,6 @@ router.post('/subscribe', isVendor, async (req, res) => {
   }
 });
 
-/**
- * @route   POST /vendor/announce
- * @desc    Create a private announcement for influencers
- * @access  Private (vendors only)
- */
 router.post('/announce', isVendor, validateOffer, async (req, res) => {
   try {
     const { influenceurs, description, id_commerce } = req.body;
@@ -156,11 +146,6 @@ router.post('/announce', isVendor, validateOffer, async (req, res) => {
   }
 });
 
-/**
- * @route   POST /vendor/banking
- * @desc    Update vendor banking information
- * @access  Private (vendors only)
- */
 router.post('/banking', isVendor, async (req, res) => {
   try {
     const vendor = await Vendor.findOne({ userId: req.userId });
@@ -193,11 +178,6 @@ router.post('/banking', isVendor, async (req, res) => {
   }
 });
 
-/**
- * @route   POST /vendor/:id/validate
- * @desc    Validate a submission from an influencer
- * @access  Private (vendors only)
- */
 router.post('/:id/validate', isVendor, async (req, res) => {
   try {
     const applicationId = req.params.id;
@@ -301,11 +281,6 @@ router.post('/:id/validate', isVendor, async (req, res) => {
   }
 });
 
-/**
- * @route   DELETE /vendor/:id/delete
- * @desc    Delete an offer
- * @access  Private (vendors only)
- */
 router.delete('/:id/delete', isVendor, async (req, res) => {
   try {
     const offerId = req.params.id;
@@ -384,3 +359,4 @@ router.delete('/:id/delete', isVendor, async (req, res) => {
 });
 
 module.exports = router;
+*/

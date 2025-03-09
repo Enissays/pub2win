@@ -1,10 +1,10 @@
-const User = require('../models/User');
-const Client = require('../models/Client');
+const User = require('../models/user.model');
+const Client = require('../models/client.model');
 
 exports.updateProfile = async (req, res) => {
     try {
         const updates = req.body;
-        const user = await User.findById(req.user.userId); // TODO: Get user ID from token
+        const user = await User.findOne({ username: req.user.username }); // TODO: Get user ID from token
 
         Object.keys(updates).forEach(key => {
             if (user[key] !== undefined) {
@@ -36,8 +36,8 @@ exports.updateProfile = async (req, res) => {
 
 exports.deleteProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id); // TODO: Get user ID from token
-        await user.remove();
+        const user = await User.findOne({ username: req.query.username }); // TODO: Get user ID from token
+        await user.deleteOne();
         res.status(200).json({
             success: true,
             message: 'Profile deleted successfully'
@@ -54,7 +54,7 @@ exports.deleteProfile = async (req, res) => {
 
 exports.getWallet = async (req, res) => {
     try {
-        const client = await Client.findById(req.user.userId); // TODO: Get user ID from token
+        const client = await Client.findOne({ userId: req.user.userId }); // TODO: Get user ID from token
         res.status(200).json({
             success: true,
             wallet: client.coins
@@ -93,6 +93,37 @@ exports.withdrawFunds = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Server error during withdrawal'
+        });
+    }
+}
+
+exports.getProfile = async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.params.username });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            user: {
+                id: user._id,
+                nom: user.nom,
+                prenom: user.prenom,
+                pseudo: user.pseudo,
+                email: user.email
+            }
+        });
+
+    }
+    catch (error) {
+        console.error('Get profile error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error during profile retrieval'
         });
     }
 }

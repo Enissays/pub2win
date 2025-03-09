@@ -1,7 +1,7 @@
-const express = require('express');
+/*const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const User = require('../models/user.model');
 const Vendor = require('../models/Vendor');
 const Influencer = require('../models/Influencer');
 const { validateRegistration, validateLogin } = require('../middleware/validation');
@@ -12,7 +12,7 @@ const router = express.Router();
  * @route   POST /auth/register
  * @desc    Register a new user (influencer or vendor)
  * @access  Public
- */
+ 
 router.post('/register', validateRegistration, async (req, res) => {
   try {
     const { email, pseudo, password, nom, prenom, role } = req.body;
@@ -94,7 +94,7 @@ router.post('/register', validateRegistration, async (req, res) => {
  * @route   POST /auth/login
  * @desc    Authenticate user & get token
  * @access  Public
- */
+ 
 router.post('/login', validateLogin, async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -151,4 +151,4 @@ router.post('/login', validateLogin, async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = router;*/
