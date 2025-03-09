@@ -5,11 +5,13 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/index';
 
 // Import your screens here
+import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 import HomeScreen from '../screens/HomeScreen';
 
 type RootStackParamList = {
+  Splash: undefined;
   Login: undefined;
   Register: undefined;
   Home: undefined;
@@ -22,7 +24,8 @@ const AppNavigator: React.FC = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Splash" component={SplashScreen} />
         {!token ? (
           // Auth Stack
           <>

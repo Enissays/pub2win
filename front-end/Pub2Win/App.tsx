@@ -10,9 +10,10 @@ import LoginScreen from './src/screens/auth/LoginScreen';
 import RegisterScreen from './src/screens/auth/RegisterScreen';
 import { tokenCache } from './src/store/clerk/clerk';
 import AuthLoadingScreen from './src/screens/auth/AuthLoadingScreen';
+import SplashScreen from './src/screens/SplashScreen';
 
-// Define the navigation stack param list
 type RootStackParamList = {
+  Splash: undefined;
   Home: undefined;
   Login: undefined;
   Register: undefined;
@@ -22,23 +23,10 @@ type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>();
 
 // Replace with your actual Clerk publishable key
-const CLERK_PUBLISHABLE_KEY = 'your_clerk_publishable_key';
+const CLERK_PUBLISHABLE_KEY = 'pk_test_YWN0aXZlLWNvbGxpZS0zNi5jbGVyay5hY2NvdW50cy5kZXYk'; // Replace with your actual key
 
 // OAuth callback
 WebBrowser.maybeCompleteAuthSession();
-
-const AuthenticatedStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Home" component={HomeScreen} />
-  </Stack.Navigator>
-);
-
-const UnauthenticatedStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Login" component={LoginScreen} />
-    <Stack.Screen name="Register" component={RegisterScreen} />
-  </Stack.Navigator>
-);
 
 const App: React.FC = () => {
   return (
@@ -49,9 +37,10 @@ const App: React.FC = () => {
       >
         <NavigationContainer>
           <Stack.Navigator 
-            initialRouteName="AuthLoading" 
+            initialRouteName="Splash" 
             screenOptions={{ headerShown: false }}
           >
+            <Stack.Screen name="Splash" component={SplashScreen} />
             <Stack.Screen name="AuthLoading" component={AuthLoadingScreen} />
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Login" component={LoginScreen} />
