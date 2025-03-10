@@ -46,13 +46,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Routes
-//app.use('/auth', authRoutes);
-//app.use('/vendor', authenticateToken, vendorRoutes);
-//app.use('/user', authenticateToken, userRoutes);
-//app.use('/influencer', authenticateToken, influencerRoutes);
-//app.use('/offer', offerRoutes); // Some offer routes may need authentication
-//app.use('/admin', authenticateToken, adminRoutes);
+
 app.use('/', testRoutes);
 
 
