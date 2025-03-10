@@ -3,10 +3,13 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Client = require('../models/client.model');
 <<<<<<< HEAD
+<<<<<<< HEAD
 const User = require('../models/user.model');
 const Commercant = require('../models/commercant.model');
 =======
 >>>>>>> d97e699 (initialize server setup and remove unused imports in controllers)
+=======
+>>>>>>> d97e699adf872bcb40ccd2feee996a2101a1c8ad
 
 exports.register = async (req, res) => {
     try {
