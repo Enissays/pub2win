@@ -15,6 +15,7 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    
     "ios": {
       "supportsTablet": true
     },
@@ -23,6 +24,20 @@
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#F0F0F0"
       }
-    }
+    },
+    "fonts": [
+      {
+        "asset": "./assets/fonts/Montserrat-Regular.ttf",
+        "family": "Montserrat"
+      },
+      {
+        "asset": "./assets/fonts/Montserrat-Bold.ttf",
+        "family": "Montserrat-Bold"
+      },
+      {
+        "asset": "./assets/fonts/Montserrat-Medium.ttf",
+        "family": "Montserrat-Medium"
+      }
+    ]
   }
 }

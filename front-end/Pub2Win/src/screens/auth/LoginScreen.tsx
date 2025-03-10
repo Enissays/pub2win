@@ -164,7 +164,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             />
             
             {/* P2 Logo */}
-            <Text style={styles.logo}>P2</Text>
+            <Text style={styles.logo}>P2W</Text>
           </View>
           
           {/* Login form section */}
@@ -204,7 +204,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             )}
             
             {/* Stay connected checkbox */}
-            <View style={styles.checkboxContainer}>
+            {/* <View style={styles.checkboxContainer}>
               <CheckBox
                 value={stayConnected}
                 onValueChange={setStayConnected}
@@ -213,7 +213,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                 disabled={loading}
               />
               <Text style={styles.checkboxLabel}>Restez connecté</Text>
-            </View>
+            </View> */}
             
             {/* Login button */}
             <TouchableOpacity 
@@ -278,6 +278,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    fontFamily:'Montserrat'
   },
   scrollContainer: {
     flexGrow: 1,
@@ -286,19 +287,20 @@ const styles = StyleSheet.create({
     height: 280,
     backgroundColor: '#0D3B56',
     borderBottomRightRadius: 100,
-    paddingTop: 40,
+    paddingTop: 20,
     paddingLeft: 20,
     position: 'relative',
   },
   greeting: {
     color: '#FFFFFF',
+    fontFamily:'Montserrat',
     fontSize: 18,
     fontWeight: '400',
   },
   welcomeBack: {
     color: '#FFFFFF',
     fontSize: 28,
-    fontWeight: 'bold',
+    fontFamily:'Montserrat-Bold',
     marginTop: 5,
   },
   personImage: {
