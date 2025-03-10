@@ -2,11 +2,8 @@ const UserDAO = require('../repository/user.dao');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Client = require('../models/client.model');
-<<<<<<< HEAD
 const User = require('../models/user.model');
 const Commercant = require('../models/commercant.model');
-=======
->>>>>>> d97e699 (initialize server setup and remove unused imports in controllers)
 
 exports.register = async (req, res) => {
     try {
