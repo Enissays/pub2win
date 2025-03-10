@@ -49,6 +49,9 @@ router.get('/signalements', authenticateToken, isAdmin, adminController.getRepor
 // Help Routes
 router.get('/help', helpController.getHelp);
 router.patch('/help', authenticateToken, isAdmin, helpController.updateHelp);
+
+// Route parrainage 
+id_utilisateur=?
 */
 
 module.exports = router;
