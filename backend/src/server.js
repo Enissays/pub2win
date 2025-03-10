@@ -2,23 +2,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const http = require('http');
-const socketIO = require('socket.io');
 const dotenv = require('dotenv');
-const authRoutes = require('./routes/auth');
-const vendorRoutes = require('./routes/vendor');
-const userRoutes = require('./routes/user');
-const influencerRoutes = require('./routes/influencer');
-const offerRoutes = require('./routes/offer');
-const adminRoutes = require('./routes/admin');
-const { authenticateToken } = require('./middleware/auth');
+const abonnCommercantRoute = require('.//routes/abonnementCommercant.route');
+const offreRoutes = require('.//routes/offre.route');
+const userRoutes = require('.//routes/user.route');
 
 // Load environment variables
 dotenv.config();
-
 // Initialize Express app
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server);
 
 // Middleware
 app.use(cors());
@@ -26,38 +19,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => console.error('MongoDB connection error:', err));
 
-// Socket.IO setup for real-time messaging
-io.on('connection', (socket) => {
-  console.log('New client connected');
-  
-  socket.on('join_room', (roomId) => {
-    socket.join(roomId);
-    console.log(`User joined room: ${roomId}`);
-  });
-  
-  socket.on('send_message', (data) => {
-    io.to(data.roomId).emit('receive_message', data);
-  });
-  
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
-});
 
 // Routes
-app.use('/auth', authRoutes);
-app.use('/vendor', authenticateToken, vendorRoutes);
-app.use('/user', authenticateToken, userRoutes);
-app.use('/influencer', authenticateToken, influencerRoutes);
-app.use('/offer', offerRoutes); // Some offer routes may need authentication
-app.use('/admin', authenticateToken, adminRoutes);
+app.use('/abCo', abonnCommercantRoute);
+app.use('/Offre', offreRoutes);
+app.use('/user', userRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
@@ -80,4 +50,4 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-module.exports = { app, io };
+module.exports = { app};

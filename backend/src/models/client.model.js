@@ -9,6 +9,6 @@ const ClientSchema = new Schema({
   username_instagram: { type: String }
 });
 
-const Client = User.discriminator('Client', ClientSchema);
+const Client = User.discriminator('Client', ClientSchema); 
 
 module.exports = Client;
