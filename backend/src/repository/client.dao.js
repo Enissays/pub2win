@@ -1,5 +1,4 @@
 const Client= require('../models/client.model');
-
 const ClientDAO = {
     async createClient(clientData) {
         if (!clientData || typeof clientData !== 'object') {
