@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const Client = require('../models/client.model');
 const User = require('../models/user.model');
 const Commercant = require('../models/commercant.model');
+const User = require('../models/user.model');
+const Commercant = require('../models/commercant.model');
 
 exports.register = async (req, res) => {
     try {
