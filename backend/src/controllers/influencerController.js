@@ -1,6 +1,7 @@
 const User = require('../models/user.model');
 const Client = require('../models/client.model');
 const Rating = require('../models/rating.model');
+const ClientDAO = require('../repository/client.dao');
 
 /*
 
@@ -22,7 +23,7 @@ router.delete('/influencer/:id/delete', authenticateToken, isAdmin, influencerCo
 
 exports.getProfile = async (req, res) => {
     try {
-        const influencer = await Client.findOne({ userId: req.params.id });
+        const influencer = await ClientDAO.getClientById(req.params.id);
         if (!influencer) {
             return res.status(404).json({
                 success: false,
@@ -58,8 +59,8 @@ exports.getProfile = async (req, res) => {
 
 exports.rateInfluencer = async (req, res) => {
     try {
-        const client = await Client.findById(req.user.userId); // TODO: Get user ID from token
-        const influencer = await Client.findById(req.params.id);
+        const client = await ClientDAO.getClientById(req.user.userId); // TODO: Get user ID from token
+        const influencer = await ClientDAO.getClientById(req.params.id);
         const { rate, commentaire } = req.body;
 
         if (rate < 0 || rate > 5) {
@@ -93,8 +94,8 @@ exports.rateInfluencer = async (req, res) => {
 
 exports.commentInfluencer = async (req, res) => {
     try {
-        const client = await Client.findById(req.user.userId); // TODO: Get user ID from token
-        const influencer = await Client.findById(req.params.id);
+        const client = await ClientDAO.getClientById(req.user.userId); // TODO: Get user ID from token
+        const influencer = await ClientDAO.getClientById(req.params.id);
         const { commentaire } = req.body;
 
         const rating = new Rating({
@@ -120,7 +121,7 @@ exports.commentInfluencer = async (req, res) => {
 
 exports.acceptOffer = async (req, res) => {
     try {
-        const influencer = await Client.findById(req.user.userId); // TODO: Get user ID from token
+        const influencer = await ClientDAO.getClientById(req.user.userId); // TODO: Get user ID from token
         const offer = await Offer.findById(req.params.id);
 
         if (offer.status !== 'pending') {
@@ -148,7 +149,7 @@ exports.acceptOffer = async (req, res) => {
 
 exports.validate = async (req, res) => {
     try {
-        const influencer = await Client.findById(req.params.id);
+        const influencer = await ClientDAO.getClientById(req.params.id);
         influencer.role = 'influencer';
         await influencer.save();
         res.status(200).json({
@@ -167,7 +168,7 @@ exports.validate = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
-        const influencer = await Client.findById(req.params.id);
+        const influencer = await ClientDAO.getClientById(req.params.id);
         await influencer.remove();
         res.status(200).json({
             success: true,

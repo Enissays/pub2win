@@ -1,10 +1,10 @@
-const User = require('../models/user.model');
+const UserDAO = require('../repository/user.dao');
 const Client = require('../models/client.model');
 
 exports.updateProfile = async (req, res) => {
     try {
         const updates = req.body;
-        const user = await User.findOne({ username: req.user.username }); // TODO: Get user ID from token
+        const user = await UserDAO.getUserByUsername(req.user.username); // TODO: Get user ID from token
 
         Object.keys(updates).forEach(key => {
             if (user[key] !== undefined) {
@@ -36,7 +36,7 @@ exports.updateProfile = async (req, res) => {
 
 exports.deleteProfile = async (req, res) => {
     try {
-        const user = await User.findOne({ username: req.query.username }); // TODO: Get user ID from token
+        const user = await UserDAO.getUserByUsername(req.query.username); // TODO: Get user ID from token
         await user.deleteOne();
         res.status(200).json({
             success: true,
@@ -99,7 +99,7 @@ exports.withdrawFunds = async (req, res) => {
 
 exports.getProfile = async (req, res) => {
     try {
-        const user = await User.findOne({ username: req.params.username });
+        const user = await UserDAO.getUserByUsername(req.params.username);
         if (!user) {
             return res.status(404).json({
                 success: false,

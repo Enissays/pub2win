@@ -4,13 +4,7 @@ const cors = require('cors');
 const http = require('http');
 const socketIO = require('socket.io');
 const dotenv = require('dotenv');
-const authRoutes = require('./routes/auth');
-const vendorRoutes = require('./routes/vendor');
-const userRoutes = require('./routes/user');
-const influencerRoutes = require('./routes/influencer');
 const testRoutes = require('./routes/route');
-//const offerRoutes = require('./routes/offer');
-//const adminRoutes = require('./routes/admin');
 const { authenticateToken } = require('./middlewares/auth');
 
 // Load environment variables

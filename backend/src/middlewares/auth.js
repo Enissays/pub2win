@@ -52,7 +52,7 @@ exports.authenticateToken = async (req, res, next) => {
  * Middleware to ensure user has vendor role
  */
 exports.isVendor = (req, res, next) => {
-  if (req.userRole !== 'vendor') {
+  if (req.userRole !== 'COMMERCANT') {
     return res.status(403).json({ 
       success: false, 
       message: 'Access denied: Vendor role required' 
@@ -65,7 +65,7 @@ exports.isVendor = (req, res, next) => {
  * Middleware to ensure user has influencer role
  */
 exports.isInfluencer = (req, res, next) => {
-  if (req.userRole !== 'influencer') {
+  if (req.userRole !== 'INFLUENCER') {
     return res.status(403).json({ 
       success: false, 
       message: 'Access denied: Influencer role required' 
