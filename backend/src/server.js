@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const abonnCommercantRoute = require('.//routes/abonnementCommercant.route');
 const offreRoutes = require('.//routes/offre.route');
 const userRoutes = require('.//routes/user.route');
+const conversionCoinsRoutes = require('.//routes/conversionCoins.route');
 
 // Load environment variables
 dotenv.config();
@@ -28,6 +29,7 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use('/abCo', abonnCommercantRoute);
 app.use('/Offre', offreRoutes);
 app.use('/user', userRoutes);
+app.use('/conversionCoins', conversionCoinsRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
