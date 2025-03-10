@@ -55,8 +55,6 @@ exports.getProfile = async (req, res) => {
         });
     }
 }
-
-
 exports.rateInfluencer = async (req, res) => {
     try {
         const client = await ClientDAO.getClientById(req.user.userId); // TODO: Get user ID from token
@@ -91,7 +89,6 @@ exports.rateInfluencer = async (req, res) => {
         });
     }
 }
-
 exports.commentInfluencer = async (req, res) => {
     try {
         const client = await ClientDAO.getClientById(req.user.userId); // TODO: Get user ID from token
@@ -118,7 +115,6 @@ exports.commentInfluencer = async (req, res) => {
         });
     }
 }
-
 exports.acceptOffer = async (req, res) => {
     try {
         const influencer = await ClientDAO.getClientById(req.user.userId); // TODO: Get user ID from token
@@ -146,7 +142,6 @@ exports.acceptOffer = async (req, res) => {
         });
     }
 }
-
 exports.validate = async (req, res) => {
     try {
         const influencer = await ClientDAO.getClientById(req.params.id);
@@ -165,7 +160,6 @@ exports.validate = async (req, res) => {
         });
     }
 }
-
 exports.delete = async (req, res) => {
     try {
         const influencer = await ClientDAO.getClientById(req.params.id);
