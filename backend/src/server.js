@@ -7,6 +7,7 @@ const abonnCommercantRoute = require('.//routes/abonnementCommercant.route');
 const offreRoutes = require('.//routes/offre.route');
 const userRoutes = require('.//routes/user.route');
 const conversionCoinsRoutes = require('.//routes/conversionCoins.route');
+const AideRoutes = require('.//routes/aide.route');
 
 // Load environment variables
 dotenv.config();
@@ -30,6 +31,7 @@ app.use('/abCo', abonnCommercantRoute);
 app.use('/Offre', offreRoutes);
 app.use('/user', userRoutes);
 app.use('/conversionCoins', conversionCoinsRoutes);
+app.use('/aide', AideRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
