@@ -36,19 +36,24 @@ const RoleEnum = {
     MODERATEUR: 'MODERATEUR'
   };
   
-  const AbonnementStatusEnum = {
+  const AbonnementStatusEnum={
     ACTIF: 'ACTIF',
     EXPIRE: 'EXPIRE',
     RESILIE: 'RESILIE',
     EN_ATTENTE: 'EN_ATTENTE'
-  };
+};
   
   const FacturationStatusEnum = {
     PAYEE: 'PAYEE',
     EN_ATTENTE: 'EN_ATTENTE',
     ECHOUEE: 'ECHOUEE'
   };
-  
+
+  const QuestionStatusEnum = {
+    EN_ATTENTE: 'EN_ATTENTE',
+    CLOTURE: 'VALIDEE',
+  };
+
   module.exports = {
     RoleEnum,
     TransactionStatusEnum,
@@ -57,5 +62,6 @@ const RoleEnum = {
     ConversionStatusEnum,
     GroupeRoleEnum,
     AbonnementStatusEnum,
-    FacturationStatusEnum
+    FacturationStatusEnum?
+    QuestionStatusEnum
   };
