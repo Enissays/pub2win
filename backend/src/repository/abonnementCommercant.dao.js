@@ -21,36 +21,39 @@ const AbonnementCommercantDAO = {
     },
     
     //GET /admin/Dashboard/nbrAbonnement/years
-    async getAvailableSubscriptionYears() {
+    async getUniqueInscriptionYears() {
       try {
-        // Agréger pour obtenir toutes les années uniques des dates de début d'abonnement
+        // Utiliser $toDate pour s'assurer que la date est bien convertie
         const yearsResult = await AbonnementCommercant.aggregate([
           {
-            // Projeter uniquement l'année de la date de début d'abonnement
             $project: {
-              year: { $year: "$date_debut" }
+              year: { 
+                $year: { 
+                  $toDate: "$date_debut" 
+                } 
+              }
             }
           },
           {
-            // Regrouper par année pour obtenir des valeurs uniques
             $group: {
               _id: "$year"
             }
           },
           {
-            // Trier les années par ordre décroissant (plus récent au plus ancien)
             $sort: { _id: -1 }
           }
         ]);
-        
-        if (yearsResult.length === 0) {
-          return [new Date().getFullYear()];
-        }
-
-        return yearsResult;
+    
+        // Mapper directement les années et filtrer les null
+        const years = yearsResult
+          .map(item => item._id)
+          .filter(year => year !== null && year !== undefined);
+    
+        // Retourner les années ou l'année courante si aucun résultat
+        return years.length > 0 ? years : [new Date().getFullYear()];
+    
       } catch (error) {
-        console.error("Erreur lors de la récupération des années disponibles pour les abonnements:", error);
-        // En cas d'erreur, retourner au moins l'année courante
+        console.error("Erreur lors de la récupération des années d'abonnement:", error);
         return [new Date().getFullYear()];
       }
     },
