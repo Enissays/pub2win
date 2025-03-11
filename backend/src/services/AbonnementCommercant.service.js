@@ -1,26 +1,18 @@
 const AbonnementCommercantDAO = require('../repository/AbonnementCommercant.dao');
 
 const AbonnementCommercantService = {
-    async getAvailableAboComYears() {
-        try {
-          // Obtenir les résultats bruts depuis la couche DAO
-          const yearsResult = await AbonnementCommercantDAO.getAvailableSubscriptionYears();
-          
-          // Transformer le résultat en tableau simple d'années
-          const years = yearsResult.map(item => item._id);
-          
-          // Si aucun résultat n'est trouvé, retourner au moins l'année courante
-          if (years.length === 0) {
-            return [new Date().getFullYear()];
-          }
-          
-          return years;
-        } catch (error) {
-          console.error("Erreur service lors de la récupération des années disponibles pour les utilisations d'offres:", error);
-          // En cas d'erreur, retourner au moins l'année courante
-          return [new Date().getFullYear()];
-        }
-      },
+  async getAvailableAboComYears() {
+    try {
+      // Obtenir directement les années depuis la DAO
+      const years = await AbonnementCommercantDAO.getAvailableSubscriptionYears();
+      
+      // Si aucun résultat n'est trouvé, retourner l'année courante
+      return years.length > 0 ? years : [new Date().getFullYear()];
+    } catch (error) {
+      console.error("Erreur service lors de la récupération des années disponibles pour les abonnements commercants:", error);
+      return [new Date().getFullYear()];
+      }
+    },
       async getActiveSubscriptionsByMonth(year) {
         try {
           // Vérifier que year est un nombre valide
