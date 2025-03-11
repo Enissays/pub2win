@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const http = require('http');
 const dotenv = require('dotenv');
-const abonnCommercantRoute = require('.//routes/abonnementCommercant.route');
+const CommercantRoute = require('.//routes/vendor.route');
 const offreRoutes = require('.//routes/offre.route');
 const userRoutes = require('.//routes/user.route');
 const conversionCoinsRoutes = require('.//routes/conversionCoins.route');
@@ -27,10 +27,10 @@ mongoose.connect(process.env.MONGODB_URI)
 
 
 // Routes
-app.use('/abCo', abonnCommercantRoute);
+app.use('/abCo', CommercantRoute);
 app.use('/Offre', offreRoutes);
 app.use('/user', userRoutes);
-app.use('/conversionCoins', conversionCoinsRoutes);
+app.use('/gainApp', conversionCoinsRoutes);
 app.use('/aide', AideRoutes);
 
 // Basic route
