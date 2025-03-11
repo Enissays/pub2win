@@ -27,14 +27,14 @@ const OffreDAO = {
       ]);
 
       if (yearsResult.length === 0) {
-        return [new Date().getFullYear()];
+        return [null];
       }
 
       return yearsResult;
     } catch (error) {
       console.error("Erreur lors de la récupération des années disponibles pour les offres:", error);
       // En cas d'erreur, retourner au moins l'année courante
-      return [new Date().getFullYear()];
+      return [null];
     }
   },
 
@@ -49,8 +49,8 @@ const OffreDAO = {
             $match: {
               is_active: true,
               date_debut: {
-                $gte: new Date(`${requestedYear}-01-01`),
-                $lt: new Date(`${requestedYear+1}-01-01`)
+                $gte: new Date(`${requestedYear}-01-01T00:00:00.000Z`),
+                $lt: new Date(`${requestedYear+1}-01-01T00:00:00.000Z`)
               }
             }
           },
@@ -99,8 +99,8 @@ const OffreDAO = {
             $match: {
               is_completed: false,
               date_utilisation: {
-                $gte: new Date(`${requestedYear}-01-01`),
-                $lt: new Date(`${requestedYear+1}-01-01`)
+                $gte: new Date(`${requestedYear}-01-01T00:00:00.000Z`),
+                $lt: new Date(`${requestedYear+1}-01-01T00:00:00.000Z`)
               }
             }
           },
@@ -161,7 +161,7 @@ const OffreDAO = {
             $sort: { _id: -1 }
           }
         ]);
-        
+
         return yearsResult;
       } catch (error) {
         console.error("Erreur lors de la récupération des années disponibles pour les utilisations d'offres:", error);
