@@ -7,7 +7,7 @@ const OffreController = require('../controllers/Offre.controller');
 router.get('/offre/years', OffreController.getAvailableOffreYears);
 router.get('/offre/count/:year', OffreController.getActiveOffresByMonth);
 
-
+//nbrAnnonceAcceptees
 router.get('/offreClient/years', OffreController.getAvailableClientOffreYears);
 router.get('/offreClient/count/:year', OffreController.countNonCompletedClientOffresByMonth);
 
