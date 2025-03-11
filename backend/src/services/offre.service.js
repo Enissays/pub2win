@@ -11,7 +11,7 @@ const Offreservice = {
           
           // Si aucun résultat n'est trouvé, retourner au moins l'année courante
           if (years.length === 0) {
-            return [new Date().getFullYear()];
+            return [null];
           }
           
           return years;
@@ -109,14 +109,14 @@ const Offreservice = {
           
           // Si aucun résultat n'est trouvé, retourner au moins l'année courante
           if (years.length === 0) {
-            return [new Date().getFullYear()];
+            return [null];
           }
           
           return years;
         } catch (error) {
           console.error("Erreur service lors de la récupération des années disponibles pour les utilisations d'offres:", error);
           // En cas d'erreur, retourner au moins l'année courante
-          return [new Date().getFullYear()];
+          return [null];
         }
       }
 };
