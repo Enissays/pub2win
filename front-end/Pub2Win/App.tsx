@@ -33,6 +33,7 @@ const App: React.FC = () => {
         'Montserrat': require('./src/assets/fonts/Montserrat/static/Montserrat-Regular.ttf'),
         'Montserrat-Bold': require('./src/assets/fonts/Montserrat/static/Montserrat-Bold.ttf'),
         'Montserrat-Medium': require('./src/assets/fonts/Montserrat/static/Montserrat-Medium.ttf'),
+        'Montserrat-Italic':require('./src/assets/fonts/Montserrat/static/Montserrat-Italic.ttf')
         // Add other font weights as needed
       });
       setFontsLoaded(true);

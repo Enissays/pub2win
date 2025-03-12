@@ -21,17 +21,14 @@ import { Feather } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { loginRequest, loginSuccess, loginFailure } from '../../store/slices/authSlice';
 
-// Define the navigation stack param list
 type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Register: undefined;
 };
 
-// Define the navigation prop type
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
-// Define the component props
 interface LoginScreenProps {
   navigation: LoginScreenNavigationProp;
 }
@@ -49,7 +46,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const { startOAuthFlow: googleAuth } = useOAuth({ strategy: "oauth_google" });
   const { startOAuthFlow: appleAuth } = useOAuth({ strategy: "oauth_apple" });
 
-  // Handle email/password sign in
   const handleEmailSignIn = async () => {
     if (!isLoaded) {
       return;
@@ -141,9 +137,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     navigation.navigate('Register');
   };
 
-  // Rest of the component remains the same
   return (
-    // ... existing JSX
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       <KeyboardAvoidingView
@@ -158,13 +152,18 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             
             {/* Person image */}
             <Image
-              source={{ uri: 'https://i.imgur.com/placeholder.png' }}
+              source={require('../../assets/influencer.png')}
               style={styles.personImage}
               resizeMode="contain"
             />
             
             {/* P2 Logo */}
             <Text style={styles.logo}>P2W</Text>
+            {/* <Image 
+              source={require('../../assets/icon.png')}
+              style={styles.logo}
+              resizeMode='contain'
+            /> */}
           </View>
           
           {/* Login form section */}
@@ -238,7 +237,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                   onPress={handleGoogleSignIn}
                   disabled={loading}
                 >
-                  <Feather name="user" size={20} color="#0D3B56" />
+                  <Feather name="mail" size={20} color="#0D3B56" />
                 </TouchableOpacity>
                 
                 <TouchableOpacity 
@@ -246,7 +245,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                   onPress={handleAppleSignIn}
                   disabled={loading}
                 >
-                  <Feather name="user" size={20} color="#0D3B56" />
+                  <Feather name="cloud" size={20} color="#0D3B56" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -274,7 +273,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
 // Styles remain the same
 const styles = StyleSheet.create({
-  // ... (same styles as before)
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
@@ -305,19 +303,20 @@ const styles = StyleSheet.create({
   },
   personImage: {
     position: 'absolute',
-    right: 0,
-    bottom: 0,
+    right: 10,
+    top: 0,
     width: 200,
-    height: 200,
+    height: 300,
   },
   logo: {
     position: 'absolute',
     bottom: 40,
+    fontFamily:'Montserrat-Italic',
     left: 40,
     color: '#FFFFFF',
     fontSize: 48,
-    fontWeight: 'bold',
-    fontStyle: 'italic',
+    // fontWeight: 'bold',
+    // fontStyle: 'italic',
   },
   formSection: {
     paddingHorizontal: 20,
@@ -326,6 +325,7 @@ const styles = StyleSheet.create({
   formTitle: {
     fontSize: 16,
     color: '#333333',
+    fontFamily:'Montserrat',
     marginBottom: 20,
   },
   inputContainer: {
@@ -338,9 +338,11 @@ const styles = StyleSheet.create({
   input: {
     paddingVertical: 12,
     paddingHorizontal: 15,
+    fontFamily:'Montserrat',
     fontSize: 16,
   },
   errorText: {
+    fontFamily:'Montserrat',
     color: 'red',
     marginBottom: 10,
   },
@@ -358,14 +360,15 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: '#0D3B56',
-    borderRadius: 5,
-    paddingVertical: 15,
+    borderRadius: 25,
+    paddingVertical: 10,
     alignItems: 'center',
-    marginBottom: 15,
+    // marginBottom: 15,
   },
   loginButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
+    fontFamily:'Montserrat',
     fontWeight: '600',
   },
   socialLoginContainer: {
@@ -375,6 +378,7 @@ const styles = StyleSheet.create({
   socialLoginText: {
     fontSize: 14,
     color: '#666666',
+    fontFamily:'Montserrat',
     marginBottom: 10,
   },
   socialButtonsContainer: {
@@ -394,9 +398,10 @@ const styles = StyleSheet.create({
   },
   forgotPasswordContainer: {
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 15,
   },
   forgotPasswordText: {
+    fontFamily:'Montserrat',
     color: '#666666',
     fontSize: 14,
   },
@@ -406,10 +411,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   signupText: {
+    fontFamily:'Montserrat',
     color: '#333333',
     fontSize: 14,
   },
   signupLink: {
+    fontFamily:'Montserrat',
     color: '#0D3B56',
     fontSize: 14,
     fontWeight: '600',

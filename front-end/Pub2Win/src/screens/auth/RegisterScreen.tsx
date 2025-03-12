@@ -137,7 +137,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    fontFamily:'Montserrat-Bold',
     textAlign: 'left',
     marginTop: 60,
     marginBottom: 40,
@@ -153,20 +154,24 @@ const styles = StyleSheet.create({
   optionButton: {
     width: 150,
     height: 150,
-    borderRadius: 75,
+    // borderRadius: 75,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
   },
   influencerButton: {
     backgroundColor: '#0D3B56',
+    borderTopLeftRadius: 80,
+    borderBottomRightRadius: 80,
     top: 0,
-    left: 0,
+    left: 40,
   },
   merchantButton: {
     backgroundColor: '#00BCD4',
-    bottom: 0,
-    right: 0,
+    borderTopRightRadius: 80,
+    borderBottomLeftRadius: 80,
+    bottom: 40,
+    right: 40,
   },
   selectedOption: {
     borderWidth: 3,
@@ -174,7 +179,8 @@ const styles = StyleSheet.create({
   },
   optionText: {
     color: '#FFFFFF',
-    fontWeight: 'bold',
+    fontFamily:'Montserrat',
+    // fontWeight: 'bold',
     fontSize: 14,
   },
   optionIcon: {

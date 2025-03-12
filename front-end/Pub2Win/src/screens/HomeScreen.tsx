@@ -246,8 +246,8 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     paddingHorizontal: 20,
-    paddingTop: 40,
-    paddingBottom: 10,
+    paddingTop: 25,
+    // paddingBottom: 10,
   },
   loadingContainer: {
     flex: 1,
@@ -274,9 +274,10 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 21,
+    marginTop:10,
     fontFamily:'Montserrat-Bold',
     // fontWeight: 'bold',
-    // marginBottom: 30,
+    marginBottom: 15,
     textAlign: 'center',
     color: '#0D3B56',
   },
@@ -367,6 +368,7 @@ const styles = StyleSheet.create({
     fontFamily:'Montserrat-Bold',
     // fontWeight: 'bold',
     // marginTop: 15,
+    textAlign:'center',
     marginBottom: 10,
     color: '#0D3B56',
   },
@@ -384,7 +386,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign:'center',
     fontFamily:'Montserrat-Bold',
-    // marginBottom: 15,
+    marginBottom: 15,
     color: '#0D3B56',
   },
   partnersLogos: {
