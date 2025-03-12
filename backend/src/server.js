@@ -12,8 +12,8 @@ dotenv.config();
 
 // Initialize Express app
 const app = express();
-const server = http.createServer(app);
-const io = socketIO(server);
+const server = http.createServer(app);  // Create server here
+const io = socketIO(server);  // Initialize socket.io with the server
 
 // Middleware
 app.use(cors());
@@ -46,10 +46,8 @@ io.on('connection', (socket) => {
   });
 });
 
-
+// Add your routes
 app.use('/', testRoutes);
-
-
 
 // Basic route
 app.get('/', (req, res) => {
@@ -66,10 +64,5 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-module.exports = { app, io };
+// Export server object to use in index.js
+module.exports = { app, io, server };
