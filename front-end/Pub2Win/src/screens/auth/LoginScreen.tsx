@@ -158,12 +158,12 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             />
             
             {/* P2 Logo */}
-            <Text style={styles.logo}>P2W</Text>
-            {/* <Image 
-              source={require('../../assets/icon.png')}
+            {/* <Text style={styles.logo}>P2W</Text> */}
+            <Image 
+              source={require('../../assets/logo.png')}
               style={styles.logo}
               resizeMode='contain'
-            /> */}
+            />
           </View>
           
           {/* Login form section */}
@@ -309,14 +309,12 @@ const styles = StyleSheet.create({
     height: 300,
   },
   logo: {
-    position: 'absolute',
-    bottom: 40,
+    // top: 40,
+    width:170,
+    height:170,
     fontFamily:'Montserrat-Italic',
-    left: 40,
+    // left: 40,
     color: '#FFFFFF',
-    fontSize: 48,
-    // fontWeight: 'bold',
-    // fontStyle: 'italic',
   },
   formSection: {
     paddingHorizontal: 20,
@@ -413,11 +411,13 @@ const styles = StyleSheet.create({
   signupText: {
     fontFamily:'Montserrat',
     color: '#333333',
-    fontSize: 14,
+    paddingTop:10,
+    fontSize: 13,
   },
   signupLink: {
     fontFamily:'Montserrat',
-    color: '#0D3B56',
+    color: '#00BCD4',
+    paddingTop:10,
     fontSize: 14,
     fontWeight: '600',
   },
