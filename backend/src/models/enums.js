@@ -62,6 +62,6 @@ const RoleEnum = {
     ConversionStatusEnum,
     GroupeRoleEnum,
     AbonnementStatusEnum,
-    FacturationStatusEnum?
+    FacturationStatusEnum,
     QuestionStatusEnum
   };
