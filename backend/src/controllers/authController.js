@@ -4,8 +4,6 @@ const bcrypt = require('bcryptjs');
 const Client = require('../models/client.model');
 const User = require('../models/user.model');
 const Commercant = require('../models/commercant.model');
-const User = require('../models/user.model');
-const Commercant = require('../models/commercant.model');
 
 exports.register = async (req, res) => {
     try {
@@ -63,7 +61,24 @@ exports.register = async (req, res) => {
                     date_inscription: new Date(),
                 });
                 await user.save();
-            break;
+                break;
+            case 'influencer':
+                console.log("Influencer");
+                user = new Client({
+                    email,
+                    nom,
+                    prenom,
+                    username: pseudo,
+                    password_hash: hashedPassword,
+                    isBanned: false,
+                    isTimeouted: false,
+                    finBan: null,
+                    role:"CLIENT",
+                    isInfluenceur: true,
+                    date_inscription: new Date(),   
+                });
+                await user.save();
+                break;
             default:
                 user = new User({
                     email,

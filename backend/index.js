@@ -1,12 +1,12 @@
-const { app, io } = require('./src/server');
-const http = require('http');
+const { app, io } = require('./src/server');  // Import app and io from server.js
 
 if (!app || !io) {
   console.error('Erreur: Les composants du serveur n\'ont pas été correctement importés');
   process.exit(1);
 }
 
-const server = app.listen || http.createServer(app);
+// Directly use the server from server.js instead of trying to create it again
+const { server } = require('./src/server');  // Import server from server.js
 
 const PORT = process.env.PORT || 5000;
 
