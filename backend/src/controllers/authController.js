@@ -1,13 +1,16 @@
-const User = require('../models/User');
+const UserDAO = require('../repository/user.dao');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const Client = require('../models/client.model');
+const User = require('../models/user.model');
+const Commercant = require('../models/commercant.model');
 
 exports.register = async (req, res) => {
     try {
         const { email, pseudo, password, nom, prenom, role } = req.body;
 
-        // Check if user already exists
-        const userExists = await User.findOne({ email });
+        // Check if user already exists 
+        const userExists = await UserDAO.getUserByEmail(email);
         if (userExists) {
             return res.status(400).json({
                 success: false,
@@ -19,17 +22,81 @@ exports.register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create user
-        const user = new User({
-            email,
-            pseudo,
-            password: hashedPassword,
-            nom,
-            prenom,
-            role
-        });
+        let user;
 
-        await user.save();
+        switch (role.toLowerCase()) {
+            case 'client':
+                user = new Client({
+                    email,
+                    nom,
+                    prenom,
+                    username: pseudo,
+                    password_hash: hashedPassword,
+                    isBanned: false,
+                    isTimeouted: false,
+                    finBan: null,
+                    role,
+                    coins: 0,
+                    isInfluenceur: false,
+                    lien_compte_instagram: null,
+                    username_instagram: null,
+                    date_inscription: new Date(),
+                });
+                await user.save();
+                break; 
+            case 'commercant': // TODO: Changer sur une logique de validation plus tard
+                user = new Commercant({
+                    email,
+                    nom,
+                    prenom,
+                    username: pseudo,
+                    password_hash: hashedPassword,
+                    isBanned: false,
+                    isTimeouted: false,
+                    finBan: null,
+                    role,
+                    coins: 0,
+                    lien_compte_instagram: null,
+                    username_instagram: null,
+                    date_inscription: new Date(),
+                });
+                await user.save();
+                break;
+            case 'influencer':
+                console.log("Influencer");
+                user = new Client({
+                    email,
+                    nom,
+                    prenom,
+                    username: pseudo,
+                    password_hash: hashedPassword,
+                    isBanned: false,
+                    isTimeouted: false,
+                    finBan: null,
+                    role:"CLIENT",
+                    isInfluenceur: true,
+                    date_inscription: new Date(),   
+                });
+                await user.save();
+                break;
+            default:
+                user = new User({
+                    email,
+                    nom,
+                    prenom,
+                    username: pseudo,
+                    password_hash: hashedPassword,
+                    isBanned: false,
+                    isTimeouted: false,
+                    finBan: null,
+                    role
+                });
+                await user.save();
+                break;
+        }
+
+        console.log('User created:', user);
+
 
         // Generate JWT
         const token = jwt.sign(
@@ -62,7 +129,7 @@ exports.login = async (req, res) => {
         const { email, password } = req.body;
 
         // Check if user exists
-        const user = await User.findOne({ email });
+        const user = await UserDAO.getUserByEmail(email);
         if (!user) {
             return res.status(400).json({
                 success: false,

@@ -4,21 +4,16 @@ const cors = require('cors');
 const http = require('http');
 const socketIO = require('socket.io');
 const dotenv = require('dotenv');
-const authRoutes = require('./routes/auth');
-const vendorRoutes = require('./routes/vendor');
-const userRoutes = require('./routes/user');
-const influencerRoutes = require('./routes/influencer');
-const offerRoutes = require('./routes/offer');
-const adminRoutes = require('./routes/admin');
-const { authenticateToken } = require('./middleware/auth');
+const testRoutes = require('./routes/route');
+const { authenticateToken } = require('./middlewares/auth');
 
 // Load environment variables
 dotenv.config();
 
 // Initialize Express app
 const app = express();
-const server = http.createServer(app);
-const io = socketIO(server);
+const server = http.createServer(app);  // Create server here
+const io = socketIO(server);  // Initialize socket.io with the server
 
 // Middleware
 app.use(cors());
@@ -51,13 +46,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// Routes
-app.use('/auth', authRoutes);
-app.use('/vendor', authenticateToken, vendorRoutes);
-app.use('/user', authenticateToken, userRoutes);
-app.use('/influencer', authenticateToken, influencerRoutes);
-app.use('/offer', offerRoutes); // Some offer routes may need authentication
-app.use('/admin', authenticateToken, adminRoutes);
+// Add your routes
+app.use('/', testRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
@@ -74,10 +64,5 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-module.exports = { app, io };
+// Export server object to use in index.js
+module.exports = { app, io, server };
