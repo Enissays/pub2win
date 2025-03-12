@@ -9,7 +9,7 @@ const userRoutes = require('.//routes/user.route');
 const conversionCoinsRoutes = require('.//routes/conversionCoins.route');
 const AideRoutes = require('.//routes/aide.route');
 const QueRoutes = require('.//routes/question.route');
-
+const ResRoutes= require('.//routes/reponse.route');
 // Load environment variables
 dotenv.config();
 // Initialize Express app
@@ -34,6 +34,8 @@ app.use('/user', userRoutes);
 app.use('/gainApp', conversionCoinsRoutes);
 app.use('/aide', AideRoutes);
 app.use('/question', QueRoutes);
+app.use('/reponse', ResRoutes);
+
 // Basic route
 app.get('/', (req, res) => {
   res.send('Welcome to Pub2Win API');
