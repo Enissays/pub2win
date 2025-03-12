@@ -117,7 +117,7 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
           {/* Logo */}
           <View style={styles.logoContainer}>
             <Image 
-              source={require('../../assets/logo.png')}
+              source={require('../../assets/logo2.png')}
               style={styles.logo}
               resizeMode='contain'
             />
@@ -126,9 +126,6 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
           {/* Header */}
           <View style={styles.headerContainer}>
             <Text style={styles.headerTitle}>Rejoignez Notre Communauté Exclusive !</Text>
-            <Text style={styles.headerSubtitle}>
-              Faites Exploser le chiffre d'affaire de votre entreprise avec nos abonnement premium.
-            </Text>
           </View>
           
           {/* Form */}
@@ -254,14 +251,14 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
             </TouchableOpacity>
             
             {/* Login Link */}
-            <View style={styles.loginContainer}>
+            {/* <View style={styles.loginContainer}>
               <Text style={styles.loginText}>
                 Avez-vous déjà un compte ? {' '}
               </Text>
               <TouchableOpacity onPress={handleLogin}>
                 <Text style={styles.loginLink}>Veuillez se connecter</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -277,8 +274,8 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 30,
+    // paddingTop: 20,
+    // paddingBottom: 30,
   },
   logoContainer: {
     alignItems: 'center',
@@ -307,23 +304,28 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat',
   },
   formContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    // backgroundColor: '#FFFFFF',
+    // borderRadius: 10,
+    // padding: 20,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.1,
+    // shadowRadius: 4,
+    // elevation: 2,
   },
   inputContainer: {
     marginBottom: 15,
     borderWidth: 1,
     borderColor: '#EEEEEE',
-    borderRadius: 5,
+    borderRadius: 15,
     backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 1,
   },
   input: {
     flex: 1,
@@ -393,7 +395,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingVertical: 15,
     alignItems: 'center',
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   registerButtonText: {
     color: '#FFFFFF',

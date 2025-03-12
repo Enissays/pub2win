@@ -44,9 +44,9 @@ interface PricingTier {
 
 const pricingTiers: PricingTier[] = [
   { id: '1', name: 'Omega\npremium', color: '#E0F7FA' },
-  { id: '2', name: 'Alpha\npremium', color: '#B2EBF2' },
-  { id: '3', name: 'Beta\npremium', color: '#80DEEA' },
-  { id: '4', name: 'Delta\npremium', color: '#4DD0E1' },
+  { id: '2', name: 'Alpha\npremium', color: '#E0F7FA' },
+  { id: '3', name: 'Beta\npremium', color: '#E0F7FA' },
+  { id: '4', name: 'Delta\npremium', color: '#E0F7FA' },
 ];
 
 // Sample partner logos
@@ -100,7 +100,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // Get the first influencer from the list
   const topInfluencer = influencers.length > 0 ? influencers[0] : {
     name: 'Martin Legrand',
-    imageUrl: 'https://i.imgur.com/placeholder.png',
+    imageUrl: '../../assets/image.png',
     followers: 100000,
     description: 'Lorem ipsum dolor sit amet consectetur. Quam nisi tincidunt iaculis id amet et tristique et. Volutpat auctor et etiam elementum pulvinar. Curabitur egestas nec proin faucibus elementum sit tortor.'
   };
@@ -129,7 +129,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               <View style={styles.profileCircleOuter}>
                 <View style={styles.profileCircleInner}>
                   <Image
-                    source={{ uri: topInfluencer.imageUrl }}
+                    source={require('../assets/image.png')}
                     style={styles.profileImage}
                   />
                 </View>
@@ -186,8 +186,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <Text style={styles.businessInfoText}>
               Faites Exploser le chiffre d'affaire de votre entreprise avec nos abonnement <Text style={styles.premiumText}>premium</Text> vous permettant de bénéficier d'une visibilité mensuelle et ce à un prix imbattable
             </Text>
-          </View>
-          {/* Pricing Tiers */}
           <View style={styles.pricingSection}>
             <View style={styles.pricingTiers}>
               {pricingTiers.map((tier) => (
@@ -200,6 +198,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               ))}
             </View>
           </View>
+          </View>
+          {/* Pricing Tiers */}
 
 
           {/* Discover Button */}
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 21,
-    marginTop:10,
+    marginTop:'auto',
     fontFamily:'Montserrat-Bold',
     // fontWeight: 'bold',
     marginBottom: 15,
@@ -312,8 +312,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   profileImage: {
-    width: 180,
-    height: 180,
+    width: 150,
+    height: 150,
     borderRadius: 90,
   },
   instagramIconContainer: {
@@ -403,8 +403,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 15,
     padding: 15,
-    marginBottom: 20,
-    flexDirection: 'row',
+    paddingBottom:0,
+    marginBottom: 10,
+    // flexDirection: 'row',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -422,7 +423,8 @@ const styles = StyleSheet.create({
   },
   businessInfoText: {
     flex: 1,
-    fontSize: 14,
+    fontFamily:'Montserrat',
+    fontSize: 13,
     color: '#333',
     lineHeight: 20,
   },
@@ -439,32 +441,37 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   pricingTier: {
-    width: (width - 60) / 4,
-    height: 60,
+    width: (width - 80) / 4,
+    height: 50,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 5,
+    marginTop:10,
+    // padding: 15,
   },
   pricingTierText: {
     fontSize: 12,
-    textAlign: 'center',
-    color: '#0D3B56',
-    fontWeight: '600',
+    fontFamily:'Montserrat',
+    textAlign: 'left',
+    color: '#00B8D2',
   },
   discoverButton: {
     backgroundColor: '#0D3B56',
+    width:150,
+    height:40,
+    top:0,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 15,
-    borderRadius: 25,
+    alignSelf: 'center',
+    // padding: 15,
+    borderRadius: 10,
     marginBottom: 20,
   },
   discoverButtonText: {
     color: '#fff',
+    fontFamily:'Montserrat',
     fontSize: 16,
-    fontWeight: '600',
     marginRight: 10,
   },
   loginSection: {
@@ -475,11 +482,13 @@ const styles = StyleSheet.create({
   },
   loginText: {
     color: '#666',
+    fontFamily:'Montserrat',
     fontSize: 14,
   },
   loginLink: {
     color: '#00BCD4',
     fontSize: 14,
+    fontFamily:'Montserrat',
     fontWeight: '600',
   },
 });
