@@ -25,6 +25,7 @@ type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   RegisterInfluencer:undefined;
+  InfluencerPlacement:undefined;
 };
 
 type RegisterInfluencerNavigationProp = StackNavigationProp<RootStackParamList, 'RegisterInfluencer'>;
@@ -42,12 +43,17 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
   const [password, setPassword] = useState<string>('');
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   
+  // Add these state variables for verification
+  const [verificationCode, setVerificationCode] = useState<string>('');
+  const [showVerification, setShowVerification] = useState<boolean>(false);
+  
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector(state => state.auth);
   const { isLoaded, signUp, setActive } = useSignUp();
   
   const handleSignUp = async () => {
-    if (!isLoaded) {
+    if (!isLoaded || !signUp) {
+      Alert.alert('Error', 'Authentication system is not ready. Please try again.');
       return;
     }
 
@@ -70,26 +76,14 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
         lastName,
         emailAddress: email,
         password,
+        username: identifier || undefined,
       });
 
       // Send verification email
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
       
-      // Navigate to verification screen or handle in another way
-      Alert.alert(
-        "Verification Email Sent",
-        "Please check your email for a verification code.",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              // You could navigate to a verification screen here
-              // For now, we'll just go back to login
-              navigation.navigate('Login');
-            }
-          }
-        ]
-      );
+      // Show verification UI instead of navigating immediately
+      setShowVerification(true);
       
     } catch (err: any) {
       console.error("Error signing up:", err);
@@ -104,6 +98,57 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
   const handleAddSocialMedia = () => {
     // Handle adding social media links
     console.log('Add social media links');
+  };
+
+  const handleVerification = async () => {
+    if (!isLoaded || !signUp) {
+      Alert.alert('Error', 'Authentication system is not ready. Please try again.');
+      return;
+    }
+
+    if (!verificationCode) {
+      Alert.alert('Error', 'Please enter the verification code');
+      return;
+    }
+
+    try {
+      dispatch(registerRequest());
+      
+      // Attempt to verify the email
+      const completeSignUp = await signUp.attemptEmailAddressVerification({
+        code: verificationCode,
+      });
+
+      if (completeSignUp.status !== "complete") {
+        // Handle verification error
+        throw new Error("Email verification failed");
+      }
+
+      // Set the user as active - add null check before calling setActive
+      if (setActive) {
+        await setActive({ session: completeSignUp.createdSessionId });
+      } else {
+        console.error("setActive is undefined");
+        throw new Error("Authentication error: Unable to set active session");
+      }
+      
+      // Update Redux store with user info
+      if (completeSignUp.createdUserId) {
+        dispatch(registerSuccess({
+          id: completeSignUp.createdUserId,
+          name: `${firstName} ${lastName}`,
+          email: email,
+          isLoggedIn: true,
+        }));
+      }
+      
+      // Navigate to influencer placement screen instead of home
+      navigation.navigate('InfluencerPlacement');
+      
+    } catch (err: any) {
+      console.error("Error verifying email:", err);
+      dispatch(registerFailure(err.message || "Verification failed. Please try again."));
+    }
   };
 
   return (

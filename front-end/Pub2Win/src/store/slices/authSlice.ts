@@ -37,6 +37,19 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    updateProfileRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    updateProfileSuccess: (state, action: PayloadAction<User>) => {
+      state.user = { ...state.user, ...action.payload };
+      state.loading = false;
+      state.error = null;
+    },
+    updateProfileFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
     logout: (state) => {
       state.user = null;
       state.error = null;
@@ -50,7 +63,10 @@ export const {
   loginFailure, 
   registerRequest, 
   registerSuccess, 
-  registerFailure, 
+  registerFailure,
+  updateProfileRequest,
+  updateProfileSuccess,
+  updateProfileFailure,
   logout 
 } = authSlice.actions;
 

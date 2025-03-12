@@ -23,7 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#F0F0F0"
-      }
+      },
+      "package": "com.pub2win.app"
     },
     "fonts": [
       {

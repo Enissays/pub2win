@@ -41,14 +41,14 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
     if (navigation) {
       navigation.navigate('RegisterInfluencer');
     } else {
-      console.log('Navigate to login screen');
+      console.log('Navigate to Register Influencer');
     }
   }
   const handleRegisterVender = ():void=>{
     if (navigation) {
       navigation.navigate('RegisterVender');
     } else {
-      console.log('Navigate to login screen');
+      console.log('Navigate to Register Influencer');
     }
   }
   const handleConnect = (): void => {

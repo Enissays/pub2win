@@ -12,6 +12,8 @@ import SplashScreen from './src/screens/SplashScreen';
 import * as Font from 'expo-font';
 import RegisterInfluencer from './src/screens/auth/RegisterInfluencer';
 import RegisterVender from './src/screens/auth/RegisterVender';
+import VendorPlacementScreen from './src/screens/auth/VendorPlacementScreen';
+import InfluencerPlacementScreen from './src/screens/auth/InfluencerPlacementScreen';
 
 // Define your Clerk publishable key
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ;
@@ -23,6 +25,8 @@ type RootStackParamList = {
   AuthLoading: undefined;
   RegisterInfluencer: undefined;
   RegisterVender: undefined;
+  VendorPlacement: undefined;
+  InfluencerPlacement: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -60,6 +64,9 @@ const App: React.FC = () => {
             <Stack.Screen name="Register" component={RegisterScreen} />
             <Stack.Screen name='RegisterInfluencer' component={RegisterInfluencer}/>
             <Stack.Screen name='RegisterVender' component={RegisterVender}/>
+            <Stack.Screen name='VendorPlacement' component={VendorPlacementScreen}/>
+            <Stack.Screen name="InfluencerPlacement" component={InfluencerPlacementScreen} options={{ headerShown: false }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>
