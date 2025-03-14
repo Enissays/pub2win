@@ -6,10 +6,11 @@ const dotenv = require('dotenv');
 const CommercantRoute = require('.//routes/vendor.route');
 const offreRoutes = require('.//routes/offre.route');
 const userRoutes = require('.//routes/user.route');
-const conversionCoinsRoutes = require('.//routes/conversionCoins.route');
 const AideRoutes = require('.//routes/aide.route');
 const QueRoutes = require('.//routes/question.route');
-const ResRoutes= require('.//routes/reponse.route');
+const ResRoutes = require('.//routes/reponse.route');
+const TransactionRoute = require('.//routes/transaction.route');
+
 // Load environment variables
 dotenv.config();
 // Initialize Express app
@@ -31,10 +32,11 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use('/abCo', CommercantRoute);
 app.use('/Offre', offreRoutes);
 app.use('/user', userRoutes);
-app.use('/gainApp', conversionCoinsRoutes);
 app.use('/aide', AideRoutes);
 app.use('/question', QueRoutes);
 app.use('/reponse', ResRoutes);
+app.use('/transaction', TransactionRoute);
+
 
 // Basic route
 app.get('/', (req, res) => {
