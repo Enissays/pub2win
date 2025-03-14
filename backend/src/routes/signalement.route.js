@@ -1,0 +1,12 @@
+const express = require('express');
+const router = express.Router();
+const SignalementController = require('../controllers/Signalement.controller');
+
+
+// Route pour récupérer les années disponibles
+router.get('/Sig/years', SignalementController.getSignalementYears);
+
+// Route pour récupérer le nombre d'utilisateurs par mois pour une année spécifique
+router.get('/Sig/count/:year', SignalementController.getSignalementByMonth);
+
+module.exports = router;
