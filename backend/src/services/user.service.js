@@ -4,13 +4,13 @@ const UserService = {
   async getAvailableYears() {
     try {
       // Obtenir directement les années depuis la DAO
-      const years = await userDAO.getUniqueInscriptionYears();
+      const yearsResult = await userDAO.getUniqueInscriptionYears();
 
       // Mapper directement les années
-      years = yearsResult.map(item => item._id);
+      const years = yearsResult.map(item => item._id);
     
       // Retourner les années ou l'année courante si aucun résultat
-      return years.length > 0 ? years : [new Date().getFullYear()];
+      return years.length > 0 ? years : [null];
         
     } catch (error) {
       console.error("Erreur service lors de la récupération des années disponibles:", error);
