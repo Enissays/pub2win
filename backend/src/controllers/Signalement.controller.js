@@ -48,6 +48,24 @@ const SignalementController = {
         error: error.message
       });
     }
+  },
+  async getALLSignalements(req, res) {
+    try {
+      const signalements = await SignalementService.getAllSignalements();
+      
+      return res.status(200).json({
+        success: true,
+        data: signalements
+      });
+    } catch (error) {
+      console.error('Erreur contrôleur lors de la récupération des signalements:', error);
+      
+      return res.status(500).json({
+        success: false,
+        message: 'Erreur lors de la récupération des signalements',
+        error: error.message
+      }); 
+    }
   }
 };
 
