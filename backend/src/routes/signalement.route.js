@@ -9,4 +9,6 @@ router.get('/Sig/years', SignalementController.getSignalementYears);
 // Route pour récupérer le nombre d'utilisateurs par mois pour une année spécifique
 router.get('/Sig/count/:year', SignalementController.getSignalementByMonth);
 
+router.get('/Sig/all', SignalementController.getALLSignalements);
+
 module.exports = router;
