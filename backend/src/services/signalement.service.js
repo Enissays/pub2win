@@ -62,6 +62,41 @@ const SignalementService = {
       console.error(`Erreur lors du comptage total des utilisateurs pour l'année ${year}:`, error);
       return null;
     }
+  },
+  
+  async getAllSignalements() {
+    try {
+      // Récupérer tous les signalements depuis le DAO
+      const signalements = await SignalementDao.getALLSignalements();
+      
+      // Créer un objet pour regrouper par user_signale_id
+      const signalementsByUser = {};
+      
+      // Regrouper les signalements par utilisateur
+      signalements.forEach(signalement => {
+        const userId = signalement.user_signale_id.toString();
+        
+        if (!signalementsByUser[userId]) {
+          signalementsByUser[userId] = {
+            user_signale_id: signalement.user_signale_id,
+            user_username: signalement.user_username,
+            signalements: []
+          };
+        }
+        
+        signalementsByUser[userId].signalements.push({
+          raison: signalement.raison,
+          date_signalement: signalement.date_signalement
+        });
+      });
+      
+      // Convertir l'objet en tableau
+      return Object.values(signalementsByUser);
+      
+    } catch (error) {
+      console.error("Erreur lors de la récupération des signalements:", error);
+      return null;
+    }
   }
 };
   
