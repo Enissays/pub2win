@@ -81,6 +81,14 @@ const signalementDao = {
                     }));
                   }
                 },
+                async getALLSignalements() {
+                try {
+                  return await Signalement.find();
+                } catch (error) {
+                  console.error(`Erreur lors de la récupération des signalements: ${error.message}`);
+                  throw error;
+                }
+              }         
 };
 
 module.exports = signalementDao;
