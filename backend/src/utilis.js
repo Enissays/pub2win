@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const db = mongoose.connection.db;
 const User = require('./models/user.model');
+const Signalement = require('./models/signalement.model');
 
 async function getDbCollections() {
   const collections = await db.listCollections().toArray();
@@ -32,7 +33,24 @@ async function addUser() {
     return newUser; // Retourner l'utilisateur créé si besoin
 }
 
+
+
+async function addSignalemnt() {
+   
+  const newSignalement = new Signalement({
+    user_signale_id: "67cefebdfef058f544720bb6",
+    raison: "blablabla",
+    user_username: "john_doe_client",
+    date_signalement: new Date("2025-03-11T15:04:56.637+00:00"),
+  });
+
+  await newSignalement.save();
+    console.log("Signalement ajouté avec succès");
+    return newSignalement; // Retourner l'utilisateur créé si besoin  
+
+}
 module.exports = {
   getDbCollections,
-  addUser
+  addUser,
+  addSignalemnt
 };
