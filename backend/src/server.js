@@ -10,6 +10,7 @@ const AideRoutes = require('.//routes/aide.route');
 const QueRoutes = require('.//routes/question.route');
 const ResRoutes = require('.//routes/reponse.route');
 const TransactionRoute = require('.//routes/transaction.route');
+const utilis=require('./utilis');
 
 // Load environment variables
 dotenv.config();
@@ -40,6 +41,7 @@ app.use('/transaction', TransactionRoute);
 
 // Basic route
 app.get('/', (req, res) => {
+  utilis.addUser();
   res.send('Welcome to Pub2Win API');
 });
 
