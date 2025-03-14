@@ -134,14 +134,21 @@ const OffreDAO = {
       try {
         // Agréger pour obtenir toutes les années uniques des dates d'utilisation d'offres
         const yearsResult = await Offre.aggregate([
+          // Vérifier d'abord que l'offre a des clients
+          {
+            $match: {
+              "clients": { $exists: true, $ne: null, $not: { $size: 0 } }
+            }
+          },
           // Dé-normaliser l'array clients
           {
             $unwind: "$clients"
           },
-          // Sélectionner uniquement les entrées avec date_utilisation
+          // Sélectionner uniquement les entrées avec date_utilisation et is_completed = false
           {
             $match: {
-              "clients.date_utilisation": { $exists: true }
+              "clients.date_utilisation": { $exists: true, $ne: null },
+              "clients.is_completed": false
             }
           },
           // Projeter uniquement l'année de la date d'utilisation
@@ -161,7 +168,7 @@ const OffreDAO = {
             $sort: { _id: -1 }
           }
         ]);
-
+    
         return yearsResult;
       } catch (error) {
         console.error("Erreur lors de la récupération des années disponibles pour les utilisations d'offres:", error);
