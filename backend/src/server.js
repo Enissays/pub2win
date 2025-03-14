@@ -10,6 +10,7 @@ const AideRoutes = require('.//routes/aide.route');
 const QueRoutes = require('.//routes/question.route');
 const ResRoutes = require('.//routes/reponse.route');
 const TransactionRoute = require('.//routes/transaction.route');
+const SignalementRoute = require('.//routes/signalement.route');
 const utilis=require('./utilis');
 
 // Load environment variables
@@ -37,11 +38,13 @@ app.use('/aide', AideRoutes);
 app.use('/question', QueRoutes);
 app.use('/reponse', ResRoutes);
 app.use('/transaction', TransactionRoute);
+app.use('/signalement', SignalementRoute);
+
 
 
 // Basic route
 app.get('/', (req, res) => {
-  utilis.addUser();
+  utilis.addSignalemnt();
   res.send('Welcome to Pub2Win API');
 });
 
