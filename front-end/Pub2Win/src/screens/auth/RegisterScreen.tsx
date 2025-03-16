@@ -17,6 +17,8 @@ type RootStackParamList = {
   Register:undefined;
   RegisterInfluencer: undefined;
   RegisterVender: undefined;
+  InfluencerPlacement: undefined;
+  VendorPlacement: undefined;
 };
 
 // Define the navigation prop type

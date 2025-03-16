@@ -19,6 +19,7 @@ import { useSignUp, useAuth } from '@clerk/clerk-expo';
 import { Feather } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { registerRequest, registerSuccess, registerFailure } from '../../store/slices/authSlice';
+import { useApi } from '../../hooks/useApi'; // Import useApi hook
 
 type RootStackParamList = {
   Home: undefined;
@@ -50,6 +51,7 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector(state => state.auth);
   const { isLoaded, signUp, setActive } = useSignUp();
+  const api = useApi(); // Use the API hook
   
   const handleSignUp = async () => {
     if (!isLoaded || !signUp) {
@@ -140,16 +142,100 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
           email: email,
           isLoggedIn: true,
         }));
+        
+        // Register the user in your backend using the API hook
+        try {
+          await api.post('/user/register', {
+            userId: completeSignUp.createdUserId,
+            firstName,
+            lastName,
+            email,
+            username: identifier || undefined,
+            phoneNumber: phoneNumber || undefined,
+            userType: 'influencer'
+          });
+          
+          // Navigate to influencer placement screen
+          navigation.navigate('InfluencerPlacement');
+        } catch (apiError: any) {
+          console.error("Error registering with backend:", apiError);
+          // Still navigate to placement screen but show an error
+          Alert.alert(
+            "Registration Warning",
+            "Your account was created but we couldn't complete your profile setup. Some features may be limited.",
+            [
+              { text: "OK", onPress: () => navigation.navigate('InfluencerPlacement') }
+            ]
+          );
+        }
+      } else {
+        // Navigate to influencer placement screen as fallback
+        navigation.navigate('InfluencerPlacement');
       }
-      
-      // Navigate to influencer placement screen instead of home
-      navigation.navigate('InfluencerPlacement');
-      
     } catch (err: any) {
       console.error("Error verifying email:", err);
       dispatch(registerFailure(err.message || "Verification failed. Please try again."));
     }
   };
+
+  // Add verification UI rendering
+  if (showVerification) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.container}
+        >
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.logoContainer}>
+              <Image 
+                source={require('../../assets/logo2.png')}
+                style={styles.logo}
+                resizeMode='contain'
+              />
+            </View>
+            
+            <View style={styles.headerContainer}>
+              <Text style={styles.headerTitle}>Vérifiez votre email</Text>
+              <Text style={styles.headerSubtitle}>
+                Nous avons envoyé un code de vérification à {email}. Veuillez entrer ce code ci-dessous.
+              </Text>
+            </View>
+            
+            <View style={styles.formContainer}>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Code de vérification"
+                  value={verificationCode}
+                  onChangeText={setVerificationCode}
+                  keyboardType="number-pad"
+                  editable={!loading}
+                />
+              </View>
+              
+              {error && (
+                <Text style={styles.errorText}>{error}</Text>
+              )}
+              
+              <TouchableOpacity 
+                style={styles.registerButton}
+                onPress={handleVerification}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#FFFFFF" size="small" />
+                ) : (
+                  <Text style={styles.registerButtonText}>Vérifier</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -296,14 +382,14 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
             </TouchableOpacity>
             
             {/* Login Link */}
-            {/* <View style={styles.loginContainer}>
+            <View style={styles.loginContainer}>
               <Text style={styles.loginText}>
                 Avez-vous déjà un compte ? {' '}
               </Text>
               <TouchableOpacity onPress={handleLogin}>
                 <Text style={styles.loginLink}>Veuillez se connecter</Text>
               </TouchableOpacity>
-            </View> */}
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -319,8 +405,6 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     paddingHorizontal: 20,
-    // paddingTop: 20,
-    // paddingBottom: 30,
   },
   logoContainer: {
     alignItems: 'center',

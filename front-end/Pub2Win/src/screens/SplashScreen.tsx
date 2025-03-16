@@ -30,7 +30,7 @@ const SplashScreen: React.FC = () => {
     <View style={styles.container}>
       <View style={styles.background} />
       <View style={styles.logoContainer}>
-        <Text style={styles.logoText}>P2</Text>
+        <Text style={styles.logoText}>P2W</Text>
       </View>
     </View>
   );

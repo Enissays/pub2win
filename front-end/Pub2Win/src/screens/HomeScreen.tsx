@@ -30,12 +30,12 @@ type RootStackParamList = {
 // Define the navigation prop type
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
-// Define the component props
+// Defines the component props
 interface HomeScreenProps {
   navigation?: HomeScreenNavigationProp;
 }
 
-// Define the pricing tier type
+// Defines the pricing tier type
 interface PricingTier {
   id: string;
   name: string;

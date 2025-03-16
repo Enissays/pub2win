@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider } from 'react-redux';
-import { ClerkProvider } from '@clerk/clerk-expo';
-import { store } from './src/store/index';
+import { store } from './src/store';
+import ClerkAuthProvider from './src/utils/ClerkProvider';
+import ErrorBoundary from './src/utils/ErrorBoundary';
+import { StatusBar } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
-import AuthLoadingScreen from './src/screens/auth/AuthLoadingScreen';
+// Import your screens
 import LoginScreen from './src/screens/auth/LoginScreen';
 import RegisterScreen from './src/screens/auth/RegisterScreen';
 import SplashScreen from './src/screens/SplashScreen';
@@ -15,63 +17,26 @@ import RegisterVender from './src/screens/auth/RegisterVender';
 import VendorPlacementScreen from './src/screens/auth/VendorPlacementScreen';
 import InfluencerPlacementScreen from './src/screens/auth/InfluencerPlacementScreen';
 
-// Define your Clerk publishable key
-const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ;
+const Stack = createStackNavigator();
 
-type RootStackParamList = {
-  Home: undefined;
-  Login: undefined;
-  Register: undefined;
-  AuthLoading: undefined;
-  RegisterInfluencer: undefined;
-  RegisterVender: undefined;
-  VendorPlacement: undefined;
-  InfluencerPlacement: undefined;
-};
-
-const Stack = createStackNavigator<RootStackParamList>();
-
-const App: React.FC = () => {
-  const [isSplashComplete, setIsSplashComplete] = useState(false);
-  const [fontsLoaded, setFontsLoaded] = useState(false);
-
-  useEffect(() => {
-    async function loadFonts() {
-      await Font.loadAsync({
-        'Montserrat': require('./src/assets/fonts/Montserrat/static/Montserrat-Regular.ttf'),
-        'Montserrat-Bold': require('./src/assets/fonts/Montserrat/static/Montserrat-Bold.ttf'),
-        'Montserrat-Medium': require('./src/assets/fonts/Montserrat/static/Montserrat-Medium.ttf'),
-        'Montserrat-Italic':require('./src/assets/fonts/Montserrat/static/Montserrat-Italic.ttf')
-        // Add other font weights as needed
-      });
-      setFontsLoaded(true);
-    }
-
-    loadFonts();
-  }, []);
-
+export default function App() {
   return (
-    <ClerkProvider publishableKey={publishableKey}>
-      <Provider store={store}>
+    <Provider store={store}>
+      <ErrorBoundary>
+      <ClerkAuthProvider>
+        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
         <NavigationContainer>
-          <Stack.Navigator 
-            initialRouteName="Home" 
-            screenOptions={{ headerShown: false }}
-          >
-            <Stack.Screen name="AuthLoading" component={AuthLoadingScreen} />
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Register" component={RegisterScreen} />
-            <Stack.Screen name='RegisterInfluencer' component={RegisterInfluencer}/>
-            <Stack.Screen name='RegisterVender' component={RegisterVender}/>
-            <Stack.Screen name='VendorPlacement' component={VendorPlacementScreen}/>
-            <Stack.Screen name="InfluencerPlacement" component={InfluencerPlacementScreen} options={{ headerShown: false }}
-            />
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="RegisterInfluencer" component={RegisterInfluencer} options={{ headerShown: false }} />
+            <Stack.Screen name="RegisterVender" component={RegisterVender} options={{ headerShown: false }} />
+            <Stack.Screen name="InfluencerPlacement" component={InfluencerPlacementScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
-      </Provider>
-    </ClerkProvider>
+      </ClerkAuthProvider>
+      </ErrorBoundary>
+    </Provider>
   );
-};
-
-export default App;
+}

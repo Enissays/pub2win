@@ -4,16 +4,22 @@ const cors = require('cors');
 const http = require('http');
 const socketIO = require('socket.io');
 const dotenv = require('dotenv');
-const testRoutes = require('./routes/route');
-const { authenticateToken } = require('./middlewares/auth');
+const { Clerk } = require('@clerk/clerk-sdk-node');
+const routes = require('./routes/route');
 
-// Load environment variables
-dotenv.config();
+// At the very top of your server.js or index.js file
+require('dotenv').config();
+
+// Check if key is loaded
+console.log('Clerk Secret Key available:', !!process.env.CLERK_SECRET_KEY);
+
+// Initialize Clerk
+const clerk = Clerk({ secretKey: process.env.CLERK_SECRET_KEY });
 
 // Initialize Express app
 const app = express();
-const server = http.createServer(app);  // Create server here
-const io = socketIO(server);  // Initialize socket.io with the server
+const server = http.createServer(app);
+const io = socketIO(server);
 
 // Middleware
 app.use(cors());
@@ -46,13 +52,12 @@ io.on('connection', (socket) => {
   });
 });
 
-// Add your routes
-app.use('/', testRoutes);
-
 // Basic route
 app.get('/', (req, res) => {
   res.send('Welcome to Pub2Win API');
 });
+// Add your routes
+app.use('/', routes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
