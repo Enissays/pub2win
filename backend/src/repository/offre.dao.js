@@ -133,6 +133,8 @@ const OffreDAO = {
     async getAvailableClientOffreYears() {
       try {
         // Agréger pour obtenir toutes les années uniques des dates d'utilisation d'offres
+        const allOffre= await Offre.find();
+        console.log(allOffre);
         const yearsResult = await Offre.aggregate([
           // Vérifier d'abord que l'offre a des clients
           {
@@ -144,31 +146,49 @@ const OffreDAO = {
           {
             $unwind: "$clients"
           },
-          // Sélectionner uniquement les entrées avec date_utilisation et is_completed = false
+          // Ne sélectionner que les clients selon les critères
           {
             $match: {
-              "clients.date_utilisation": { $exists: true, $ne: null },
-              "clients.is_completed": false
+              $and: [
+                { "clients.is_completed": false },
+                { "clients.date_utilisation": { $exists: true, $ne: null } }
+              ]
             }
           },
-          // Projeter uniquement l'année de la date d'utilisation
+          // Ajouter le champ year pour extraire l'année de la date d'utilisation
           {
-            $project: {
+            $addFields: {
               year: { $year: "$clients.date_utilisation" }
+            }
+          },
+          // Ensuite filtrer sur l'année
+          {
+            $match: {
+              "year": { $ne: null }
             }
           },
           // Regrouper par année pour obtenir des valeurs uniques
           {
             $group: {
-              _id: "$year"
+              _id: "$year",
+              count: { $sum: 1 }
             }
           },
-          // Trier les années par ordre décroissant (plus récent au plus ancien)
+          // Trier les années par ordre décroissant
           {
             $sort: { _id: -1 }
           }
         ]);
-    
+
+        console.log("yearsResult: ", yearsResult);
+
+        // Si aucun résultat, retourner l'année courante
+        if (yearsResult.length === 0) {
+          return null;
+        }
+
+        console.log("yearsResult: ",yearsResult);
+
         return yearsResult;
       } catch (error) {
         console.error("Erreur lors de la récupération des années disponibles pour les utilisations d'offres:", error);
