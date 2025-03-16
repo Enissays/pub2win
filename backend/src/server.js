@@ -44,7 +44,7 @@ app.use('/signalement', SignalementRoute);
 
 // Basic route
 app.get('/', (req, res) => {
-  utilis.addSignalemnt();
+  utilis.addClientToOffre();  
   res.send('Welcome to Pub2Win API');
 });
 
