@@ -121,6 +121,55 @@ const Offreservice = {
           // En cas d'erreur, retourner au moins l'année courante
           return null;
         }
+      },
+
+      async getallInfluenceurperCommercantYears(commercant_id){
+        const results= await OffreDAO.getallInfluenceurperCommercantYears(commercant_id)
+
+        if (results === null){
+          return null
+        }
+
+        return results;
+      },
+
+      async getNombreInfluenceurParMois(commercant_id,year) {
+        try {
+          // Vérifier que year est un nombre valide
+          const requestedYear = parseInt(year);
+          if (isNaN(requestedYear)) {
+            throw new Error("L'année fournie n'est pas valide");
+          }
+          
+          // Obtenir les données brutes du DAO
+          const InfByMonth = await OffreDAO.getNombreInfluenceurParMois(commercant_id,year);
+          
+          // Initialiser le résultat avec tous les mois de l'année à zéro
+          const result = {};
+              
+          // Déterminer le nombre de mois à inclure pour l'année demandée
+          const currentDate = new Date();
+          const monthsToInclude = (requestedYear === currentDate.getFullYear())
+            ? currentDate.getMonth() + 1 : 12;
+          
+          // Initialiser tous les mois avec zéro
+          for (let month = 1; month <= monthsToInclude; month++) {
+            result[month] = { Influenceurs: 0 };
+          }
+          
+          // Ajouter les comptes réels d'offres
+          InfByMonth.forEach(item => {
+            const month = item.mois;
+            if (result[month]) {
+              result[month].Influenceurs = item.nbrInfluenceur;
+            }
+          });
+          
+          return result;
+        } catch (error) {
+          console.error(`Erreur lors du comptage total des utilisateurs pour l'année ${year}:`, error);
+          return null;
+        }
       }
 };
 
