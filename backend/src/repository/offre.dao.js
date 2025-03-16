@@ -1,4 +1,6 @@
+const mongoose = require('mongoose');
 const Offre = require('./../models/offre.model');
+const { ObjectId } = mongoose.Types;
 
 const OffreDAO = {
 
@@ -7,24 +9,33 @@ const OffreDAO = {
   async getAvailableOffreYears() {
     try {
       // Agréger pour obtenir toutes les années uniques des dates de début d'offres
+      const allOffre=await Offre.find();
+      console.log("AllOffre: ",allOffre);
+
       const yearsResult = await Offre.aggregate([
         {
-          // Projeter uniquement l'année de la date de début d'offre
-          $project: {
-            year: { $year: "$date_debut" }
-          }
+            // Filtrer pour ne garder que les offres actives
+            $match: {
+                is_active: true
+            }
         },
         {
-          // Regrouper par année pour obtenir des valeurs uniques
-          $group: {
-            _id: "$year"
-          }
+            // Projeter uniquement l'année de la date de début d'offre
+            $project: {
+                year: { $year: "$date_debut" }
+            }
         },
         {
-          // Trier les années par ordre décroissant (plus récent au plus ancien)
-          $sort: { _id: -1 }
+            // Regrouper par année pour obtenir des valeurs uniques
+            $group: {
+                _id: "$year"
+            }
+        },
+        {
+            // Trier les années par ordre décroissant (plus récent au plus ancien)
+            $sort: { _id: -1 }
         }
-      ]);
+    ]);
 
       if (yearsResult.length === 0) {
         return [null];
@@ -83,6 +94,12 @@ const OffreDAO = {
         
         // Récupérer le nombre d'offres avec clients non complétés par mois pour l'année demandée
         const offresByMonth = await Offre.aggregate([
+          {
+            // Filtrer pour ne garder que les offres actives
+            $match: {
+                is_active: true
+            }
+        },
           // Dé-normaliser l'array clients
           {
             $unwind: "$clients"
@@ -139,8 +156,11 @@ const OffreDAO = {
           // Vérifier d'abord que l'offre a des clients
           {
             $match: {
-              "clients": { $exists: true, $ne: null, $not: { $size: 0 } }
-            }
+              $and: [
+                  { clients: { $exists: true, $ne: null, $not: { $size: 0 } } },
+                  { is_active: true }
+              ]
+          }
           },
           // Dé-normaliser l'array clients
           {
@@ -183,7 +203,7 @@ const OffreDAO = {
         console.log("yearsResult: ", yearsResult);
 
         // Si aucun résultat, retourner l'année courante
-        if (yearsResult.length === 0) {
+        if (yearsResult.length === 0 || yearsResult === null) {
           return null;
         }
 
@@ -194,7 +214,129 @@ const OffreDAO = {
         console.error("Erreur lors de la récupération des années disponibles pour les utilisations d'offres:", error);
         return [];
       }
+    },
+
+    async getallInfluenceurperCommercantYears(commercant_id) {
+      try {
+        const allOffre = await Offre.find();
+        console.log(JSON.stringify(allOffre, null, 2)); 
+
+
+      const resultats = await Offre.aggregate([
+          // Filtrer pour le commerçant spécifique
+          { 
+              $match: { 
+                  commercant_id: new ObjectId(commercant_id),
+                  is_active: true
+              } 
+          },
+           // 2. Déplier les clients
+          { $unwind: "$clients" },
+          {
+            $match :{ 
+              "clients.is_completed":  false 
+            } 
+          },
+          // 3. Extraire l'année de la date d'utilisation
+          {
+            $addFields: {
+                annee: { $year: "$clients.date_utilisation" }
+            }
+        },
+
+        // 4. Grouper et obtenir des années uniques
+        {
+            $group: {
+                _id: "$annee"
+            }
+        },
+
+        // 5. Trier par année décroissante
+        {
+            $sort: { _id: -1 }
+        },
+
+        // 6. Projection finale pour retourner uniquement l'année
+        {
+            $project: {
+                _id: 0,
+                annee: "$_id"
+            }
+        }
+          
+      ]);
+      return resultats;
+
+    } catch (error) {
+      console.error("Erreur lors de la récupération des années disponibles pour les utilisations d'offres:", error);
+      return [];
     }
+  },
+
+  async getNombreInfluenceurParMois(commercant_id, requestedYear) {
+    try {
+        const influenceurParMois = await Offre.aggregate([
+            // 1. Filtrer par commerçant et offres actives
+            { 
+                $match: { 
+                    commercant_id: new mongoose.Types.ObjectId(commercant_id),
+                    is_active: true
+                } 
+            },
+
+            // 2. Déplier les clients
+            { $unwind: "$clients" },
+            {
+              $match :{ 
+                "clients.is_completed":  false 
+              } 
+            },
+            // 3. Filtrer par année
+            {
+                $match: {
+                    "clients.date_utilisation": {
+                        $gte: new Date(`${requestedYear}-01-01T00:00:00.000Z`),
+                        $lt: new Date(`${requestedYear + 1}-01-01T00:00:00.000Z`)
+                    }
+                }
+            },
+
+            // 4. Extraire le mois de la date d'utilisation
+            {
+                $addFields: {
+                    mois: { $month: "$clients.date_utilisation" }
+                }
+            },
+
+            // 5. Grouper par mois et compter TOUS les clients
+            {
+                $group: {
+                    _id: "$mois",
+                    nombre_clients: { $push: "$clients._id" }
+                }
+            },
+
+            // 6. Transformer pour obtenir le compte
+            {
+                $project: {
+                    mois: "$_id",
+                    nbrInfluenceur: { $size: "$nombre_clients" },
+                    _id: 0
+                }
+            },
+            
+            // 7. Trier par mois
+            {
+                $sort: { mois: 1 }
+            }
+        ]);
+        console.log("influenceurParMois: ",influenceurParMois);
+        return influenceurParMois;
+    } catch (error) {
+        console.error('Erreur lors de la récupération des clients par mois:', error);
+        throw error;
+    }
+  }
 }
 
 module.exports = OffreDAO;
