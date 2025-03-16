@@ -53,12 +53,12 @@ async function addSignalemnt() {
 
 async function addOffre() {
   const newOffre = new Offre({
-    commercant_id: new ObjectId("67cee3a3d3ae689459451e58"), // ID du commerçant
-    titre: "Annonce pour restaurant",
-    description: "Annonce pour Mamy's sivouplai",
-    montant_coins: 100,
-    date_debut: new Date("2025-03-10T15:01:17.154+00:00"),
-    date_fin: new Date("2025-03-10T15:01:17.154+00:00"),
+    commercant_id: new ObjectId("67d4025718735d7d882100a6"), // ID du commerçant
+    titre: "Annonce pour la bar",
+    description: "Annonce la Bière",
+    montant_coins: 50,
+    date_debut: new Date("2025-01-10T15:01:17.154+00:00"),
+    date_fin: new Date("2025-01-10T15:01:17.154+00:00"),
     is_active: true,
     clients: [
       {
@@ -75,16 +75,16 @@ async function addOffre() {
 }
 
 async function addClientToOffre() {
-  const offreId = "67d617e029b4f4bec3081762";
+  const offreId = "67d7103a7e6d487735eb7d40";
 
   const offre = await Offre.findById(offreId);
   if (!offre) {
     throw new Error("Offre introuvable");
   }
   offre.clients.push({
-    client: new ObjectId("67cefebdfef058f544720bb6"),
+    client: new ObjectId("67d4025718735d7d882100a6"),
     is_completed: false,
-    date_utilisation: new Date("2025-01-11T15:04:56.637+00:00")
+    date_utilisation: new Date("2024-03-11T15:04:56.637+00:00")
   });
   await offre.save();
   console.log("Client ajouté avec succès");
@@ -113,11 +113,42 @@ async function addTransaction() {
   }
 }
 
+async function updateClientStatus (){
+  try {
+    // ID de l'offre
+    const offreId = "67d617e029b4f4bec3081762";
+    
+    // ID du premier client dans le tableau (de l'offre)
+    const clientId = "67d617e029b4f4bec3081763"; // ID du premier élément du tableau clients
+    
+    // Mise à jour avec l'opérateur $set pour changer is_completed à true pour ce client spécifique
+    const result = await Offre.updateOne(
+      { 
+        "_id": offreId, 
+        "clients._id": clientId 
+      },
+      { 
+        "$set": { "clients.$.is_completed": true } 
+      }
+    );
+    
+    console.log("Résultat de la mise à jour:", result);
+    
+    // Vérifier que la mise à jour a fonctionné
+    const updatedOffre = await Offre.findById(offreId);
+    console.log("Premier client après mise à jour:", updatedOffre.clients[0]);
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour:", error);
+  }
+};
+
+
 module.exports = {
   getDbCollections,
   addUser,
   addSignalemnt,
   addOffre,
   addClientToOffre,
-  addTransaction
+  addTransaction,
+  updateClientStatus
 };
