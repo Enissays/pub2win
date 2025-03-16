@@ -98,6 +98,48 @@ const OffreController = {
         error: error.message
       });
     }
+  },
+
+  async getallInfluenceurperCommercantYears(req, res) {
+    try {
+        const { commercant_id } = req.params;
+        
+        console.log("commercant_id: "+commercant_id);
+        const results = await OffreService.getallInfluenceurperCommercantYears(commercant_id);
+        
+        return res.status(200).json({
+            success: true,
+            data: results
+        });
+    } catch (error) {
+        console.error(`Erreur contrôleur lors du comptage des influenceurs pour le commerçant ${req.params.commercant_id}:`, error);
+        
+        return res.status(500).json({
+            success: false,
+            message: `Erreur lors du comptage des influenceurs pour le commerçant`,
+            error: error.message
+        });
+    }
+  },
+
+   async getNombreInfluenceurParMois(req, res) {
+    try {
+        const { commercant_id,year} = req.body;
+        const results = await OffreService.getNombreInfluenceurParMois(commercant_id,parseInt(year));
+        
+        return res.status(200).json({
+            success: true,
+            data: results
+        });
+    } catch (error) {
+        console.error(`Erreur contrôleur lors du comptage des influenceurs pour le commerçant ${req.params.commercant_id}:`, error);
+        
+        return res.status(500).json({
+            success: false,
+            message: `Erreur lors du comptage des influenceurs pour le commerçant`,
+            error: error.message
+        });
+    }
   }
 };
 
