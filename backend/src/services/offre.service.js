@@ -104,19 +104,22 @@ const Offreservice = {
           // Obtenir les résultats bruts depuis la couche DAO
           const yearsResult = await OffreDAO.getAvailableClientOffreYears();
           
+          if(yearsResult === null){
+            return null;
+          }
           // Transformer le résultat en tableau simple d'années
           const years = yearsResult.map(item => item._id);
           
           // Si aucun résultat n'est trouvé, retourner au moins l'année courante
           if (years.length === 0) {
-            return [null];
+            return null;
           }
           
           return years;
         } catch (error) {
           console.error("Erreur service lors de la récupération des années disponibles pour les utilisations d'offres:", error);
           // En cas d'erreur, retourner au moins l'année courante
-          return [null];
+          return null;
         }
       }
 };
