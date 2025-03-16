@@ -17,7 +17,7 @@ class QuestionService {
 
         return await QuestionRepository.create(questionToCreate);
     }
-
+    
     async getQuestionById(user_id) {
         const question = await QuestionRepository.findByUserId(user_id);
         console.log("question: ",question);
