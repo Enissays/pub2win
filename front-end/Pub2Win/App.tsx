@@ -20,6 +20,22 @@ import InfluencerPlacementScreen from './src/screens/auth/InfluencerPlacementScr
 const Stack = createStackNavigator();
 
 export default function App() {
+  const [isSplashComplete, setIsSplashComplete] = useState(false);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFonts() {
+      await Font.loadAsync({
+        'Montserrat': require('./src/assets/fonts/Montserrat/static/Montserrat-Regular.ttf'),
+        'Montserrat-Bold': require('./src/assets/fonts/Montserrat/static/Montserrat-Bold.ttf'),
+        'Montserrat-Medium': require('./src/assets/fonts/Montserrat/static/Montserrat-Medium.ttf'),
+        'Montserrat-Italic':require('./src/assets/fonts/Montserrat/static/Montserrat-Italic.ttf')
+      });
+      setFontsLoaded(true);
+    }
+
+    loadFonts();
+  }, []);
   return (
     <Provider store={store}>
       <ErrorBoundary>

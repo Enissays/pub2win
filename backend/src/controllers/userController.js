@@ -127,3 +127,116 @@ exports.getProfile = async (req, res) => {
         });
     }
 }
+
+// Add these new controller methods
+
+// Handle user registration
+exports.registerUser = async (req, res) => {
+  try {
+    // User is already created/synced by the syncUser middleware
+    // We can use this endpoint to add additional user data
+    const { userId, userType, phoneNumber } = req.body;
+    
+    // The user is already available as req.user from the syncUser middleware
+    const user = req.user;
+    
+    // Update any additional fields
+    if (phoneNumber) {
+      user.telephone = phoneNumber;
+    }
+    
+    // Set user type if provided
+    if (userType === 'influencer' && user.role === 'CLIENT') {
+      user.isInfluenceur = true;
+    }
+    
+    await user.save();
+    
+    res.status(200).json({
+      success: true,
+      message: 'User registered successfully',
+      user: {
+        id: user._id,
+        clerkId: user.clerkId,
+        email: user.email,
+        name: `${user.prenom} ${user.nom}`,
+        role: user.role,
+        isInfluencer: user.isInfluenceur || false
+      }
+    });
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error registering user',
+      error: error.message
+    });
+  }
+};
+
+// Handle user login
+exports.loginUser = async (req, res) => {
+  try {
+    // User is already authenticated by Clerk and synced by middleware
+    // We can use this endpoint to log login activity or return additional user data
+    const user = req.user;
+    
+    // Update last login timestamp
+    user.derniere_connexion = new Date();
+    await user.save();
+    
+    res.status(200).json({
+      success: true,
+      message: 'Login successful',
+      user: {
+        id: user._id,
+        clerkId: user.clerkId,
+        email: user.email,
+        name: `${user.prenom} ${user.nom}`,
+        role: user.role,
+        isInfluencer: user.isInfluenceur || false
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error during login',
+      error: error.message
+    });
+  }
+};
+
+// Handle OAuth login
+exports.oauthLogin = async (req, res) => {
+  try {
+    // Similar to regular login but for OAuth users
+    const { provider } = req.body;
+    const user = req.user;
+    
+    // Update last login timestamp and OAuth provider info
+    user.derniere_connexion = new Date();
+    user.oauth_provider = provider || 'unknown';
+    await user.save();
+    
+    res.status(200).json({
+      success: true,
+      message: 'OAuth login successful',
+      user: {
+        id: user._id,
+        clerkId: user.clerkId,
+        email: user.email,
+        name: `${user.prenom} ${user.nom}`,
+        role: user.role,
+        isInfluencer: user.isInfluenceur || false
+      }
+    });
+  } catch (error) {
+    console.error('OAuth login error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error during OAuth login',
+      error: error.message
+    });
+  }
+};

@@ -154,8 +154,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 24,
-    // fontWeight: 'bold',
     fontFamily:'Montserrat-Bold',
+    // fontWeight: 'bold',
     textAlign: 'left',
     marginTop: 60,
     marginBottom: 40,

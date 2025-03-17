@@ -11,6 +11,11 @@ router.get('/', (req, res) => {
   res.send('Welcome to Pub2Win API');
 });
 
+// Authentication routes
+router.post('/user/register', requireAuth, syncUser, userController.registerUser);
+router.post('/user/login', requireAuth, syncUser, userController.loginUser);
+router.post('/user/oauth-login', requireAuth, syncUser, userController.oauthLogin);
+
 // User Profile Routes - protected with Clerk
 router.patch('/user/profile', requireAuth, syncUser, userController.updateProfile);
 router.delete('/user/profile', requireAuth, syncUser, userController.deleteProfile);
