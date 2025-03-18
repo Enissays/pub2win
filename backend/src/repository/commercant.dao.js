@@ -54,7 +54,6 @@ const CommercantDAO = {
         return await Commercant.find().catch(() => []);
     },
 
-
     async getUniqueInscriptionYears() {
       try {
           // Trouver un document Commercant et l'examiner en détail
@@ -165,6 +164,16 @@ const CommercantDAO = {
           console.error(`Erreur lors du comptage des abonnements actifs par mois pour l'année ${year}:`, error);
           return {};
         }
+      },
+
+      async getAllUsernames() {
+        try {
+          const commercants = await Commercant.find({}, 'username');
+          return commercants.map(commercant => commercant.username);
+        } catch (error) {
+          throw new Error(`Erreur lors de la récupération des usernames : ${error.message}`);
       }
-    };
+    }
+  };
+  
 module.exports = CommercantDAO;
