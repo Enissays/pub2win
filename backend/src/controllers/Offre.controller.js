@@ -140,6 +140,22 @@ const OffreController = {
             error: error.message
         });
     }
+  },
+
+  async getCountActiveOffres(req, res) {
+    try {
+      const count = await OffreService.getCountActiveOffres();
+      return res.status(200).json({
+        success: true,
+        count,
+        message: 'Nombre d\'offres actives récupéré avec succès'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Erreur lors de la récupération du nombre d'offres actives: ${error.message}`
+      });
+    }
   }
 };
 
