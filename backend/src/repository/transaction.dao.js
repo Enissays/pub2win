@@ -112,7 +112,35 @@ const TransactionDAO = {
                 totalCommission: 0 
               }));
             }
-          }
+          },
 
+          async getTotalCommissionApp() {
+            try {
+              // Utilisation de l'agrégation MongoDB pour calculer la somme
+              const result = await Transaction.aggregate([
+                {
+                  $match: {
+                    status: TransactionStatusEnum.VALIDEE
+                  }
+                },
+                {
+                  $group: {
+                    _id: null,
+                    totalCommission: { $sum: "$commission_app" }
+                  }
+                }
+              ]);
+        
+              // Si aucun résultat (pas de transactions validées), retourne 0
+              if (!result.length) {
+                return 0;
+              }
+              
+              let tot = result[0].totalCommission;
+              return tot;
+            } catch (error) {
+              throw new Error(`Erreur lors du calcul de la somme des commissions: ${error.message}`);
+            }
+        }
 };
 module.exports = TransactionDAO;
