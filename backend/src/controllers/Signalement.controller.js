@@ -66,6 +66,22 @@ const SignalementController = {
         error: error.message
       }); 
     }
+  },
+  async getCountSignalements(req, res) {
+    try {
+      const count = await SignalementService.getCountSignalements();
+      
+      return res.status(200).json({
+        success: true,
+        count,
+        message: 'Nombre total de signalements récupéré avec succès'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Erreur lors du comptage des signalements: ${error.message}`
+      });
+    }
   }
 };
 
