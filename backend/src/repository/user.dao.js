@@ -124,6 +124,15 @@ const UserDAO = {
   
     async getAllUsers() {
       return await User.find().catch(() => []);
+    },
+
+    async getCountUsers() {
+      try {
+        const count = await User.countDocuments({ date_inscription: { $exists: true } });
+        return count;
+      } catch (error) {
+        throw new Error(`Erreur lors du comptage des utilisateurs: ${error.message}`);
+      }
     }
 };
 
