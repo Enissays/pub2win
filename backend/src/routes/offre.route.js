@@ -21,4 +21,6 @@ router.post('/nbrInfPerCommercant/count/', OffreController.getNombreInfluenceurP
 
 //le nbr total des offres
 router.get('/count-active', OffreController.getCountActiveOffres);
+
+router.get('/count-infOffres',OffreController.getCountInfluenceursWithPendingOffers);
 module.exports = router;
