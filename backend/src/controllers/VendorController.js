@@ -38,7 +38,23 @@ const VendorController = {
             year: new Date().getFullYear() 
           });
         }
-      },      
+      }, 
+      
+      async getAllUsernames(req, res) {
+        try {
+          const usernames = await CommercantService.getAllUsernames();
+          res.status(200).json({
+            success: true,
+            count: usernames.length,
+            data: usernames
+          });
+        } catch (error) {
+          res.status(500).json({
+            success: false,
+            message: error.message
+          });
+        }
+      }
 };
 
 module.exports = VendorController;  
