@@ -17,4 +17,8 @@ router.get('/offreClient/count/:year', OffreController.countNonCompletedClientOf
 router.get('/nbrInfPerCommercantYears/:commercant_id', OffreController.getallInfluenceurperCommercantYears);
 router.post('/nbrInfPerCommercant/count/', OffreController.getNombreInfluenceurParMois);
 
+
+
+//le nbr total des offres
+router.get('/count-active', OffreController.getCountActiveOffres);
 module.exports = router;
