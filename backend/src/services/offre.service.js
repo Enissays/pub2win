@@ -170,6 +170,14 @@ const Offreservice = {
           console.error(`Erreur lors du comptage total des utilisateurs pour l'année ${year}:`, error);
           return null;
         }
+      },
+
+      async getCountActiveOffres() {
+        try {
+          return await OffreDAO.getCountActiveOffres();
+        } catch (error) {
+          throw new Error(`Service - Erreur lors du comptage des offres actives: ${error.message}`);
+        }
       }
 };
 
