@@ -14,7 +14,9 @@ import { StackNavigationProp } from '@react-navigation/stack';
 // Define the navigation stack param list
 type RootStackParamList = {
   Login: undefined;
-  Register: undefined;
+  Register:undefined;
+  RegisterInfluencer: undefined;
+  RegisterVender: undefined;
 };
 
 // Define the navigation prop type
@@ -26,17 +28,30 @@ interface RegisterScreenProps {
 }
 
 // Define the option type
-type OptionType = 'influencer' | 'merchant' | null;
+type OptionType = 'RegisterInfluencer' | 'RegisterVender' | null;
 
 const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState<OptionType>(null);
 
-  const handleOptionSelect = (option: OptionType): void => {
-    setSelectedOption(option);
-  };
+  // const handleOptionSelect = (option: OptionType): void => {
+  //   navigation?.navigate(option);
+  // };
 
+  const handleRegisterInf = ():void=>{
+    if (navigation) {
+      navigation.navigate('RegisterInfluencer');
+    } else {
+      console.log('Navigate to login screen');
+    }
+  }
+  const handleRegisterVender = ():void=>{
+    if (navigation) {
+      navigation.navigate('RegisterVender');
+    } else {
+      console.log('Navigate to login screen');
+    }
+  }
   const handleConnect = (): void => {
-    // Navigate to login screen
     if (navigation) {
       navigation.navigate('Login');
     } else {
@@ -65,9 +80,9 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
           style={[
             styles.optionButton,
             styles.influencerButton,
-            selectedOption === 'influencer' && styles.selectedOption,
+            selectedOption === 'RegisterInfluencer' && styles.selectedOption,
           ]}
-          onPress={() => handleOptionSelect('influencer')}
+          onPress={handleRegisterInf}
         >
           <Text style={styles.optionText}>INFLUENCEUR</Text>
           <Feather name="send" size={20} color="#fff" style={styles.optionIcon} />
@@ -78,9 +93,9 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
           style={[
             styles.optionButton,
             styles.merchantButton,
-            selectedOption === 'merchant' && styles.selectedOption,
+            selectedOption === 'RegisterVender' && styles.selectedOption,
           ]}
-          onPress={() => handleOptionSelect('merchant')}
+          onPress={handleRegisterVender}
         >
           <Text style={styles.optionText}>COMMERÇANT</Text>
         </TouchableOpacity>
@@ -137,7 +152,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    fontFamily:'Montserrat-Bold',
     textAlign: 'left',
     marginTop: 60,
     marginBottom: 40,
@@ -151,22 +167,27 @@ const styles = StyleSheet.create({
     height: 300,
   },
   optionButton: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
+    width: 170,
+    height: 170,
+    // borderRadius: 75,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
   },
   influencerButton: {
     backgroundColor: '#0D3B56',
+    zIndex:2,
+    borderTopLeftRadius: 80,
+    borderBottomRightRadius: 80,
     top: 0,
-    left: 0,
+    left: 40,
   },
   merchantButton: {
     backgroundColor: '#00BCD4',
+    borderTopRightRadius: 80,
+    borderBottomLeftRadius: 80,
     bottom: 0,
-    right: 0,
+    right: 40,
   },
   selectedOption: {
     borderWidth: 3,
@@ -174,7 +195,8 @@ const styles = StyleSheet.create({
   },
   optionText: {
     color: '#FFFFFF',
-    fontWeight: 'bold',
+    fontFamily:'Montserrat',
+    // fontWeight: 'bold',
     fontSize: 14,
   },
   optionIcon: {
@@ -197,18 +219,30 @@ const styles = StyleSheet.create({
     height: 30,
   },
   infoContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 15,
+    // marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 10, height: 10 },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
+    elevation: 2,
     paddingHorizontal: 30,
-    marginTop: 40,
+    marginTop: 30,
   },
   infoIcon: {
     marginRight: 10,
+    alignSelf:'center'
   },
   infoText: {
     fontSize: 14,
     color: '#666',
+    fontFamily:'Montserrat',
     textAlign: 'center',
     flexShrink: 1,
   },
@@ -220,13 +254,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   loginText: {
-    fontSize: 14,
+    fontSize: 13,
+    fontFamily:'Montserrat',
     color: '#333',
   },
   loginLink: {
     fontSize: 14,
+    fontFamily:'Montserrat-Bold',
     color: '#00BCD4',
-    fontWeight: 'bold',
   },
 });
 
