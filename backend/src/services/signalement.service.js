@@ -97,6 +97,14 @@ const SignalementService = {
       console.error("Erreur lors de la récupération des signalements:", error);
       return null;
     }
+  },
+
+  async getCountSignalements() {
+    try {
+      return await SignalementDao.getCountSignalements();
+    } catch (error) {
+      throw new Error(`Service - Erreur lors du comptage des signalements: ${error.message}`);
+    }
   }
 };
   
