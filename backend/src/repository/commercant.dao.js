@@ -173,6 +173,22 @@ const CommercantDAO = {
         } catch (error) {
           throw new Error(`Erreur lors de la récupération des usernames : ${error.message}`);
       }
+    },
+
+    async getCountCommercantWithActiveSubscription() {
+      try {
+        const count = await Commercant.countDocuments({
+          'abonnement.status': AbonnementStatusEnum.ACTIF,
+          'abonnement.date_debut': { 
+            $exists: true, 
+            $ne: null 
+          }
+        });
+        
+        return count;
+      } catch (error) {
+        throw new Error(`Erreur lors du comptage des commerçants avec abonnement actif: ${error.message}`);
+      }
     }
   };
   
