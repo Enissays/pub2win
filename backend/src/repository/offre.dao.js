@@ -349,6 +349,32 @@ const OffreDAO = {
     } catch (error) {
       throw new Error(`Erreur lors du comptage des offres actives: ${error.message}`);
     }
+  },
+
+  async getCountInfluenceursWithPendingOffers() {
+    try {
+      // Trouver les offres correspondant aux critères
+      const offres = await Offre.find({
+        clients: { $exists: true, $ne: null, $not: { $size: 0 } },
+        is_active: true,
+      });
+      
+      // Compter le nombre total de clients qui satisfont les critères
+      let totalClients = 0;
+      
+      offres.forEach(offre => {
+        offre.clients.forEach(clientObj => {
+          if (!clientObj.is_completed && clientObj.date_utilisation) {
+            totalClients++;
+          }
+        });
+      });
+      
+      // Retourner le nombre total de clients
+      return totalClients;
+    } catch (error) {
+      throw new Error(`Erreur lors du comptage des clients avec offres en attente: ${error.message}`);
+    }
   }
 }
 
