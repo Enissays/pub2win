@@ -88,7 +88,15 @@ const signalementDao = {
                   console.error(`Erreur lors de la récupération des signalements: ${error.message}`);
                   throw error;
                 }
-              }         
+              },
+              async getCountSignalements() {
+                try {
+                  const count = await Signalement.countDocuments();
+                  return count;
+                } catch (error) {
+                  throw new Error(`Erreur lors du comptage des signalements: ${error.message}`);
+                }
+              }     
 };
 
 module.exports = signalementDao;
