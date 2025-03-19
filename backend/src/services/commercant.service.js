@@ -60,5 +60,14 @@ const commercantService = {
           };
         }
       },
+
+      async getAllUsernames() {
+        try {
+          let comme= await CommercantDAO.getAllUsernames();
+          return comme;
+        } catch (error) {
+          throw new Error(`Erreur de service : ${error.message}`);
+        }
+      } 
 };
 module.exports = commercantService;
