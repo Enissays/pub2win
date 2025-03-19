@@ -48,6 +48,23 @@ const TransactionController = {
         error: error.message
       });
     }
+  },
+
+  async getTotalCommissionApp(req, res) {
+    try {
+      const totalCommission = await TransactionService.getTotalCommissionApp();
+      
+      return res.status(200).json({
+        success: true,
+        totalCommission,
+        message: 'Somme totale des commissions calculée avec succès'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Erreur lors du calcul de la somme des commissions: ${error.message}`
+      });
+    }
   }
 };
 
