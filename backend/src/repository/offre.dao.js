@@ -336,7 +336,9 @@ const OffreDAO = {
         console.error('Erreur lors de la récupération des clients par mois:', error);
         throw error;
     }
-  }
+  },
+
+  
 }
 
 module.exports = OffreDAO;
