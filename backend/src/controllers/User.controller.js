@@ -48,6 +48,22 @@ const UserController = {
         error: error.message
       });
     }
+  },
+
+  async getCountUsers(req, res) {
+    try {
+      const count = await UserService.getCountUsers();
+      return res.status(200).json({
+        success: true,
+        count,
+        message: 'Nombre total d\'utilisateurs récupéré avec succès'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Erreur lors de la récupération du nombre d'utilisateurs: ${error.message}`
+      });
+    }
   }
 };
 
