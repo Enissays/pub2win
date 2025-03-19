@@ -11,4 +11,8 @@ router.get('/Sig/count/:year', SignalementController.getSignalementByMonth);
 
 router.get('/Sig/all', SignalementController.getALLSignalements);
 
+
+//total of signalement
+router.get('/count',SignalementController.getCountSignalements);
+
 module.exports = router;
