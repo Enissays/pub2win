@@ -6,6 +6,7 @@ const QuestionSchema = new Schema({
     user_id: {type: String},
     content: {type: String},
     date_creation: {type: Date, default: Date.now},
+    validate:{type:Boolean},
     reponse: {
         type: {
             content: {type: String},
