@@ -338,7 +338,18 @@ const OffreDAO = {
     }
   },
 
-  
+  async getCountActiveOffres() {
+    try {
+      const count = await Offre.countDocuments({
+        is_active: true,
+        date_debut: { $exists: true }
+      });
+      
+      return count;
+    } catch (error) {
+      throw new Error(`Erreur lors du comptage des offres actives: ${error.message}`);
+    }
+  }
 }
 
 module.exports = OffreDAO;
