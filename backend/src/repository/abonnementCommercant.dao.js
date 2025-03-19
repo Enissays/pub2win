@@ -133,7 +133,7 @@ const AbonnementCommercantDAO = {
     
     async getAllAbonnementCommercants() {
         return await AbonnementCommercant.find().catch(() => []);
-    }
+    },
     };
 
 module.exports = AbonnementCommercantDAO;
