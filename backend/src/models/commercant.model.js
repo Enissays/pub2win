@@ -10,7 +10,7 @@ const CommercantSchema = new Schema({
   date_debut: { type: Date, required: true },
   date_fin: { type: Date, required: true },
   auto_renouvellement: { type: Boolean, default: true },
-  status: { type: String, enum: Object.values(AbonnementStatusEnum), default: AbonnementStatusEnum.ACTIF },
+  status: { type: String },
   date_dernier_paiement: { type: Date },
   date_prochain_paiement: { type: Date }
   }
