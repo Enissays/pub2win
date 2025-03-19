@@ -55,6 +55,14 @@ const UserService = {
       console.error(`Erreur lors du comptage total des utilisateurs pour l'année ${year}:`, error);
       return null;
     }
+  },
+
+  async getCountUsers() {
+    try {
+      return await userDAO.getCountUsers();
+    } catch (error) {
+      throw new Error(`Service - Erreur lors du comptage des utilisateurs: ${error.message}`);
+    }
   }
 };
   
