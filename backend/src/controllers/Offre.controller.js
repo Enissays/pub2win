@@ -156,6 +156,22 @@ const OffreController = {
         message: `Erreur lors de la récupération du nombre d'offres actives: ${error.message}`
       });
     }
+  },
+  async getCountInfluenceursWithPendingOffers(req, res) {
+    try {
+      const count = await OffreService.getCountInfluenceursWithPendingOffers();
+      
+      return res.status(200).json({
+        success: true,
+        count,
+        message: 'Nombre d\'influenceurs avec offres en attente récupéré avec succès'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Erreur lors du comptage des influenceurs avec offres en attente: ${error.message}`
+      });
+    }
   }
 };
 
