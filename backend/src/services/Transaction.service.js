@@ -62,6 +62,14 @@ const TransactioService = {
       console.error(`Erreur lors du comptage total des utilisateurs pour l'année ${year}:`, error);
       return null;
     }
+  },
+
+  async getTotalCommissionApp() {
+    try {
+      return await TransactionDAO.getTotalCommissionApp();
+    } catch (error) {
+      throw new Error(`Service - Erreur lors du calcul de la somme des commissions: ${error.message}`);
+    }
   }
 };
   
