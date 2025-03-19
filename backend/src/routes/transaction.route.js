@@ -9,4 +9,8 @@ router.get('/tran/years', TransactionController.getTransactionYears);
 // Route pour récupérer le nombre d'utilisateurs par mois pour une année spécifique
 router.get('/tran/count/:year', TransactionController.getGainsTransactionByMonth);
 
+
+//total of commmision_app
+router.get('/total-commission',TransactionController.getTotalCommissionApp);
+
 module.exports = router;
