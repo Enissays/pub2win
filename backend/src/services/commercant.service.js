@@ -68,6 +68,13 @@ const commercantService = {
         } catch (error) {
           throw new Error(`Erreur de service : ${error.message}`);
         }
-      } 
+      } ,
+      async getCountCommercantWithActiveSubscription() {
+        try {
+          return await CommercantDAO.getCountCommercantWithActiveSubscription();
+        } catch (error) {
+          throw new Error(`Service - Erreur lors du comptage des commerçants avec abonnement actif: ${error.message}`);
+        }
+      }
 };
 module.exports = commercantService;
