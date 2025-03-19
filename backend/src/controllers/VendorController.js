@@ -54,6 +54,21 @@ const VendorController = {
             message: error.message
           });
         }
+      },
+      async getCountCommercantWithActiveSubscription(req, res) {
+        try {
+          const count = await CommercantService.getCountCommercantWithActiveSubscription();
+          return res.status(200).json({
+            success: true,
+            count,
+            message: 'Nombre de commerçants avec abonnement actif récupéré avec succès'
+          });
+        } catch (error) {
+          return res.status(500).json({
+            success: false,
+            message: `Erreur lors de la récupération du nombre de commerçants avec abonnement actif: ${error.message}`
+          });
+        }
       }
 };
 
