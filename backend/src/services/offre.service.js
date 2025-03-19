@@ -178,6 +178,13 @@ const Offreservice = {
         } catch (error) {
           throw new Error(`Service - Erreur lors du comptage des offres actives: ${error.message}`);
         }
+      },
+      async getCountInfluenceursWithPendingOffers() {
+        try {
+          return await OffreDAO.getCountInfluenceursWithPendingOffers();
+        } catch (error) {
+          throw new Error(`Service - Erreur lors du comptage des influenceurs avec offres en attente: ${error.message}`);
+        }
       }
 };
 
