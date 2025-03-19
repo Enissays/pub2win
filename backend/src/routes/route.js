@@ -5,6 +5,7 @@ const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
 const influencerController = require('../controllers/influencerController');
 const vendorController = require('../controllers/vendorController');
+const offerController = require('../controllers/offerController');
 
 // Auth Routes
 router.post('/auth/register', authController.register);
@@ -38,14 +39,14 @@ router.post('/influencer/:id/validate', authenticateToken, isAdmin, influencerCo
 router.delete('/influencer/:id/delete', authenticateToken, isAdmin, influencerController.delete);
 
 
-/*
+
 // Offer Routes
-router.get('/offers/:categorie_name', authenticateToken, offerController.getByCategory);
 router.get('/offer/details/:id', authenticateToken, offerController.getDetails);
 router.patch('/offer/:id_offer', authenticateToken, isVendor, offerController.updateOffer);
 router.delete('/offer/:id_offer', authenticateToken, isVendor, offerController.deleteOffer);
 router.post('/offer/:id_offer', authenticateToken, offerController.createOffer);
 
+/*
 // Admin Routes
 router.get('/gains', authenticateToken, isAdmin, adminController.getGains);
 router.get('/signalements', authenticateToken, isAdmin, adminController.getReports);

@@ -6,7 +6,11 @@ const OffreDAO = {
         }
         
         const newOffre = new Offre(offreData);
-        return await newOffre.save().catch(() => null);
+        return await newOffre.save().catch((e) => {
+            console.error('Error creating offre:', e);
+            return null;
+
+        });
     },
     
     async getOffreById(offreId) {
