@@ -9,4 +9,7 @@ router.get('/years', UserController.getAvailableYears);
 // Route pour récupérer le nombre d'utilisateurs par mois pour une année spécifique
 router.get('/count/:year', UserController.getTotalUserCountByMonth);
 
+
+router.get('/count',UserController.getCountUsers);
+
 module.exports = router;
