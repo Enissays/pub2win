@@ -164,7 +164,7 @@ const OffreController = {
       return res.status(200).json({
         success: true,
         count,
-        message: 'Nombre d\'influenceurs avec offres en attente récupéré avec succès'
+        message: 'Nombre d\'influenceurs avec offres'
       });
     } catch (error) {
       return res.status(500).json({
