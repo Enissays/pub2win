@@ -56,7 +56,7 @@ const UserController = {
       return res.status(200).json({
         success: true,
         count,
-        message: 'Nombre total d\'utilisateurs récupéré avec succès'
+        message: 'Nombre total d\'utilisateurs'
       });
     } catch (error) {
       return res.status(500).json({
