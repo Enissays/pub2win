@@ -61,7 +61,7 @@ const VendorController = {
           return res.status(200).json({
             success: true,
             count,
-            message: 'Nombre de commerçants avec abonnement actif récupéré avec succès'
+            message: 'Nombre de commerçants avec abonnement actif'
           });
         } catch (error) {
           return res.status(500).json({
