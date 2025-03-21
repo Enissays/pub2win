@@ -8,14 +8,12 @@ interface ApiOptions {
 
 export const useApi = () => {
   const { getToken } = useAuth();
-  const baseUrl = 'http://localhost:5000'; // Change to your actual API URL
+  const baseUrl = 'https://pub2-win-5e1030b0d14b.herokuapp.com'; // Change to your actual API URL
 
   const fetchWithAuth = async (endpoint: string, options: ApiOptions = {}) => {
     try {
-      // Get the token from Clerk
       const token = await getToken();
       
-      // Prepare headers with authentication
       const headers = {
         'Content-Type': 'application/json',
         ...(token ? { 'Authorization': `Bearer ${token}` } : {}),

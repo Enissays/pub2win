@@ -6,8 +6,7 @@ import { store } from './src/store';
 import ClerkAuthProvider from './src/utils/ClerkProvider';
 import ErrorBoundary from './src/utils/ErrorBoundary';
 import { StatusBar } from 'react-native';
-import HomeScreen from './src/screens/HomeScreen';
-// Import your screens
+// import HomeScreen from './src/screens/HomeScreen';
 import LoginScreen from './src/screens/auth/LoginScreen';
 import RegisterScreen from './src/screens/auth/RegisterScreen';
 import SplashScreen from './src/screens/SplashScreen';
@@ -16,6 +15,7 @@ import RegisterInfluencer from './src/screens/auth/RegisterInfluencer';
 import RegisterVender from './src/screens/auth/RegisterVender';
 import VendorPlacementScreen from './src/screens/auth/VendorPlacementScreen';
 import InfluencerPlacementScreen from './src/screens/auth/InfluencerPlacementScreen';
+import VendorDashboard from './src/screens/vendor/VendorDashboard';
 
 const Stack = createStackNavigator();
 
@@ -40,15 +40,17 @@ export default function App() {
     <Provider store={store}>
       <ErrorBoundary>
       <ClerkAuthProvider>
-        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+        <StatusBar hidden={true} />
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Home">
+          <Stack.Navigator initialRouteName="VendorDashboard">
             <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
             <Stack.Screen name="RegisterInfluencer" component={RegisterInfluencer} options={{ headerShown: false }} />
             <Stack.Screen name="RegisterVender" component={RegisterVender} options={{ headerShown: false }} />
             <Stack.Screen name="InfluencerPlacement" component={InfluencerPlacementScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+            {/* <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} /> */}
+            <Stack.Screen name="VendorPlacement" component={VendorPlacementScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="VendorDashboard" component={VendorDashboard} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
       </ClerkAuthProvider>

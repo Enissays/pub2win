@@ -9,12 +9,14 @@ import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 import HomeScreen from '../screens/HomeScreen';
+import VendorDashboard from '../screens/vendor/VendorDashboard';
 
 type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
   Register: undefined;
   Home: undefined;
+  VendorDashboard: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -35,7 +37,7 @@ const AppNavigator: React.FC = () => {
         ) : (
           // App Stack
           <>
-            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="VendorDashboard" component={VendorDashboard} />
           </>
         )}
       </Stack.Navigator>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -48,14 +48,56 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
   const [verificationCode, setVerificationCode] = useState<string>('');
   const [showVerification, setShowVerification] = useState<boolean>(false);
   
+  // Add a loading state specifically for Clerk
+  const [clerkReady, setClerkReady] = useState<boolean>(false);
+  
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector(state => state.auth);
   const { isLoaded, signUp, setActive } = useSignUp();
-  const api = useApi(); // Use the API hook
+  const api = useApi();
+  
+  // Modify the useEffect to set our local state
+  useEffect(() => {
+    if (!isLoaded) {
+      console.log('Clerk authentication is still loading...');
+      setClerkReady(false);
+    } else {
+      console.log('Clerk authentication is ready');
+      setClerkReady(true);
+    }
+  }, [isLoaded]);
+  
+  // Add a delay before allowing sign up attempts
+  useEffect(() => {
+    // Give Clerk some time to initialize fully
+    const timer = setTimeout(() => {
+      if (!clerkReady && isLoaded) {
+        setClerkReady(true);
+      }
+    }, 2000); // 2 second delay
+    
+    return () => clearTimeout(timer);
+  }, [clerkReady, isLoaded]);
   
   const handleSignUp = async () => {
-    if (!isLoaded || !signUp) {
-      Alert.alert('Error', 'Authentication system is not ready. Please try again.');
+    // Check if Clerk is ready using our local state
+    if (!clerkReady) {
+      console.error('Clerk authentication is not loaded yet');
+      Alert.alert('Please wait', 'The authentication system is initializing. Please try again in a moment.');
+      return;
+    }
+    
+    // Wait for Clerk to be fully loaded
+    if (!isLoaded) {
+      console.error('Clerk authentication is not loaded yet');
+      Alert.alert('Please wait', 'The authentication system is initializing. Please try again in a moment.');
+      return;
+    }
+    
+    // Check if signUp object is available
+    if (!signUp) {
+      console.error('SignUp object is not available');
+      Alert.alert('Error', 'Authentication system is not properly initialized. Please restart the app and try again.');
       return;
     }
 
