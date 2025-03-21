@@ -74,7 +74,7 @@ const SignalementController = {
       return res.status(200).json({
         success: true,
         count,
-        message: 'Nombre total de signalements récupéré avec succès'
+        message: 'Nombre total de signalements'
       });
     } catch (error) {
       return res.status(500).json({
