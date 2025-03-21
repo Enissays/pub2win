@@ -148,7 +148,7 @@ const OffreController = {
       return res.status(200).json({
         success: true,
         count,
-        message: 'Nombre d\'offres actives récupéré avec succès'
+        message: 'Nombre d\'offres actives'
       });
     } catch (error) {
       return res.status(500).json({
