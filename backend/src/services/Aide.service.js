@@ -18,23 +18,6 @@ const AideService = {
                 throw new Error("Aucune donnée fournie pour la mise à jour");
             }
 
-            // Validation des données
-            if (aideData.email && !/^\S+@\S+\.\S+$/.test(aideData.email)) {
-                throw new Error("Format d'email invalide");
-            }
-
-            if (aideData.telephone && !/^[+]?[\d\s()-]{8,}$/.test(aideData.telephone)) {
-                throw new Error("Format de numéro de téléphone invalide");
-            }
-
-            // Validation des URLs de réseaux sociaux
-            const urlFields = ['facebook_url', 'instagram_url', 'twitter_url',];
-            for (const field of urlFields) {
-                if (aideData[field] && aideData[field] !== '' && !this.isValidUrl(aideData[field])) {
-                    throw new Error(`URL ${field} invalide`);
-                }
-            }
-
             return await AideDAO.updateAide(aideData);
         } catch (error) {
             throw new Error(`Erreur lors de la mise à jour des informations d'aide: ${error.message}`);
