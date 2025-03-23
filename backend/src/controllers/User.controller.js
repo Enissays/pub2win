@@ -64,6 +64,22 @@ const UserController = {
         message: `Erreur lors de la récupération du nombre d'utilisateurs: ${error.message}`
       });
     }
+  },
+
+  async getAllUsers(req, res) {
+    try {
+      const allusers = await UserService.getAllUsers();
+      return res.status(200).json({
+        success: true,
+        allusers,
+        message: 'tout les users'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Erreur lors de la récupération de tout les users: ${error.message}`
+      });
+    }
   }
 };
 
