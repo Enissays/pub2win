@@ -12,4 +12,6 @@ router.get('/count/:year', UserController.getTotalUserCountByMonth);
 
 router.get('/count',UserController.getCountUsers);
 
+
+router.get('/allUsers',UserController.getAllUsers);
 module.exports = router;
