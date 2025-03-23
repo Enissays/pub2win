@@ -1,6 +1,7 @@
 const userDAO = require('../repository/user.dao');
 
 const UserService = {
+
   async getAvailableYears() {
     try {
       // Obtenir directement les années depuis la DAO
@@ -62,6 +63,14 @@ const UserService = {
       return await userDAO.getCountUsers();
     } catch (error) {
       throw new Error(`Service - Erreur lors du comptage des utilisateurs: ${error.message}`);
+    }
+  },
+
+  async getAllUsers() {
+    try {
+      return await userDAO.getAllUsers();
+    } catch (error) {
+      throw new Error(`Service - Erreur lors de recuperation des tout des users: ${error.message}`);
     }
   }
 };
