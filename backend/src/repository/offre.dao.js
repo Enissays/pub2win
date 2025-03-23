@@ -145,6 +145,12 @@ const OffreDAO = {
         console.error(`Erreur lors du comptage des offres non complétées par mois pour l'année ${year}:`, error);
         return [];
       }
+        const newOffre = new Offre(offreData);
+        return await newOffre.save().catch((e) => {
+            console.error('Error creating offre:', e);
+            return null;
+
+        });
     },
     
     async getAvailableClientOffreYears() {

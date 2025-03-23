@@ -6,7 +6,11 @@ const EndroitDAO = {
         }
         
         const newEndroit = new Endroit(endroitData);
-        return await newEndroit.save().catch(() => null);
+        return await newEndroit.save().catch((e) => {
+            console.error('Error during endroit creation, error:', e);
+           return null;
+        }
+        );
     },
     
     async getEndroitById(endroitId) {

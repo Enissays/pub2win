@@ -6,7 +6,8 @@ const EndroitSchema = new Schema({
   nom: { type: String, required: true },
   adresse: { type: String, required: true },
   coordonnees_gps: { type: String },
-  description: { type: String }
+  description: { type: String },
+  conditions: [{ minConsommation: {type: Number},  wincoins: { type: Number } }]
 });
 
 const Endroit = mongoose.model('Endroit', EndroitSchema);

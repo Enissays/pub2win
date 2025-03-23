@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "Pub2Win",
+    "slug": "pub2win",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false,
+    "splash": {
+      "image": "./src/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F0F0F0"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "backgroundColor": "#F0F0F0"
+      }
+    },
+    "fonts": [
+      {
+        "asset": "./assets/fonts/Montserrat-Regular.ttf",
+        "family": "Montserrat"
+      },
+      {
+        "asset": "./assets/fonts/Montserrat-Bold.ttf",
+        "family": "Montserrat-Bold"
+      },
+      {
+        "asset": "./assets/fonts/Montserrat-Medium.ttf",
+        "family": "Montserrat-Medium"
+      }
+    ]
+  }
+}

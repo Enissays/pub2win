@@ -7,7 +7,6 @@ const FormuleAbonnementSchema = new Schema({
   prix_mensuel: { type: Number, required: true },
   prix_annuel: { type: Number, required: true },
   nb_offres_max: { type: Number, required: true },
-  nb_endroits_max: { type: Number, required: true },
   commission_reduite: { type: Number, required: true },
   analytics_avancees: { type: Boolean, default: false },
   support_prioritaire: { type: Boolean, default: false },

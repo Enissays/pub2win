@@ -12,12 +12,15 @@ const ResRoutes = require('.//routes/reponse.route');
 const TransactionRoute = require('.//routes/transaction.route');
 const SignalementRoute = require('.//routes/signalement.route');
 const utilis=require('./utilis');
+const testRoutes = require('./routes/route');
+const { authenticateToken } = require('./middlewares/auth');
 
 // Load environment variables
 dotenv.config();
 // Initialize Express app
 const app = express();
-const server = http.createServer(app);
+const server = http.createServer(app);  // Create server here
+const io = socketIO(server);  // Initialize socket.io with the server
 
 // Middleware
 app.use(cors());
@@ -30,6 +33,7 @@ mongoose.connect(process.env.MONGODB_URI)
 .catch(err => console.error('MongoDB connection error:', err));
 
 
+
 // Routes
 app.use('/abCo', CommercantRoute);
 app.use('/Offre', offreRoutes);
@@ -39,8 +43,7 @@ app.use('/question', QueRoutes);
 app.use('/reponse', ResRoutes);
 app.use('/transaction', TransactionRoute);
 app.use('/signalement', SignalementRoute);
-
-
+app.use('/', testRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
@@ -58,10 +61,5 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-module.exports = { app};
+// Export server object to use in index.js
+module.exports = { app, io, server };
