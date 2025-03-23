@@ -40,7 +40,7 @@ const ConversionCoinsDAO = {
         
         return await ConversionCoins.findByIdAndDelete(conversionCoinsId).catch(() => null);
     },
-    
+  
     async getAllConversionCoins() {
         return await ConversionCoins.find().catch(() => []);
     }
