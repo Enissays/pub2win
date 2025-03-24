@@ -48,7 +48,7 @@ app.use('/', testRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
-  utilis.addClientToOffre();  
+  utilis.addUser();  
   res.send('Welcome to Pub2Win API');
 });
 
