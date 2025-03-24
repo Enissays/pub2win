@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const reponseController = require('../controllers/reponse.controller');
+const reponseController = require('../controllers/admin/reponse.controller');
 
 
 // Récupérer une réponse par ID

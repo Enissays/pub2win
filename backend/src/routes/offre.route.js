@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const OffreController = require('../controllers/Offre.controller');
+const OffreController = require('../controllers/admin/Offre.controller');
 
 
 // Route pour récupérer les années disponibles pour les offres

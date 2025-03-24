@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const AbonnementCommercantController = require('../controllers/AbonnementCommercant.controller');
+const AbonnementCommercantController = require('../controllers/admin/AbonnementCommercant.controller');
 
 
 router.get('/years', AbonnementCommercantController.getAvailableSubscriptionYears);

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const SignalementController = require('../controllers/Signalement.controller');
+const SignalementController = require('../controllers/admin/Signalement.controller');
 
 
 // Route pour récupérer les années disponibles

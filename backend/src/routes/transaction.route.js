@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const TransactionController = require('../controllers/Transaction.controller');
+const TransactionController = require('../controllers/admin/Transaction.controller');
 
 
 // Route pour récupérer les années disponibles

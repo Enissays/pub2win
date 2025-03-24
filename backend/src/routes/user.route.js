@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const UserController = require('../controllers/User.controller');
+const UserController = require('../controllers/admin/User.controller');
 
 
 // Route pour récupérer les années disponibles

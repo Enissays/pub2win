@@ -14,6 +14,7 @@ const SignalementRoute = require('.//routes/signalement.route');
 const utilis=require('./utilis');
 const testRoutes = require('./routes/route');
 const { authenticateToken } = require('./middlewares/auth');
+const socketIO = require('socket.io');
 
 // Load environment variables
 dotenv.config();
