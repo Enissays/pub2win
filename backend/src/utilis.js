@@ -5,6 +5,7 @@ const Signalement = require('./models/signalement.model');
 const Offre = require('./models/offre.model');
 const { ObjectId } = mongoose.Types;
 const transaction=require('./models/transaction.model');
+const Commercant = require('./models/commercant.model');
 
 async function getDbCollections() {
   const collections = await db.listCollections().toArray();
@@ -15,14 +16,14 @@ async function getDbCollections() {
 async function addUser() {
  
   const newUser = new User({
-    email: "nouvelle-boutique@exemple.com",
-    nom: "Martin",
-    prenom: "Sophie",
-    username: "boutique_sm",
+    email: "nouvelle2-boutique@exemple.com",
+    nom: "Martin2",
+    prenom: "Sophie2",
+    username: "boutique_sm2",
     password_hash: "$2b$10$AbCdEfGhIjKlMnOpQrStUvWxYz1234567890AbCdEfGhIj",
     isBanned: false,
     isTimeouted: false,
-    role: "COMMERCANT",
+    role: "CLIENT",
     date_inscription: new Date("2025-02-11T15:04:56.637+00:00"),
     userType: "Commercant",
     coins: 250,
@@ -142,6 +143,15 @@ async function updateClientStatus (){
   }
 };
 
+async function getAllUsernamesUtilis() {
+  try {
+    const commercantsFromUser = await User.find({ role: "COMMERCANT" });
+    console.log("Nombre de commerçants dans la collection User:", commercantsFromUser.length);
+    return docuemnts;
+  } catch (error) {
+    throw new Error(`Erreur lors de la récupération des usernames : ${error.message}`);
+}
+}
 
 module.exports = {
   getDbCollections,
@@ -150,5 +160,6 @@ module.exports = {
   addOffre,
   addClientToOffre,
   addTransaction,
-  updateClientStatus
+  updateClientStatus,
+  getAllUsernamesUtilis
 };
