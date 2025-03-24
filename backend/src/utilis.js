@@ -30,7 +30,15 @@ async function addUser() {
     status: "pending",
     createdAt: new Date("2025-02-11T15:04:56.664+00:00"),
     updatedAt: new Date("2025-02-11T15:04:56.664+00:00"),
-    __v: 0
+    abonnement: {
+      formule_id: "67cee3a3d3ae689459451e58",
+      date_debut: new Date("2025-07-11T15:04:56.664+00:00"),
+      date_fin: new Date("2025-09-11T15:04:56.664+00:00"),
+      auto_renouvellement: true,
+      status: "ACTIF",
+      date_dernier_paiement: new Date("2025-06-11T15:04:56.664+00:00"),
+      date_prochain_paiement: new Date("2025-06-11T15:04:56.664+00:00")
+  }
   });
   await newUser.save();
     console.log("Utilisateur ajouté avec succès");
@@ -147,6 +155,31 @@ async function getAllUsernamesUtilis() {
 }
 }
 
+
+
+
+async function updateClientInf (){
+  try {
+    const clientId = "67e1ddcf013c043eec9f8c75"; // ID du premier élément du tableau clients
+    
+    // Mise à jour avec l'opérateur $set pour changer is_completed à true pour ce client spécifique
+    const result = await User.updateOne(
+      { 
+        "_id": clientId, 
+      },
+      { 
+        "$set": { "date_inscription": new Date("2024-10-11T15:04:56.637+00:00") } 
+      }
+    );
+    
+    console.log("Résultat de la mise à jour:", result);
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour:", error);
+  }
+};
+
+
+
 module.exports = {
   getDbCollections,
   addUser,
@@ -155,5 +188,6 @@ module.exports = {
   addClientToOffre,
   addTransaction,
   updateClientStatus,
-  getAllUsernamesUtilis
+  getAllUsernamesUtilis,
+  updateClientInf
 };
