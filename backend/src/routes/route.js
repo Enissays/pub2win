@@ -5,6 +5,7 @@ const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
 const influencerController = require('../controllers/influencerController');
 const vendorController = require('../controllers/vendorController');
+const apisController = require('../apis/insta_test');
 //const offerController = require('../controllers/offerController');
 
 // Auth Routes
@@ -37,6 +38,12 @@ router.post('/influencer/comment/:id', authenticateToken, influencerController.c
 router.post('/influencer/accept/:id', authenticateToken, isInfluencer, influencerController.acceptOffer);
 router.post('/influencer/:id/validate', authenticateToken, isAdmin, influencerController.validate);
 router.delete('/influencer/:id/delete', authenticateToken, isAdmin, influencerController.delete);
+
+// Webhook routes
+router.get('/instagram', apisController.getInstagram);
+router.post('/instagram', apisController.postInstagram);
+router.get('/instagram/test', apisController.testGetAllReceivedUpdates);
+
 
 /*
 

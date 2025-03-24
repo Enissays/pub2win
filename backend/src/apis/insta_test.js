@@ -3,6 +3,8 @@ let express = require('express');
 let xhub = require('express-x-hub');
 let router = express.Router();
 
+const { getClientByInstagramUsername } = require('../repository/client.dao');
+
 router.use(xhub({ algorithm: 'sha1', secret: process.env.APP_SECRET }));
 router.use(bodyParser.json());
 
@@ -14,7 +16,7 @@ router.use(function(req, res, next) {
   next();
 });
 
-router.get('/instagram', function(req, res) {
+function getWebhook(req, res) {
   if (
   req.query['hub.mode'] == 'subscribe' &&
   req.query['hub.verify_token'] == token
@@ -23,13 +25,22 @@ router.get('/instagram', function(req, res) {
   } else {
   res.sendStatus(400);
   }
-});
+}
 
-router.post('/instagram', function(req, res) {
+function postWebhook(req, res) {
   console.log('Instagram request body:');
   console.log(req.body);
   received_updates.unshift(req.body);
+  
   res.sendStatus(200);
-});
+}
 
-module.exports = router;
+function testGetAllReceivedUpdates(req, res) {
+  res.send(received_updates);
+}
+
+module.exports = {
+  getWebhook,
+  postWebhook,
+  testGetAllReceivedUpdates
+}

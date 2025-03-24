@@ -1,5 +1,6 @@
 const Client= require('../models/client.model');
 const ClientDAO = {
+
     async createClient(clientData) {
         if (!clientData || typeof clientData !== 'object') {
         return null;
@@ -51,7 +52,17 @@ const ClientDAO = {
     
     async getAllClients() {
         return await Client.find().catch(() => []);
-    }
+    },
+
+    async getClientByInstagramUsername(username) {
+        if (!username) {
+        return null;
+        }
+        
+        return await Client.findOne({ username_instagram: username }).catch(() => null);
+    },
+
+    
     };
 
 module.exports = ClientDAO;
