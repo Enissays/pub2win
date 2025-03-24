@@ -16,6 +16,14 @@ import RegisterVender from './src/screens/auth/RegisterVender';
 import VendorPlacementScreen from './src/screens/auth/VendorPlacementScreen';
 import InfluencerPlacementScreen from './src/screens/auth/InfluencerPlacementScreen';
 import VendorDashboard from './src/screens/vendor/VendorDashboard';
+import Chat from './src/screens/vendor/Chat';
+import VendorPlace from './src/screens/vendor/VendorPlace';
+import VendorProfile from './src/screens/vendor/VendorProfile';
+import InfluencerDashboard from './src/screens/influencer/InfluencerDashboard';
+import Search from './src/screens/influencer/Search';
+import Wallet from './src/screens/influencer/Wallet';
+import PartnerDetails from './src/screens/influencer/PartnerDetails';
+
 
 const Stack = createStackNavigator();
 
@@ -51,6 +59,13 @@ export default function App() {
             {/* <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} /> */}
             <Stack.Screen name="VendorPlacement" component={VendorPlacementScreen} options={{ headerShown: false }} />
             <Stack.Screen name="VendorDashboard" component={VendorDashboard} options={{ headerShown: false }} />
+            <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+            <Stack.Screen name="VendorPlace" component={VendorPlace} options={{ headerShown: false }} />
+            <Stack.Screen name="VendorProfile" component={VendorProfile} options={{ headerShown: false }} />
+            <Stack.Screen name="InfluencerDashboard" component={InfluencerDashboard} options={{ headerShown: false }} />
+            <Stack.Screen name="Search" component={Search} options={{ headerShown: false }} />
+            <Stack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
+            <Stack.Screen name="PartnerDetails" component={PartnerDetails} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
       </ClerkAuthProvider>

@@ -127,7 +127,7 @@ const VendorPlace: React.FC = () => {
       <Image 
         source={{ uri: item.imageUrl }} 
         style={styles.placeImage}
-        defaultSource={require('../../assets/placeholder.png')}
+        // defaultSource={require('../../assets/s.png')}
       />
       
       <View style={styles.placeContent}>

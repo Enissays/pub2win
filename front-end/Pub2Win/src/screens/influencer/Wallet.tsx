@@ -107,7 +107,7 @@ const Wallet: React.FC = () => {
         <View style={styles.balanceRow}>
           <Text style={styles.balanceAmount}>{balance}</Text>
           <Image 
-            source={require('../../assets/coin.png')} 
+            source={require('../../assets/Coin.png')} 
             style={styles.coinIcon}
           />
         </View>

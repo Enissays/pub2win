@@ -116,7 +116,7 @@ const VendorDashboard: React.FC = () => {
       if (!userId) return;
       
       try {
-        setLoading(true);
+        // setLoading(true);
         const response = await api.get(`/vendor/profile?userId=${userId}`);
         
         if (response.data && response.data.success) {
@@ -208,16 +208,16 @@ const VendorDashboard: React.FC = () => {
     navigation.navigate('BankingSetup');
   };
 
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#003049" />
-          <Text style={styles.loadingText}>Loading your dashboard...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <SafeAreaView style={styles.container}>
+  //       <View style={styles.loadingContainer}>
+  //         <ActivityIndicator size="large" color="#003049" />
+  //         <Text style={styles.loadingText}>Loading your dashboard...</Text>
+  //       </View>
+  //     </SafeAreaView>
+  //   );
+  // }
 
   return (
     <SafeAreaView style={styles.container}>
