@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Card, CardContent, Typography, Grid, Divider, CircularProgress, Paper } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -6,69 +6,15 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
-import { getAIDE } from '../services/pub2winService';
-import { AttractiveButton, BoxAide} from '../components';
-
+import { AttractiveButton, BoxAide } from '../components';
+import { useAide } from '../contexts/AideContext';
 
 const Customers = () => {
-  const [aide, setAide] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // Utiliser le contexte partagé au lieu de gérer l'état localement
+  const { aide, loading, error, formValues, handleFieldChange, handleSaveField } = useAide();
   
   // État pour suivre quel champ est en cours d'édition
   const [editingField, setEditingField] = useState('');
-  
-  // État pour stocker les valeurs modifiées
-  const [formValues, setFormValues] = useState({
-    email: '',
-    telephone: '',
-    facebook_url: '',
-    instagram_url: '',
-    twitter_url: ''
-  });
-
-  // Fonction pour gérer le changement de valeur d'un champ
-  const handleFieldChange = (e, field) => {
-    setFormValues({
-      ...formValues,
-      [field]: e.target.value
-    });
-  };
-
-  // Fonction pour sauvegarder la valeur d'un champ
-  const handleSaveField = (field) => {
-    const updatedAide = { ...aide };
-    updatedAide[field] = formValues[field];
-    setAide(updatedAide);
-    setEditingField('');
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    getAIDE()
-      .then(response => {
-        if (response.success) {
-          setAide(response.data);
-          // Initialiser formValues avec les données actuelles
-          setFormValues({
-            email: response.data.email || '',
-            telephone: response.data.telephone || '',
-            facebook_url: response.data.facebook_url || '',
-            instagram_url: response.data.instagram_url || '',
-            twitter_url: response.data.twitter_url || ''
-          });
-        } else {
-          setError("Impossible de récupérer les données");
-        }
-      })
-      .catch(error => {
-        console.error("Erreur lors de la récupération des données:", error);
-        setError("Une erreur est survenue lors de la récupération des données");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
 
   if (loading) {
     return (
@@ -135,7 +81,10 @@ const Customers = () => {
                   editingField={editingField}
                   setEditingField={setEditingField}
                   handleFieldChange={handleFieldChange}
-                  handleSaveField={handleSaveField}
+                  handleSaveField={(field) => {
+                    handleSaveField(field);
+                    setEditingField('');
+                  }}
                 />
               </Grid>
             )}
@@ -154,7 +103,10 @@ const Customers = () => {
                   editingField={editingField}
                   setEditingField={setEditingField}
                   handleFieldChange={handleFieldChange}
-                  handleSaveField={handleSaveField}
+                  handleSaveField={(field) => {
+                    handleSaveField(field);
+                    setEditingField('');
+                  }}
                 />
               </Grid>
             )}
@@ -180,7 +132,10 @@ const Customers = () => {
                   editingField={editingField}
                   setEditingField={setEditingField}
                   handleFieldChange={handleFieldChange}
-                  handleSaveField={handleSaveField}
+                  handleSaveField={(field) => {
+                    handleSaveField(field);
+                    setEditingField('');
+                  }}
                 />
               </Grid>
             )}
@@ -199,7 +154,10 @@ const Customers = () => {
                   editingField={editingField}
                   setEditingField={setEditingField}
                   handleFieldChange={handleFieldChange}
-                  handleSaveField={handleSaveField}
+                  handleSaveField={(field) => {
+                    handleSaveField(field);
+                    setEditingField('');
+                  }}
                 />
               </Grid>
             )}
@@ -218,7 +176,10 @@ const Customers = () => {
                   editingField={editingField}
                   setEditingField={setEditingField}
                   handleFieldChange={handleFieldChange}
-                  handleSaveField={handleSaveField}
+                  handleSaveField={(field) => {
+                    handleSaveField(field);
+                    setEditingField('');
+                  }}
                 />
               </Grid>
             )}
