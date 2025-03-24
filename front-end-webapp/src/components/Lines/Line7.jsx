@@ -276,7 +276,7 @@
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
             <label className="mr-2 text-gray-600 dark:text-gray-300 font-medium">
-              Commerçant ID:
+              Commerçant username:
               <select 
                 className="ml-2 p-2 border rounded-md bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 name="selectedCommercant" 
@@ -286,7 +286,7 @@
               >
                 {commercants.map(commercantId => (
                   <option key={commercantId} value={commercantId}>
-                    Commerçant {commercantId.slice(6)}
+                    {commercantId}
                   </option>
                 ))}
               </select>
