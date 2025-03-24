@@ -288,12 +288,19 @@ const OffreDAO = {
   },
 
   async getNombreInfluenceurParMois(username, requestedYear) {
-    const commercants = await Commercant.find({},username);
+
+    console.log("username: ",username);
+    const commercants = await Commercant.find({ username: username });
     console.log("commercants: ",commercants);
+    if(commercants == null){
+      return null;
+    }
     const commercant_id=commercants.map(commercant => commercant._id);
-    console.log("commercant_id: ",commercant_id);
+    //console.log("commercant_id: ",commercant_id);
+    
 
     const commercantObjectId = commercant_id[0];
+    console.log("commercantObjectId: ",commercantObjectId);
     try {
       const influenceurParMois = await Offre.aggregate([
           // 1. Filtrer par commerçant et offres actives
