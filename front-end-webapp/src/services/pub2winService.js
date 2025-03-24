@@ -236,3 +236,29 @@ export async function getAllUsers() {
   let users = await data.json();
   return users;
 }
+
+
+export async function SRchByUsername(username){
+  try { 
+    const response = await fetch(url +'user/SrchByUn', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        usernane: username
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur de requête');
+    }
+
+    const comInf = await response.json();
+    return comInf;
+
+  } catch (error) {
+    console.error('Erreur:', error);
+    throw error;
+  }
+};
