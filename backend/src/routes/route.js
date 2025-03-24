@@ -43,7 +43,7 @@ router.delete('/influencer/:id/delete', authenticateToken, isAdmin, influencerCo
 router.get('/instagram', apisController.getWebhook);
 router.post('/instagram', apisController.postWebhook);
 router.get('/instagram/test', apisController.testGetAllReceivedUpdates);
-
+router.get('/instagram/callback', apisController.callBackInstagram);
 
 /*
 
