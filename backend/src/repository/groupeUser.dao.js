@@ -1,48 +1,55 @@
-const GroupeUSer = require('../models/groupeUser.model');
+const GroupeUser = require('../models/groupeUser.model');
+
 const GroupeUserDAO = {
     async createGroupeUser(groupeUserData) {
-        if (!groupeUserData || typeof groupeUserData !== 'object') {
+        try {
+            if (!groupeUserData || typeof groupeUserData !== 'object') return null;
+            const newGroupeUser = new GroupeUser(groupeUserData);
+            return await newGroupeUser.save();
+        } catch (error) {
+            console.error('Erreur lors de la création du GroupeUser:', error);
             return null;
         }
-        
-        const newGroupeUser = new GroupeUSer(groupeUserData);
-        return await newGroupeUser.save().catch(() => null);
     },
-    
+
     async getGroupeUserById(groupeUserId) {
-        if (!groupeUserId) {
+        try {
+            if (!groupeUserId) return null;
+            return await GroupeUser.findById(groupeUserId);
+        } catch (error) {
+            console.error('Erreur lors de la récupération du GroupeUser par ID:', error);
             return null;
         }
-        
-        return await GroupeUSer.findById(groupeUserId).catch(() => null);
     },
-    
-    async getGroupeUserByClientOffreId(clientOffreId) {
-        if (!clientOffreId) {
-            return null;
-        }
-        
-        return await GroupeUSer.findOne({ clientOffreId }).catch(() => null);
-    },
-    
+
     async updateGroupeUser(groupeUserId, updateData) {
-        if (!groupeUserId || !updateData || typeof updateData !== 'object') {
+        try {
+            if (!groupeUserId || !updateData || typeof updateData !== 'object') return null;
+            return await GroupeUser.findByIdAndUpdate(groupeUserId, updateData, { new: true });
+        } catch (error) {
+            console.error('Erreur lors de la mise à jour du GroupeUser:', error);
             return null;
         }
-        
-        return await GroupeUSer.findByIdAndUpdate(groupeUserId, updateData, { new: true }).catch(() => null);
     },
-    
+
     async deleteGroupeUser(groupeUserId) {
-        if (!groupeUserId) {
+        try {
+            if (!groupeUserId) return null;
+            return await GroupeUser.findByIdAndDelete(groupeUserId);
+        } catch (error) {
+            console.error('Erreur lors de la suppression du GroupeUser:', error);
             return null;
         }
-        
-        return await GroupeUSer.findByIdAndDelete(groupeUserId).catch(() => null);
     },
-    
+
     async getAllGroupeUsers() {
-        return await GroupeUSer.find().catch(() => []);
+        try {
+            return await GroupeUser.find();
+        } catch (error) {
+            console.error('Erreur lors de la récupération de tous les GroupeUsers:', error);
+            return [];
+        }
     }
-    };
+};
+
 module.exports = GroupeUserDAO;
