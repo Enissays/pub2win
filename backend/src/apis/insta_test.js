@@ -51,16 +51,15 @@ async function callBackInstagram(req, res) {
     console.log(process.env.INSTAGRAM_APP_ID);
 
       // Échanger le code contre un access_token
-      const response = await axios.post('https://api.instagram.com/oauth/access_token', {
+      const response = await axios.post('https://api.instagram.com/oauth/access_token', new URLSearchParams({
           client_id: process.env.INSTAGRAM_APP_ID,
           client_secret: process.env.INSTAGRAM_APP_SECRET,
           grant_type: 'authorization_code',
           redirect_uri: process.env.INSTAGRAM_REDIRECT_URI,
           code
-      },
-      {
+      }).toString(), {
           headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded'
           }
       });
       const { access_token, user_id: instagramId } = response.data;
