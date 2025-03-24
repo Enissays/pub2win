@@ -168,8 +168,8 @@ const CommercantDAO = {
 
       async getAllUsernames() {
         try {
-          const commercants = await Commercant.find({}, '_id');
-          return commercants.map(commercant => commercant._id);
+          const commercants = await Commercant.find({}, 'username');
+          return commercants.map(commercant => commercant.username);
         } catch (error) {
           throw new Error(`Erreur lors de la récupération des usernames : ${error.message}`);
       }
