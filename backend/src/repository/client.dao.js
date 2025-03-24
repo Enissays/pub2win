@@ -62,7 +62,14 @@ const ClientDAO = {
         return await Client.findOne({ username_instagram: username }).catch(() => null);
     },
 
-    
+    async setInstagramId(clientId, instagramId) {
+        if (!clientId || !instagramId) {
+        return null;
+        }
+        
+        return await Client.findByIdAndUpdate(clientId, { instagram_id: instagramId }, { new: true }).catch(() => null);
+    }
+
     };
 
 module.exports = ClientDAO;

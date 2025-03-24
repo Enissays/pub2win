@@ -4,7 +4,7 @@ let xhub = require('express-x-hub');
 let router = express.Router();
 const axios = require('axios');
 
-const { getClientByInstagramUsername } = require('../repository/client.dao');
+const { getClientByInstagramUsername, setInstagramId } = require('../repository/client.dao');
 
 router.use(xhub({ algorithm: 'sha1', secret: process.env.APP_SECRET }));
 router.use(bodyParser.json());
@@ -67,12 +67,9 @@ async function callBackInstagram(req, res) {
 
         // Associer l'ID Instagram à ton utilisateur dans la base de données
         console.log(`Utilisateur App ID: ${userId}, Instagram ID: ${instagramId}`);
+        await setInstagramId(userId, instagramId);
 
-        // Stocker dans la base de données (exemple)
-        // await db.query("UPDATE users SET instagram_id = ? WHERE id = ?", [instagramId, userId]);
-
-        // Rediriger l'utilisateur vers son profil
-
+        res.send("Authentification Instagram réussie");
     } catch (error) {
         console.error("Erreur lors de l'échange du code :", error);
         res.status(500).send("Erreur lors de l'authentification Instagram");
