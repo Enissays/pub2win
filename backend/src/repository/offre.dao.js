@@ -224,17 +224,23 @@ const OffreDAO = {
       }
     },
 
-    async getallInfluenceurperCommercantYears(commercant_id) {
+    async getallInfluenceurperCommercantYears(username) {
       try {
-        const allOffre = await Offre.find();
-        console.log(JSON.stringify(allOffre, null, 2)); 
+        /*const allOffre = await Offre.find();
+        console.log(JSON.stringify(allOffre, null, 2)); */
+        const commercants = await Commercant.find({},username);
+        console.log("commercants: ",commercants);
+        const commercant_id=commercants.map(commercant => commercant._id);
+        console.log("commercant_id: ",commercant_id);
+
+        const commercantObjectId = commercant_id[0];
 
 
       const resultats = await Offre.aggregate([
           // Filtrer pour le commerçant spécifique
           { 
               $match: { 
-                  commercant_id: new ObjectId(commercant_id),
+                  commercant_id: commercantObjectId,
                   is_active: true
               } 
           },
