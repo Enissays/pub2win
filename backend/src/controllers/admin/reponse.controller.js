@@ -1,4 +1,4 @@
-const reponseService = require('../services/Reponse.service');
+const reponseService = require('../../services/Reponse.service');
 
 class ReponseController {
   async createReponse(req, res) {

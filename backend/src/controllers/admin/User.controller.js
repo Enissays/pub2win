@@ -1,10 +1,10 @@
-const SignalementService = require('../services/signalement.service');
+const UserService = require('../../services/user.service');
 
-const SignalementController = {
+const UserController = {
 
-  async getSignalementYears(req, res) {
+  async getAvailableYears(req, res) {
     try {
-      const years = await SignalementService.getSignalementYears();
+      const years = await UserService.getAvailableYears();
       
       return res.status(200).json({
         success: true,
@@ -21,7 +21,7 @@ const SignalementController = {
     }
   },
 
-  async getSignalementByMonth(req, res) {
+  async getTotalUserCountByMonth(req, res) {
     try {
       const { year } = req.params;
       
@@ -32,11 +32,11 @@ const SignalementController = {
         });
       }
 
-      const SigCounts = await SignalementService.getSignalementByMonth(year);
+      const userCounts = await UserService.getTotalUserCountByMonth(year);
       
       return res.status(200).json({
         success: true,
-        data: SigCounts,
+        data: userCounts,
         year: parseInt(year)
       });
     } catch (error) {
@@ -49,40 +49,38 @@ const SignalementController = {
       });
     }
   },
-  async getALLSignalements(req, res) {
+
+  async getCountUsers(req, res) {
     try {
-      const signalements = await SignalementService.getAllSignalements();
-      
-      return res.status(200).json({
-        success: true,
-        data: signalements
-      });
-    } catch (error) {
-      console.error('Erreur contrôleur lors de la récupération des signalements:', error);
-      
-      return res.status(500).json({
-        success: false,
-        message: 'Erreur lors de la récupération des signalements',
-        error: error.message
-      }); 
-    }
-  },
-  async getCountSignalements(req, res) {
-    try {
-      const count = await SignalementService.getCountSignalements();
-      
+      const count = await UserService.getCountUsers();
       return res.status(200).json({
         success: true,
         count,
-        message: 'Nombre total de signalements'
+        message: 'Nombre total d\'utilisateurs'
       });
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: `Erreur lors du comptage des signalements: ${error.message}`
+        message: `Erreur lors de la récupération du nombre d'utilisateurs: ${error.message}`
+      });
+    }
+  },
+
+  async getAllUsers(req, res) {
+    try {
+      const allusers = await UserService.getAllUsers();
+      return res.status(200).json({
+        success: true,
+        allusers,
+        message: 'tout les users'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Erreur lors de la récupération de tout les users: ${error.message}`
       });
     }
   }
 };
 
-module.exports = SignalementController;
+module.exports = UserController;

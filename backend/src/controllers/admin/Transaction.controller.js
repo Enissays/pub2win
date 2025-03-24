@@ -1,10 +1,10 @@
-const UserService = require('../services/user.service');
+const TransactionService = require('../../services/Transaction.service');
 
-const UserController = {
+const TransactionController = {
 
-  async getAvailableYears(req, res) {
+  async getTransactionYears(req, res) {
     try {
-      const years = await UserService.getAvailableYears();
+      const years = await TransactionService.getTransactionYears();
       
       return res.status(200).json({
         success: true,
@@ -21,7 +21,7 @@ const UserController = {
     }
   },
 
-  async getTotalUserCountByMonth(req, res) {
+  async getGainsTransactionByMonth(req, res) {
     try {
       const { year } = req.params;
       
@@ -32,7 +32,7 @@ const UserController = {
         });
       }
 
-      const userCounts = await UserService.getTotalUserCountByMonth(year);
+      const userCounts = await TransactionService.getGainsTransactionByMonth(year);
       
       return res.status(200).json({
         success: true,
@@ -50,37 +50,22 @@ const UserController = {
     }
   },
 
-  async getCountUsers(req, res) {
+  async getTotalCommissionApp(req, res) {
     try {
-      const count = await UserService.getCountUsers();
+      const totalCommission = await TransactionService.getTotalCommissionApp();
+      
       return res.status(200).json({
         success: true,
-        count,
-        message: 'Nombre total d\'utilisateurs'
+        totalCommission,
+        message: 'Somme totale des commissions'
       });
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: `Erreur lors de la récupération du nombre d'utilisateurs: ${error.message}`
-      });
-    }
-  },
-
-  async getAllUsers(req, res) {
-    try {
-      const allusers = await UserService.getAllUsers();
-      return res.status(200).json({
-        success: true,
-        allusers,
-        message: 'tout les users'
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: `Erreur lors de la récupération de tout les users: ${error.message}`
+        message: `Erreur lors du calcul de la somme des commissions: ${error.message}`
       });
     }
   }
 };
 
-module.exports = UserController;
+module.exports = TransactionController;

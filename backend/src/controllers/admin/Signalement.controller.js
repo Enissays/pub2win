@@ -1,10 +1,10 @@
-const TransactionService = require('../services/Transaction.service');
+const SignalementService = require('../../services/signalement.service');
 
-const TransactionController = {
+const SignalementController = {
 
-  async getTransactionYears(req, res) {
+  async getSignalementYears(req, res) {
     try {
-      const years = await TransactionService.getTransactionYears();
+      const years = await SignalementService.getSignalementYears();
       
       return res.status(200).json({
         success: true,
@@ -21,7 +21,7 @@ const TransactionController = {
     }
   },
 
-  async getGainsTransactionByMonth(req, res) {
+  async getSignalementByMonth(req, res) {
     try {
       const { year } = req.params;
       
@@ -32,11 +32,11 @@ const TransactionController = {
         });
       }
 
-      const userCounts = await TransactionService.getGainsTransactionByMonth(year);
+      const SigCounts = await SignalementService.getSignalementByMonth(year);
       
       return res.status(200).json({
         success: true,
-        data: userCounts,
+        data: SigCounts,
         year: parseInt(year)
       });
     } catch (error) {
@@ -49,23 +49,40 @@ const TransactionController = {
       });
     }
   },
-
-  async getTotalCommissionApp(req, res) {
+  async getALLSignalements(req, res) {
     try {
-      const totalCommission = await TransactionService.getTotalCommissionApp();
+      const signalements = await SignalementService.getAllSignalements();
       
       return res.status(200).json({
         success: true,
-        totalCommission,
-        message: 'Somme totale des commissions'
+        data: signalements
+      });
+    } catch (error) {
+      console.error('Erreur contrôleur lors de la récupération des signalements:', error);
+      
+      return res.status(500).json({
+        success: false,
+        message: 'Erreur lors de la récupération des signalements',
+        error: error.message
+      }); 
+    }
+  },
+  async getCountSignalements(req, res) {
+    try {
+      const count = await SignalementService.getCountSignalements();
+      
+      return res.status(200).json({
+        success: true,
+        count,
+        message: 'Nombre total de signalements'
       });
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: `Erreur lors du calcul de la somme des commissions: ${error.message}`
+        message: `Erreur lors du comptage des signalements: ${error.message}`
       });
     }
   }
 };
 
-module.exports = TransactionController;
+module.exports = SignalementController;

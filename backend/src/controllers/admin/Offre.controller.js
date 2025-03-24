@@ -1,4 +1,4 @@
-const OffreService = require('../services/offre.service');
+const OffreService = require('../../services/offre.service');
 
 const OffreController = {
 

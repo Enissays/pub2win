@@ -1,4 +1,4 @@
-const AideService = require('../services/Aide.service');
+const AideService = require('../../services/Aide.service');
 
 const AideController = {
 

@@ -1,4 +1,4 @@
-const AbonnementCommercantService = require('../services/AbonnementCommercant.service');
+const AbonnementCommercantService = require('../../services/AbonnementCommercant.service');
 
 const AbonnementCommercantController = {
 
