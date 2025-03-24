@@ -4,6 +4,7 @@ let xhub = require('express-x-hub');
 let router = express.Router();
 
 const { getClientByInstagramUsername } = require('../repository/client.dao');
+const fetch = require('node-fetch');
 
 router.use(xhub({ algorithm: 'sha1', secret: process.env.APP_SECRET }));
 router.use(bodyParser.json());
@@ -48,14 +49,26 @@ async function callBackInstagram(req, res) {
 
   try {
       // Échanger le code contre un access_token
-      const response = await axios.post('https://api.instagram.com/oauth/access_token', {
+      const response = await fetch('https://api.instagram.com/oauth/access_token', {
+          method: 'POST',
+          headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams({
           client_id: process.env.INSTAGRAM_APP_ID,
           client_secret: process.env.INSTAGRAM_APP_SECRET,
           grant_type: 'authorization_code',
           redirect_uri: process.env.INSTAGRAM_REDIRECT_URI,
           code
+          })
       });
-      const { access_token, user_id: instagramId } = response.data;
+
+      if (!response.ok) {
+          throw new Error('Failed to exchange code for access token');
+      }
+
+      const data = await response.json();
+      const { access_token, user_id: instagramId } = data;
 
         // Associer l'ID Instagram à ton utilisateur dans la base de données
         console.log(`Utilisateur App ID: ${userId}, Instagram ID: ${instagramId}`);
