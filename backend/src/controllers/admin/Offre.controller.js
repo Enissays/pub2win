@@ -124,8 +124,8 @@ const OffreController = {
 
    async getNombreInfluenceurParMois(req, res) {
     try {
-        const { commercant_id,year} = req.body;
-        const results = await OffreService.getNombreInfluenceurParMois(commercant_id,parseInt(year));
+        const { username,year} = req.body;
+        const results = await OffreService.getNombreInfluenceurParMois(username,parseInt(year));
         
         return res.status(200).json({
             success: true,
