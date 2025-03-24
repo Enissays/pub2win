@@ -14,7 +14,7 @@ router.get('/offreClient/count/:year', OffreController.countNonCompletedClientOf
 
 
 //le nbr d'influenceur par un commercant
-router.get('/nbrInfPerCommercantYears/:commercant_id', OffreController.getallInfluenceurperCommercantYears);
+router.get('/nbrInfPerCommercantYears/:username', OffreController.getallInfluenceurperCommercantYears);
 router.post('/nbrInfPerCommercant/count/', OffreController.getNombreInfluenceurParMois);
 
 
