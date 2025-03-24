@@ -40,8 +40,8 @@ router.post('/influencer/:id/validate', authenticateToken, isAdmin, influencerCo
 router.delete('/influencer/:id/delete', authenticateToken, isAdmin, influencerController.delete);
 
 // Webhook routes
-router.get('/instagram', apisController.getInstagram);
-router.post('/instagram', apisController.postInstagram);
+router.get('/instagram', apisController.getWebhook);
+router.post('/instagram', apisController.postWebhook);
 router.get('/instagram/test', apisController.testGetAllReceivedUpdates);
 
 
