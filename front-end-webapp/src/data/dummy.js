@@ -28,12 +28,8 @@ export const gridOrderImage = (props) => (
   <div>
     <img
       className="rounded-xl h-20 md:ml-3"
-      src={props.profileImage || 'https://via.placeholder.com/40/808080/FFFFFF/?text=User'}
+      src={props.profileImage || "/NoLogo.jpg"}
       alt="user-avatar"
-      onError={(e) => {
-        e.target.onerror = null; 
-        e.target.src = 'https://via.placeholder.com/40/808080/FFFFFF/?text=User';
-      }}
     />
   </div>
 );
