@@ -11,7 +11,7 @@ const TransactionSchema = new Schema({
   status: { type: String, enum: Object.values(TransactionStatusEnum), default: TransactionStatusEnum.EN_ATTENTE },
   description: { type: String }
 });
+const Transaction = mongoose.model('Transaction', TransactionSchema, 'Transaction');
 
-const Transaction = mongoose.model('Transaction', TransactionSchema);
 
 module.exports = Transaction;

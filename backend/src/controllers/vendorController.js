@@ -1,9 +1,10 @@
 const UserDAO = require('../repository/user.dao');
 const EndroitDAO = require('../repository/endroit.dao');
+const OfferDAO = require('../repository/offre.dao');
 
 exports.setConditions = async (req, res) => {
     try {
-        const vendor = await UserDAO.getUserById(req.user.userId); // TODO: Get user ID from token
+        const vendor = await UserDAO.getUserById(req.query.userId); // TODO: Get user ID from token
         const endroit = await EndroitDAO.getEndroitById(req.params.id_endroit);
 
         if (endroit.commercant_id.toString() !== vendor._id.toString()) {
@@ -109,10 +110,10 @@ exports.createEndroit = async (req, res) => {
                 message: 'Unauthorized, not validated yet, actual status: ' + vendor.status
             });
         }
-        const endroit = EndroitDAO.createEndroit(
+        const endroit = await EndroitDAO.createEndroit(
         {
             ...req.body,
-            commercant_id: req.user.userId
+            commercant_id: req.query.userId
         });
         if (!endroit) {
             return res.status(400).json({
@@ -159,16 +160,12 @@ exports.subscribe = async (req, res) => {
 
 exports.announce = async (req, res) => {
     try {
-        const vendor = await UserDAO.getUserById(req.user.userId); // TODO: Get user ID from token
-        const offer = new Offer(
+        const vendor = await UserDAO.getUserById(req.query.userId); // TODO: Get user ID from token
+        const offer = await OfferDAO.createOffre(
             {
+                ...req.body,
                 commercant_id: vendor._id,
-                titre: req.body.titre,
-                description: req.body.description,
-                montant_coins: req.body.montant_coins,
-                date_debut: req.body.date_debut,
-                date_fin: req.body.date_fin,
-                is_active: true,
+                is_active: true, 
                 clients: req.body.clients.map(client => {
                     return {
                         client: client,
@@ -176,7 +173,14 @@ exports.announce = async (req, res) => {
                     }
                 })
             });
-        await offer.save();
+
+            if (!offer) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Offer announcement failed'
+                });
+            }
+
 
 
 
