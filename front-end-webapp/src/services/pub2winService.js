@@ -110,7 +110,7 @@ export async function fetchNbrInfPerCommercant(commercantId, year){
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          commercant_id: commercantId,
+          username: commercantId,
           year: year
         })
       });
