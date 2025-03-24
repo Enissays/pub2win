@@ -102,10 +102,10 @@ const OffreController = {
 
   async getallInfluenceurperCommercantYears(req, res) {
     try {
-        const { commercant_id } = req.params;
+        const { username } = req.params;
         
-        console.log("commercant_id: "+commercant_id);
-        const results = await OffreService.getallInfluenceurperCommercantYears(commercant_id);
+        console.log("username: "+username);
+        const results = await OffreService.getallInfluenceurperCommercantYears(username);
         
         return res.status(200).json({
             success: true,
