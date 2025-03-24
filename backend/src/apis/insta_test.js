@@ -57,6 +57,11 @@ async function callBackInstagram(req, res) {
           grant_type: 'authorization_code',
           redirect_uri: process.env.INSTAGRAM_REDIRECT_URI,
           code
+      },
+      {
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+          }
       });
       const { access_token, user_id: instagramId } = response.data;
 
