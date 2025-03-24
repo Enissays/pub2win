@@ -54,20 +54,14 @@ async function addSignalemnt() {
 
 async function addOffre() {
   const newOffre = new Offre({
-    commercant_id: new ObjectId("67d4025718735d7d882100a6"), // ID du commerçant
+    commercant_id: new ObjectId("67e16cf4db896856822c7ced"), // ID du commerçant
     titre: "Annonce pour la bar",
     description: "Annonce la Bière",
     montant_coins: 50,
-    date_debut: new Date("2025-01-10T15:01:17.154+00:00"),
-    date_fin: new Date("2025-01-10T15:01:17.154+00:00"),
+    date_debut: new Date("2025-03-10T15:01:17.154+00:00"),
+    date_fin: new Date("2025-03-10T15:01:17.154+00:00"),
     is_active: true,
-    clients: [
-      {
-        client: new ObjectId("67cefebdfef058f544720bb6"), // ID du client
-        is_completed: false,
-        date_utilisation: new Date("2025-03-15T10:30:00.000Z") // Date d'utilisation
-      }
-    ]
+    clients: []
   });
   
   await newOffre.save();
@@ -83,12 +77,12 @@ async function addClientToOffre() {
     throw new Error("Offre introuvable");
   }
   offre.clients.push({
-    client: new ObjectId("67d4025718735d7d882100a6"),
+    client: new ObjectId("67e1ddcf013c043eec9f8c75"),
     is_completed: false,
-    date_utilisation: new Date("2024-03-11T15:04:56.637+00:00")
+    date_utilisation: new Date("2025-01-11T15:04:56.637+00:00")
   });
   await offre.save();
-  console.log("Client ajouté avec succès");
+  console.log("Client to offre ajouté avec succès");
   return offre;
   
 }
