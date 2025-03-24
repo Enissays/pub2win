@@ -58,6 +58,8 @@ async function callBackInstagram(req, res) {
       });
       const { access_token, user_id: instagramId } = response.data;
 
+      console.log(process.env.INSTAGRAM_APP_ID);
+
         // Associer l'ID Instagram à ton utilisateur dans la base de données
         console.log(`Utilisateur App ID: ${userId}, Instagram ID: ${instagramId}`);
 
