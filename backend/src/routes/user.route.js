@@ -15,6 +15,6 @@ router.get('/count',UserController.getCountUsers);
 
 router.get('/allUsers',UserController.getAllUsers);
 
-router.get('/SrchByUn',UserController.getByuserName);
+router.post('/SrchByUn',UserController.getByuserName);
 
 module.exports = router;
