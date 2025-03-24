@@ -123,8 +123,8 @@ const Offreservice = {
         }
       },
 
-      async getallInfluenceurperCommercantYears(commercant_id){
-        const results= await OffreDAO.getallInfluenceurperCommercantYears(commercant_id)
+      async getallInfluenceurperCommercantYears(username){
+        const results= await OffreDAO.getallInfluenceurperCommercantYears(username)
 
         if (results === null){
           return null
