@@ -80,6 +80,24 @@ const UserController = {
         message: `Erreur lors de la récupération de tout les users: ${error.message}`
       });
     }
+  },
+  //
+  async getByuserName(req, res) {
+    try {
+      const { usernane } = req.body;
+      const user = await UserService.getByuserName(usernane);
+
+      return res.status(200).json({
+        success: true,
+        user,
+        message: 'user trouvé'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Erreur lors de la récupération de user: ${error.message}`
+      });
+    }
   }
 };
 

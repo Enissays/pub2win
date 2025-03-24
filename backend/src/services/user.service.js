@@ -72,6 +72,14 @@ const UserService = {
     } catch (error) {
       throw new Error(`Service - Erreur lors de recuperation des tout des users: ${error.message}`);
     }
+  },
+
+  async getByuserName(username) {
+    try {
+      return await userDAO.getUserByUsername(username);
+    } catch (error) {
+      throw new Error(`Service - Erreur lors de recuperation des tout des users: ${error.message}`);
+    }
   }
 };
   
