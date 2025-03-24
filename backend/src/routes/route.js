@@ -1,43 +1,66 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, isVendor, isInfluencer, isAdmin } = require('../middlewares/auth');
-const authController = require('../controllers/authController');
+const { requireAuth, syncUser, isVendor, isInfluencer } = require('../middlewares/clerkAuth');
+const { isAdmin } = require('../middlewares/auth'); // Keep your admin middleware
 const userController = require('../controllers/userController');
 const influencerController = require('../controllers/influencerController');
 const vendorController = require('../controllers/vendorController');
 const apisController = require('../apis/insta_test');
 //const offerController = require('../controllers/offerController');
 
-// Auth Routes
-router.post('/auth/register', authController.register);
-router.post('/auth/login', authController.login);
+// Public routes (no auth required)
+router.get('/', (req, res) => {
+  res.send('Welcome to Pub2Win API');
+});
+
+// Authentication routes
+router.post('/user/register', requireAuth, syncUser, userController.registerUser);
+router.post('/user/login', requireAuth, syncUser, userController.loginUser);
+router.post('/user/oauth-login', requireAuth, syncUser, userController.oauthLogin);
+
+// User Profile Routes - protected with Clerk
+router.patch('/user/profile', requireAuth, syncUser, userController.updateProfile);
+router.delete('/user/profile', requireAuth, syncUser, userController.deleteProfile);
+router.get('/user/wallet', requireAuth, syncUser, userController.getWallet);
+router.post('/user/wallet/withdraw', requireAuth, syncUser, userController.withdrawFunds); 
+router.get('/user/:username', requireAuth, syncUser, userController.getProfile);
+
+// Influencer Routes
+router.get('/influencer/:id', requireAuth, syncUser, influencerController.getProfile);
+router.post('/influencer/rate/:id', requireAuth, syncUser, influencerController.rateInfluencer);
+router.post('/influencer/comment/:id', requireAuth, syncUser, influencerController.commentInfluencer);
+router.post('/influencer/accept/:id', requireAuth, syncUser, isInfluencer, influencerController.acceptOffer);
+router.post('/influencer/:id/validate', requireAuth, syncUser, isAdmin, influencerController.validate);
+router.delete('/influencer/:id/delete', requireAuth, syncUser, isAdmin, influencerController.delete);
 
 // Vendor Routes
-router.post('/vendor/subscribe', authenticateToken, isVendor, vendorController.subscribe);
-router.post('/vendor/announce', authenticateToken, isVendor, vendorController.announce);
-router.post('/vendor/banking', authenticateToken, isVendor, vendorController.setupBanking);
-router.post('/vendor/:id/validate', authenticateToken, isAdmin, vendorController.validate);
-router.post('/endroit/:id_endroit/conditions', authenticateToken, isVendor, vendorController.setConditions);
-router.get('/endroit/:id_endroit', authenticateToken, vendorController.getEndroit);
-router.delete('/endroit/:id_endroit/delete', authenticateToken, isAdmin, vendorController.deleteEndroit);
-router.patch('/endroit/:id/update', authenticateToken, isVendor, vendorController.updateEndroit);
-router.post('/endroit/create', authenticateToken, isVendor, vendorController.createEndroit);
+router.post('/vendor/subscribe', requireAuth, syncUser, isVendor, vendorController.subscribe);
+router.post('/vendor/announce', requireAuth, syncUser, isVendor, vendorController.announce);
+router.post('/vendor/banking', requireAuth, syncUser, isVendor, vendorController.setupBanking);
+router.post('/vendor/:id/validate', requireAuth, syncUser, isAdmin, vendorController.validate);
+
+// Replace authenticateToken with requireAuth and syncUser
+router.post('/endroit/:id_endroit/conditions', requireAuth, syncUser, isVendor, vendorController.setConditions);
+router.get('/endroit/:id_endroit', requireAuth, syncUser, vendorController.getEndroit);
+router.delete('/endroit/:id_endroit/delete', requireAuth, syncUser, isAdmin, vendorController.deleteEndroit);
+router.patch('/endroit/:id/update', requireAuth, syncUser, isVendor, vendorController.updateEndroit);
+router.post('/endroit/create', requireAuth, syncUser, isVendor, vendorController.createEndroit);
 
 // User Profile Routes
-router.patch('/user/profile', authenticateToken, userController.updateProfile);
-router.delete('/user/profile', authenticateToken, userController.deleteProfile);
-router.get('/user/wallet', authenticateToken, userController.getWallet);
-router.post('/user/wallet/withdraw', authenticateToken, userController.withdrawFunds); 
-router.get('/user/:username', authenticateToken, userController.getProfile);
+router.patch('/user/profile', requireAuth, syncUser, userController.updateProfile);
+router.delete('/user/profile',  requireAuth, syncUser, userController.deleteProfile);
+router.get('/user/wallet',  requireAuth, syncUser, userController.getWallet);
+router.post('/user/wallet/withdraw',  requireAuth, syncUser, userController.withdrawFunds); 
+router.get('/user/:username',  requireAuth, syncUser, userController.getProfile);
 
 
 // Influencer Routes
-router.get('/influencer/:id', authenticateToken, influencerController.getProfile);
-router.post('/influencer/rate/:id', authenticateToken, influencerController.rateInfluencer);
-router.post('/influencer/comment/:id', authenticateToken, influencerController.commentInfluencer);
-router.post('/influencer/accept/:id', authenticateToken, isInfluencer, influencerController.acceptOffer);
-router.post('/influencer/:id/validate', authenticateToken, isAdmin, influencerController.validate);
-router.delete('/influencer/:id/delete', authenticateToken, isAdmin, influencerController.delete);
+router.get('/influencer/:id',  requireAuth, syncUser, influencerController.getProfile);
+router.post('/influencer/rate/:id',  requireAuth, syncUser, influencerController.rateInfluencer);
+router.post('/influencer/comment/:id',  requireAuth, syncUser, influencerController.commentInfluencer);
+router.post('/influencer/accept/:id',  requireAuth, syncUser, isInfluencer, influencerController.acceptOffer);
+router.post('/influencer/:id/validate',  requireAuth, syncUser, isAdmin, influencerController.validate);
+router.delete('/influencer/:id/delete',  requireAuth, syncUser, isAdmin, influencerController.delete);
 
 // Webhook routes
 router.get('/instagram', apisController.getWebhook);
