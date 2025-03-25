@@ -73,29 +73,37 @@ const Orders = () => {
 
   const editing = { allowDeleting: true, allowEditing: true };
 
+
+  const handleDeleteUser = (args) => {
+      const username = args.data.map(user => user.username)[0];
+      console.log("username: ",username);
+      
+  };
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <Header category="Page" title="Utilisateurs" />
       
       <div className="mb-6 flex flex-col md:flex-row items-start md:items-center gap-4">
-        <form className="flex w-full md:w-auto">
+        <form onSubmit={handleSearch} className="flex w-full md:w-auto">
           <input
             type="text"
             value={searchUsername}
             onChange={(e) => setSearchUsername(e.target.value)}
             placeholder="Rechercher par username"
             className="p-2 border border-gray-300 md:w-64"
+            style={{marginRight:'15px'}}
           />
-        </form>
-        
-        <button
-            onSubmit={handleSearch}
+          <button
             type="submit"
             className="bg-blue-500 hover:bg-blue-700 text-white rounded font-bold py-2 px-4 rounded-r-md"
             disabled={loading}
           >
             {loading ? 'Recherche...' : 'Rechercher'}
           </button>
+
+        </form>
+        
+        
 
         <button
           onClick={handleReset}
@@ -122,6 +130,14 @@ const Orders = () => {
         allowPdfExport
         contextMenuItems={contextMenuItems}
         editSettings={editing}
+        actionBegin={(args) =>{
+          if (args.requestType === 'delete') {
+            // Annuler la suppression par défaut du composant
+            args.cancel = true;
+            // Appeler notre fonction personnalisée de suppression
+            handleDeleteUser(args);
+          }
+        }}
       >
         <ColumnsDirective>
           {ordersGrid.map((item, index) => <ColumnDirective key={index} {...item} />)}
