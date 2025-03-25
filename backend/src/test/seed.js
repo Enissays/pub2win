@@ -1,10 +1,10 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const Groupe = require('./models/groupe.model');
-const GroupeUser = require('./models/groupeUser.model');
-const User = require('./models/user.model');
-const { RoleEnum } = require('./models/enums');  // Importer les enums
+const Groupe = require('../models/groupe.model');
+const GroupeUser = require('../models/groupeUser.model');
+const User = require('../models/user.model');
+const { RoleEnum } = require('../models/enums');  // Importer les enums
 
 const MONGO_URI = process.env.MONGODB_URI;
 

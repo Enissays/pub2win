@@ -1,8 +1,8 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
-const { createMessage, getPrivateMessages } = require('./repository/message.dao'); 
-const User = require('./models/user.model');
+const { createMessage, getPrivateMessages } = require('../repository/message.dao'); 
+const User = require('../models/user.model');
 const bcrypt = require('bcryptjs');
 const io = require('socket.io-client');
 
@@ -50,8 +50,8 @@ test("Envoyer et recevoir un message en temps réel via Socket.io", async () => 
     const user1 = new User({
         nom: "Aymane",
         prenom: "Aymane",
-        email: "aymane111341@example.com",
-        username: "aymane14131",
+        email: "aymane1A33341341@example.com",
+        username: "aymane13441331",
         password_hash: passwordHash("test123"),
         role: "ADMIN",
         date_inscription: new Date(),
@@ -60,8 +60,8 @@ test("Envoyer et recevoir un message en temps réel via Socket.io", async () => 
     const user2 = new User({
         nom: "Ali",
         prenom: "Ali",
-        email: "ali111341@example.com",
-        username: "ali43  1  11",
+        email: "ai113313A4134@example.com",
+        username: "al3A  1 34 11",
         password_hash: passwordHash("test123"),
         role: "CLIENT",
         date_inscription: new Date(),
@@ -73,7 +73,7 @@ test("Envoyer et recevoir un message en temps réel via Socket.io", async () => 
     const messageData = {
         sender_id: user1._id,
         receiver_id: user2._id,
-        content: "Bonjour Ali, comment ça va ?",
+        content: " TEST TEST TEST TEST TEST ",
         timestamp: new Date(),
     };
 
@@ -84,7 +84,7 @@ test("Envoyer et recevoir un message en temps réel via Socket.io", async () => 
     const messagesForUser2 = await getPrivateMessages(user1._id, user2._id);
 
     expect(messagesForUser2.length).toBeGreaterThan(0);
-    expect(messagesForUser2[0].content).toBe("Bonjour Ali, comment ça va ?");
+    expect(messagesForUser2[0].content).toBe(" TEST TEST TEST TEST TEST ");
     expect(messagesForUser2[0].sender_id.toString()).toBe(user1._id.toString());
     expect(messagesForUser2[0].receiver_id.toString()).toBe(user2._id.toString());
 });

@@ -1,7 +1,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
-const GroupeUserDAO = require('./repository/groupeUser.dao');
+const GroupeUserDAO = require('../repository/groupeUser.dao');
 
 // Augmenter le délai d'attente pour Jest (10 secondes ici)
 jest.setTimeout(10000);
