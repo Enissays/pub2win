@@ -81,7 +81,6 @@ const UserController = {
       });
     }
   },
-  //
   async getByuserName(req, res) {
     try {
       const { usernane } = req.body;
@@ -96,6 +95,24 @@ const UserController = {
       return res.status(500).json({
         success: false,
         message: `Erreur lors de la récupération de user: ${error.message}`
+      });
+    }
+  },
+  //
+  async deleteByUsername(req, res) {
+    try {
+      const { username } = req.params;
+      const delteuser = await UserService.deleteByUsername(username);
+
+      return res.status(200).json({
+        success: true,
+        delteuser,
+        message: 'user supprimé'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Erreur lors de la suppresion d'un user: ${error.message}`
       });
     }
   }
