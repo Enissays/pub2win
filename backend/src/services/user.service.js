@@ -88,6 +88,21 @@ const UserService = {
     } catch (error) {
       throw new Error(`Service - Erreur lors de la suppresion de user: ${error.message}`);
     }
+  },
+
+  async updateUserProfile(username, updateData) {
+    try {
+      
+      // Mettre à jour les champs de l'utilisateur
+      const updatedUser = await userDAO.updateUserFields(username, updateData);
+      
+      // Retourner les données mises à jour sans les informations sensibles
+      return {
+        username: updatedUser.username
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 };
   
