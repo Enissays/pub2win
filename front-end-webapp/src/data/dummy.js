@@ -1,5 +1,5 @@
 import React from 'react';
-import { AiOutlineCalendar, AiOutlineShoppingCart, AiOutlineAreaChart, AiOutlineBarChart, AiOutlineStock } from 'react-icons/ai';
+import { AiOutlineCalendar, AiOutlineShoppingCart, AiOutlineAreaChart, AiOutlineBarChart, AiOutlineStock,AiOutlineUser,AiOutlineLogout } from 'react-icons/ai';
 import { FiShoppingBag, FiEdit, FiPieChart, FiBarChart, FiCreditCard, FiStar, FiShoppingCart } from 'react-icons/fi';
 import { BsKanban, BsBarChart, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft } from 'react-icons/bs';
 import { BiColorFill } from 'react-icons/bi';
@@ -487,7 +487,7 @@ export const links = [
     links: [
       {
         name: 'Gestion des comptes',
-        icon: <AiOutlineShoppingCart />,
+        icon: <AiOutlineSolution />,
         path:'GesComptes'
       },
       {
@@ -507,23 +507,23 @@ export const links = [
       },
       {
         name: 'Gestion des offres',
-        icon: <AiOutlineSolution />,
+        icon: <AiOutlineShoppingCart />,
         path:'GesOffres'
       },
     ],
   },
   {
-    title: 'Charts',
+    title: 'Espace Administrateur ',
     links: [
       {
-        name: 'line',
-        icon: <AiOutlineStock />,
-        path:'line'
+        name: 'Mon profile',
+        icon: <AiOutlineUser />,
+        path:'mon-profile'
       },
       {
-        name: 'bar',
-        icon: <AiOutlineBarChart />,
-        path:'bar'
+        name: 'Déconnexion',
+        icon: <AiOutlineLogout />,
+        path:'dec'
       }
     ],
   },
