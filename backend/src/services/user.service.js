@@ -80,6 +80,14 @@ const UserService = {
     } catch (error) {
       throw new Error(`Service - Erreur lors de recuperation des tout des users: ${error.message}`);
     }
+  },
+  //
+  async deleteByUsername(username) {
+    try {
+      return await userDAO.deleteByUsername(username);
+    } catch (error) {
+      throw new Error(`Service - Erreur lors de la suppresion de user: ${error.message}`);
+    }
   }
 };
   
