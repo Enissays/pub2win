@@ -16,10 +16,10 @@ async function getDbCollections() {
 async function addUser() {
  
   const newUser = new User({
-    email: "nouvelle2-boutique@exemple.com",
-    nom: "Martin2",
-    prenom: "Sophie2",
-    username: "boutique_sm2",
+    email: "testothy1@exemple.com",
+    nom: "testothy1",
+    prenom: "testothy1",
+    username: "testothy1",
     password_hash: "$2b$10$AbCdEfGhIjKlMnOpQrStUvWxYz1234567890AbCdEfGhIj",
     isBanned: false,
     isTimeouted: false,

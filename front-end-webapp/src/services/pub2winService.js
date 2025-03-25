@@ -262,3 +262,28 @@ export async function SRchByUsername(username){
     throw error;
   }
 };
+
+//
+
+export async function deleteUserbyUsername(username){
+  try { 
+
+    const response = await fetch(url +`user/delete/${username}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur de requête');
+    }
+
+    const comInf = await response.json();
+    return comInf;
+
+  } catch (error) {
+    console.error('Erreur:', error);
+    throw error;
+  }
+};

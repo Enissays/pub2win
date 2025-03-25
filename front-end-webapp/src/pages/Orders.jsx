@@ -2,8 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective, Resize, Sort, ContextMenu, Filter, Page, ExcelExport, PdfExport, Edit, Inject } from '@syncfusion/ej2-react-grids';
 
 import { ordersData, contextMenuItems, ordersGrid } from '../data/dummy';
-import { getAllUsers, SRchByUsername } from '../services/pub2winService';
+import { deleteUserbyUsername, getAllUsers, SRchByUsername } from '../services/pub2winService';
 import { Header } from '../components';
+import Swal from 'sweetalert2';
 
 const Orders = () => {
   const [users, setUsers] = useState([]);
@@ -77,6 +78,32 @@ const Orders = () => {
   const handleDeleteUser = (args) => {
       const username = args.data.map(user => user.username)[0];
       console.log("username: ",username);
+      //deleteUserbyUsername
+      setLoading(true);
+      deleteUserbyUsername(username)
+        .then(response => {
+          if (response.success) {
+            // Supprimer l'utilisateur de l'état local
+            setUsers(prevUsers => prevUsers.filter(user => user.username !== username));
+            // Optionnel: Afficher un message de succès
+            Swal.fire({
+              title: 'Succès!',
+              text: 'Utilisateur supprimé avec succès',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            });
+
+          } else {
+            setError('Erreur lors de la suppression de l\'utilisateur');
+          }
+        })
+        .catch(error => {
+          console.error("Erreur lors de la suppression de l'utilisateur:", error);
+          setError('Erreur lors de la suppression');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
       
   };
   return (
@@ -120,30 +147,59 @@ const Orders = () => {
         </div>
       )}
 
-      <GridComponent
-        ref={gridRef}
-        id="gridcomp"
-        dataSource={users}
-        allowPaging
-        allowSorting
-        allowExcelExport
-        allowPdfExport
-        contextMenuItems={contextMenuItems}
-        editSettings={editing}
-        actionBegin={(args) =>{
-          if (args.requestType === 'delete') {
-            // Annuler la suppression par défaut du composant
-            args.cancel = true;
-            // Appeler notre fonction personnalisée de suppression
-            handleDeleteUser(args);
-          }
-        }}
-      >
-        <ColumnsDirective>
-          {ordersGrid.map((item, index) => <ColumnDirective key={index} {...item} />)}
-        </ColumnsDirective>
-        <Inject services={[Resize, Sort, ContextMenu, Filter, Page, ExcelExport, Edit, PdfExport]} />
-      </GridComponent>
+
+<GridComponent
+  ref={gridRef}
+  id="gridcomp"
+  dataSource={users}
+  allowPaging
+  allowSorting
+  allowExcelExport
+  contextMenuItems={contextMenuItems}
+  editSettings={editing}
+  actionBegin={(args) => {
+    if (args.requestType === 'delete') {
+      // Annuler la suppression par défaut du composant
+      args.cancel = true;
+      // Appeler notre fonction personnalisée de suppression
+      handleDeleteUser(args);
+    }
+  }}
+  actionComplete={(args) => {
+    if (args.requestType === 'save') {
+      console.log("Edition complétée:", args.data);
+      
+      // Récupérer toutes les cases qui ont été modifiées
+      const changedFields = {};
+      const originalData = args.previousData;
+      const newData = args.data;
+      
+      // Comparer les données originales et les nouvelles données
+      Object.keys(newData).forEach(key => {
+        if (originalData[key] !== newData[key]) {
+          changedFields[key] = {
+            oldValue: originalData[key],
+            newValue: newData[key]
+          };
+        }
+      });
+      
+      // Afficher les champs modifiés dans la console
+      console.log('Champs modifiés:', changedFields);
+      
+      // Ici vous pouvez appeler votre API pour sauvegarder les modifications
+      if (Object.keys(changedFields).length > 0) {
+        // Appeler votre API de mise à jour
+        console.log("Appel API avec les données:", newData);
+      }
+    }
+  }}
+>
+  <ColumnsDirective>
+    {ordersGrid.map((item, index) => <ColumnDirective key={index} {...item} />)}
+  </ColumnsDirective>
+  <Inject services={[Resize, Sort, ContextMenu, Filter, Page, ExcelExport, Edit]} />
+</GridComponent>
     </div>
   );
 };

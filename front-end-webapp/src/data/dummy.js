@@ -839,6 +839,7 @@ export const ordersGrid = [
     headerText: 'Nom d\'utilisateur',
     width: '150',
     textAlign: 'Center',
+    allowEditing: false 
   },
   { 
     field: 'nom',
@@ -3106,7 +3107,7 @@ export const contextMenuItems = [
   'Delete',
   'Save',
   'Cancel',
-  'PdfExport',
+  //'PdfExport',
   'ExcelExport',
   'CsvExport',
   'FirstPage',
