@@ -1,7 +1,6 @@
 const AbonnementCommercant = require('../models/abonnementCommercant.model');
 const { AbonnementStatusEnum } = require('../models/enums');
 
-
 const AbonnementCommercantDAO = {
     async createAbonnementCommercant(abonnementCommercantData) {
         if (!abonnementCommercantData || typeof abonnementCommercantData !== 'object') {
