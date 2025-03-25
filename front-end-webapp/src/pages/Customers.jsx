@@ -41,8 +41,7 @@ const Customers = () => {
       
       {/* Section d'introduction attrayante */}
       
-      <AideService 
-        title="À votre service !"  
+      <AideService  
         des="Bienvenue, cher administrateur ! Cet espace vous permet de visualiser les informations de contact actuelles de pub2win, ainsi vous permettra d'actualiser ces données dès que nécessaire."
       />
 
