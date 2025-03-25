@@ -50,8 +50,8 @@ test("Envoyer et recevoir un message en temps réel via Socket.io", async () => 
     const user1 = new User({
         nom: "Aymane",
         prenom: "Aymane",
-        email: "aymane11341@example.com",
-        username: "aymane1431",
+        email: "aymane111341@example.com",
+        username: "aymane14131",
         password_hash: passwordHash("test123"),
         role: "ADMIN",
         date_inscription: new Date(),
@@ -60,8 +60,8 @@ test("Envoyer et recevoir un message en temps réel via Socket.io", async () => 
     const user2 = new User({
         nom: "Ali",
         prenom: "Ali",
-        email: "ali11341@example.com",
-        username: "ali43    11",
+        email: "ali111341@example.com",
+        username: "ali43  1  11",
         password_hash: passwordHash("test123"),
         role: "CLIENT",
         date_inscription: new Date(),
