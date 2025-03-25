@@ -121,7 +121,14 @@ const UserDAO = {
       
       return await User.findByIdAndDelete(userId).catch(() => null);
     },
-  
+    
+    async deleteByUsername(username) { 
+      let user=await User.find({})
+           
+      console.log("user: ",user);
+      return await User.findOneAndDelete({ username: username }).catch(() => null);
+    },
+
     async getAllUsers() {
       return await User.find().catch(() => []);
     },
