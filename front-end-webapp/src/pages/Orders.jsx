@@ -167,7 +167,6 @@ const Orders = () => {
   }}
   actionComplete={(args) => {
     if (args.requestType === 'save') {
-      console.log("Edition complétée:", args.data);
       
       // Récupérer toutes les cases qui ont été modifiées
       const changedFields = {};
@@ -178,20 +177,14 @@ const Orders = () => {
       Object.keys(newData).forEach(key => {
         if (originalData[key] !== newData[key]) {
           changedFields[key] = {
-            oldValue: originalData[key],
             newValue: newData[key]
           };
+          if(key==='nom' || key==='prenom'){
+            console.log(newData[key])
+          }
+          
         }
       });
-      
-      // Afficher les champs modifiés dans la console
-      console.log('Champs modifiés:', changedFields);
-      
-      // Ici vous pouvez appeler votre API pour sauvegarder les modifications
-      if (Object.keys(changedFields).length > 0) {
-        // Appeler votre API de mise à jour
-        console.log("Appel API avec les données:", newData);
-      }
     }
   }}
 >
