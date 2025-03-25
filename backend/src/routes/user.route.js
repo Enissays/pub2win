@@ -17,4 +17,6 @@ router.get('/allUsers',UserController.getAllUsers);
 
 router.post('/SrchByUn',UserController.getByuserName);
 
+
+router.delete('/delete/:username',UserController.deleteByUsername);
 module.exports = router;
