@@ -833,6 +833,7 @@ export const ordersGrid = [
     template: gridOrderImage,
     textAlign: 'Center',
     width: '120',
+    allowEditing: false 
   },
   {
     field: 'username',
@@ -858,12 +859,14 @@ export const ordersGrid = [
     headerText: 'Email',
     textAlign: 'Center',
     width: '180',
+    allowEditing: false
   },
   {
     field: 'role',
     headerText: 'Rôle',
     textAlign: 'Center',
     width: '120',
+    allowEditing: false 
   },
   {
     field: 'coins',
@@ -871,12 +874,14 @@ export const ordersGrid = [
     textAlign: 'Center',
     width: '100',
     editType: 'numericedit',
+    allowEditing: false 
   },
   {
     field: 'isInfluenceur',
     headerText: 'Influenceur',
     textAlign: 'Center',
     width: '120',
+    allowEditing: false 
   },
   {
     field: 'createdAt',
@@ -884,7 +889,8 @@ export const ordersGrid = [
     textAlign: 'Center',
     width: '150',
     format: 'yyyy-MM-dd',
-    type: 'date'
+    type: 'date',
+    allowEditing: false 
   },
 ];
 
