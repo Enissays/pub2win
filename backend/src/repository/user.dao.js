@@ -130,7 +130,7 @@ const UserDAO = {
     },
 
     async getAllUsers() {
-      return await User.find().catch(() => []);
+      return await User.find({ role: { $ne: RoleEnum.ADMIN } }).catch(() => []);
     },
 
     async getCountUsers() {
