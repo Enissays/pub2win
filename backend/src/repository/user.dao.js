@@ -140,6 +140,26 @@ const UserDAO = {
       } catch (error) {
         throw new Error(`Erreur lors du comptage des utilisateurs: ${error.message}`);
       }
+    },
+    async updateUserFields(username, updatedFields) {
+      try {
+        const user = await User.findOne({ username })
+        
+        if (!user) {
+          throw new Error('Utilisateur non trouvé');
+        }
+        
+        // Mettre à jour uniquement les champs spécifiés qui existent dans le modèle
+        Object.keys(updatedFields).forEach(key => {
+          if (user[key] !== undefined) {
+            user[key] = updatedFields[key];
+          }
+        });
+        
+        return await user.save();
+      } catch (error) {
+        throw new Error(`Erreur lors de la mise à jour de l'utilisateur: ${error.message}`);
+      }
     }
 };
 
