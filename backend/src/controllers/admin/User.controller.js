@@ -115,6 +115,38 @@ const UserController = {
         message: `Erreur lors de la suppresion d'un user: ${error.message}`
       });
     }
+  },
+
+  async updateProfile(req, res){
+    try {
+      const { username, ...updateData } = req.body;
+      
+      // Appeler le service pour mettre à jour le profil
+      const updatedUser = await UserService.updateUserProfile(username, updateData);
+      
+      // Renvoyer une réponse de succès
+      res.status(200).json({
+        success: true,
+        message: 'Profil mis à jour avec succès',
+        user: updatedUser
+      });
+    } catch (error) {
+      console.error('Erreur de mise à jour du profil:', error);
+      
+      // Déterminer le code d'état HTTP approprié
+      let statusCode = 500;
+      if (error.message === 'Utilisateur non trouvé') {
+        statusCode = 404;
+      } else if (error.message === 'Aucun champ valide à mettre à jour') {
+        statusCode = 400;
+      }
+      
+      // Renvoyer une réponse d'erreur
+      res.status(statusCode).json({
+        success: false,
+        message: error.message || 'Erreur serveur lors de la mise à jour du profil'
+      });
+    }
   }
 };
 
