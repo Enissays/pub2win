@@ -35,7 +35,7 @@ interface Partner {
 }
 
 type RootStackParamList = {
-  Home: undefined;
+  InfluencerDashboard: undefined;
   Search: undefined;
   Chat: undefined;
   Wallet: undefined;
@@ -131,7 +131,7 @@ const Search: React.FC = () => {
   const handleNavigation = (screen: string) => {
     switch(screen) {
       case 'home':
-        navigation.navigate('Home');
+        navigation.navigate('InfluencerDashboard');
         break;
       case 'search':
         // Already on search

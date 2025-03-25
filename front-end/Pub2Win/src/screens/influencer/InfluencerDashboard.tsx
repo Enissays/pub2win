@@ -153,16 +153,16 @@ const InfluencerDashboard: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#003049" />
-          <Text style={styles.loadingText}>Loading your dashboard...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <SafeAreaView style={styles.container}>
+  //       <View style={styles.loadingContainer}>
+  //         <ActivityIndicator size="large" color="#003049" />
+  //         <Text style={styles.loadingText}>Loading your dashboard...</Text>
+  //       </View>
+  //     </SafeAreaView>
+  //   );
+  // }
 
   return (
     <SafeAreaView style={styles.container}>

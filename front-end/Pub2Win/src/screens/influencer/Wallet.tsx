@@ -153,7 +153,7 @@ const Wallet: React.FC = () => {
       <View style={styles.bottomNav}>
         <TouchableOpacity 
           style={styles.navItem} 
-          onPress={() => handleNavigation('home')}
+          onPress={() => handleNavigation('InfluencerDashboard')}
         >
           <Feather name="home" size={24} color="#AAAAAA" />
           <Text style={styles.navText}>Accueil</Text>

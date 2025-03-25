@@ -50,7 +50,7 @@ export default function App() {
       <ClerkAuthProvider>
         <StatusBar hidden={true} />
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="VendorDashboard">
+          <Stack.Navigator initialRouteName="InfluencerDashboard">
             <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
             <Stack.Screen name="RegisterInfluencer" component={RegisterInfluencer} options={{ headerShown: false }} />
