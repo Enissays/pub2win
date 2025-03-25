@@ -5,6 +5,8 @@ const { isAdmin } = require('../middlewares/auth'); // Keep your admin middlewar
 const userController = require('../controllers/userController');
 const influencerController = require('../controllers/influencerController');
 const vendorController = require('../controllers/vendorController');
+const apisController = require('../apis/insta_test');
+//const offerController = require('../controllers/offerController');
 
 // Public routes (no auth required)
 router.get('/', (req, res) => {
@@ -60,15 +62,21 @@ router.post('/influencer/accept/:id',  requireAuth, syncUser, isInfluencer, infl
 router.post('/influencer/:id/validate',  requireAuth, syncUser, isAdmin, influencerController.validate);
 router.delete('/influencer/:id/delete',  requireAuth, syncUser, isAdmin, influencerController.delete);
 
+// Webhook routes
+router.get('/instagram', apisController.getWebhook);
+router.post('/instagram', apisController.postWebhook);
+router.get('/instagram/test', apisController.testGetAllReceivedUpdates);
+router.get('/instagram/callback', apisController.callBackInstagram);
 
 /*
+
 // Offer Routes
-router.get('/offers/:categorie_name', authenticateToken, offerController.getByCategory);
 router.get('/offer/details/:id', authenticateToken, offerController.getDetails);
 router.patch('/offer/:id_offer', authenticateToken, isVendor, offerController.updateOffer);
 router.delete('/offer/:id_offer', authenticateToken, isVendor, offerController.deleteOffer);
 router.post('/offer/:id_offer', authenticateToken, offerController.createOffer);
-
+*/
+/*
 // Admin Routes
 router.get('/gains', authenticateToken, isAdmin, adminController.getGains);
 router.get('/signalements', authenticateToken, isAdmin, adminController.getReports);

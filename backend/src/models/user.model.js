@@ -15,7 +15,7 @@ const UserSchema = new Schema({
   isTimeouted: { type: Boolean, default: false },
   finBan: { type: Date },
   role: { type: String, enum: Object.values(RoleEnum), required: true },
-  date_inscription: { type: Date, required: true }, // TODO: fill with date now 
+  date_inscription: { type: Date, required: true },
 }, { 
   discriminatorKey: 'userType',
   timestamps: true 

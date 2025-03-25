@@ -2,13 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const http = require('http');
-const socketIO = require('socket.io');
 const dotenv = require('dotenv');
 const { Clerk } = require('@clerk/clerk-sdk-node');
 const routes = require('./routes/route');
 
-// At the very top of your server.js or index.js file
-require('dotenv').config();
 
 // Check if key is loaded
 console.log('Clerk Secret Key available:', !!process.env.CLERK_SECRET_KEY);
@@ -16,6 +13,21 @@ console.log('Clerk Secret Key available:', !!process.env.CLERK_SECRET_KEY);
 // Initialize Clerk
 const clerk = Clerk({ secretKey: process.env.CLERK_SECRET_KEY });
 
+const CommercantRoute = require('.//routes/vendor.route');
+const offreRoutes = require('.//routes/offre.route');
+const userRoutes = require('.//routes/user.route');
+const AideRoutes = require('.//routes/aide.route');
+const QueRoutes = require('.//routes/question.route');
+const ResRoutes = require('.//routes/reponse.route');
+const TransactionRoute = require('.//routes/transaction.route');
+const SignalementRoute = require('.//routes/signalement.route');
+const utilis=require('./utilis');
+const testRoutes = require('./routes/route');
+const { authenticateToken } = require('./middlewares/auth');
+const socketIO = require('socket.io');
+
+// Load environment variables
+dotenv.config();
 // Initialize Express app
 const app = express();
 const server = http.createServer(app);
@@ -27,33 +39,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => console.error('MongoDB connection error:', err));
 
-// Socket.IO setup for real-time messaging
-io.on('connection', (socket) => {
-  console.log('New client connected');
-  
-  socket.on('join_room', (roomId) => {
-    socket.join(roomId);
-    console.log(`User joined room: ${roomId}`);
-  });
-  
-  socket.on('send_message', (data) => {
-    io.to(data.roomId).emit('receive_message', data);
-  });
-  
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
-});
+
+
+// Routes
+app.use('/abCo', CommercantRoute);
+app.use('/Offre', offreRoutes);
+app.use('/user', userRoutes);
+app.use('/aide', AideRoutes);
+app.use('/question', QueRoutes);
+app.use('/reponse', ResRoutes);
+app.use('/transaction', TransactionRoute);
+app.use('/signalement', SignalementRoute);
+app.use('/', testRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
+  utilis.addClientToOffre();  
   res.send('Welcome to Pub2Win API');
 });
 // Add your routes
