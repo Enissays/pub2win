@@ -25,6 +25,8 @@ import Search from '../screens/influencer/Search';
 import Wallet from '../screens/influencer/Wallet';
 import PartnerDetails from '../screens/influencer/PartnerDetails';
 import InfluencerDashboard from '../screens/influencer/InfluencerDashboard';
+import InfluencerPlacementScreen from '../screens/auth/InfluencerPlacementScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 type RootStackParamList = {
   Splash: undefined;
@@ -32,6 +34,7 @@ type RootStackParamList = {
   Register: undefined;
   RegisterInfluencer: undefined;
   RegisterVender: undefined;
+  InfluencerPlacement: undefined;
   VendorPlacement: undefined;
   Home: undefined;
   VendorDashboard: undefined;
@@ -49,6 +52,7 @@ type RootStackParamList = {
   InfluencerDashboard: undefined;
 };
 
+const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator: React.FC = () => {
@@ -66,6 +70,7 @@ const AppNavigator: React.FC = () => {
             <Stack.Screen name="RegisterInfluencer" component={RegisterInfluencer} />
             <Stack.Screen name="RegisterVender" component={RegisterVender} />
             <Stack.Screen name="VendorPlacement" component={VendorPlacementScreen} />
+            <Stack.Screen name="InfluencerPlacement" component={InfluencerPlacementScreen} />
           </>
         ) : (
           // App Stack - Conditionally render based on user type
@@ -76,6 +81,7 @@ const AppNavigator: React.FC = () => {
                 <Stack.Screen name="VendorDashboard" component={VendorDashboard} />
                 <Stack.Screen name="VendorProfile" component={VendorProfile} />
                 <Stack.Screen name="VendorPlace" component={VendorPlace} />
+                <Stack.Screen name="Chat" component={Chat}/>
                 {/* <Stack.Screen name="VendorSettings" component={VendorSettings} />
                 <Stack.Screen name="VendorNotifications" component={VendorNotifications} />
                 <Stack.Screen name="VendorHelp" component={VendorHelp} />
@@ -85,7 +91,7 @@ const AppNavigator: React.FC = () => {
             ) : (
               // Influencer Screens
               <>
-                <Stack.Screen name="Home" component={InfluencerDashboard} />
+                <Stack.Screen name="InfluencerDashboard" component={InfluencerDashboard} />
                 <Stack.Screen name="Search" component={Search} />
                 <Stack.Screen name="Wallet" component={Wallet} />
                 <Stack.Screen name="PartnerDetails" component={PartnerDetails} />

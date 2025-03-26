@@ -6,7 +6,6 @@ import { store } from './src/store';
 import ClerkAuthProvider from './src/utils/ClerkProvider';
 import ErrorBoundary from './src/utils/ErrorBoundary';
 import { StatusBar } from 'react-native';
-// import HomeScreen from './src/screens/HomeScreen';
 import LoginScreen from './src/screens/auth/LoginScreen';
 import RegisterScreen from './src/screens/auth/RegisterScreen';
 import SplashScreen from './src/screens/SplashScreen';
@@ -23,6 +22,7 @@ import InfluencerDashboard from './src/screens/influencer/InfluencerDashboard';
 import Search from './src/screens/influencer/Search';
 import Wallet from './src/screens/influencer/Wallet';
 import PartnerDetails from './src/screens/influencer/PartnerDetails';
+import HomeScreen from './src/screens/HomeScreen';
 
 
 const Stack = createStackNavigator();

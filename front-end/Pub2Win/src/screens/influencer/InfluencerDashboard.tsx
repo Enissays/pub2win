@@ -16,6 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useApi } from '../../hooks/useApi';
 import { useAuth } from '@clerk/clerk-expo';
+import BottomNavigation from '../../components/BottomNavigation';
 
 const { width } = Dimensions.get('window');
 
@@ -171,7 +172,7 @@ const InfluencerDashboard: React.FC = () => {
         <TouchableOpacity onPress={handleSettings}>
           <Feather name="settings" size={24} color="#003049" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleNotifications}>
+        <TouchableOpacity onPress={handleNotifications}style={styles.notif}>
           <Feather name="bell" size={24} color="#003049" />
           <Image 
             source={{ uri: influencerData?.profileImage || 'https://randomuser.me/api/portraits/men/32.jpg' }}
@@ -264,39 +265,7 @@ const InfluencerDashboard: React.FC = () => {
       </ScrollView>
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('home')}
-        >
-          <Feather name="home" size={24} color="#003049" />
-          <Text style={[styles.navText, styles.navTextActive]}>Accueil</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('search')}
-        >
-          <Feather name="search" size={24} color="#AAAAAA" />
-          <Text style={styles.navText}>Recherche</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('chat')}
-        >
-          <Feather name="message-square" size={24} color="#AAAAAA" />
-          <Text style={styles.navText}>Chat</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('wallet')}
-        >
-          <Feather name="credit-card" size={24} color="#AAAAAA" />
-          <Text style={styles.navText}>Mon solde</Text>
-        </TouchableOpacity>
-      </View>
+      <BottomNavigation activeScreen="home" />
     </SafeAreaView>
   );
 };
@@ -421,6 +390,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 150,
     resizeMode: 'cover',
+  },
+  notif:{
+    flexDirection:'row'
   },
   partnerContent: {
     padding: 16,

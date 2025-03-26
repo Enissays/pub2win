@@ -19,6 +19,8 @@ import { useAuth } from '@clerk/clerk-expo';
 import { Feather } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { updateProfileRequest, updateProfileSuccess, updateProfileFailure } from '../../store/slices/authSlice';
+import { useApi } from '../../hooks/useApi';
+import * as ImagePicker from 'expo-image-picker';
 
 type RootStackParamList = {
   Home: undefined;
@@ -39,6 +41,7 @@ const InfluencerPlacementScreen: React.FC<InfluencerPlacementScreenProps> = ({ n
   const [instagramLink, setInstagramLink] = useState<string>('');
   const [interests, setInterests] = useState<string[]>([]);
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   
   // Available interest categories
   const availableInterests = ['Restaurant', 'Bar', 'Café'];
@@ -46,6 +49,7 @@ const InfluencerPlacementScreen: React.FC<InfluencerPlacementScreenProps> = ({ n
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector(state => state.auth);
   const { isLoaded, userId, getToken } = useAuth();
+  const api = useApi();
   
   const toggleInterest = (interest: string) => {
     if (interests.includes(interest)) {
@@ -58,6 +62,31 @@ const InfluencerPlacementScreen: React.FC<InfluencerPlacementScreenProps> = ({ n
   const handleAddLink = () => {
     // For now, just a placeholder for adding more social media links
     Alert.alert('Add Link', 'This feature will allow adding more social media links');
+  };
+  
+  const handleChoosePhoto = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      
+      if (!permissionResult.granted) {
+        Alert.alert('Permission Required', 'You need to grant permission to access your photos');
+        return;
+      }
+      
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+      
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setProfilePhoto(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+      Alert.alert('Error', 'Failed to pick image');
+    }
   };
   
   const handleComplete = async () => {
@@ -87,42 +116,50 @@ const InfluencerPlacementScreen: React.FC<InfluencerPlacementScreenProps> = ({ n
       // Get the token for API authorization
       const token = await getToken();
       
-      // Prepare the data to send to your backend
-      const profileData = {
-        bio,
-        socialMedia: {
-          instagram: instagramLink,
-        },
-        interests,
-        userId,
-      };
+      // Create form data for image upload
+      const formData = new FormData();
       
-      // Make API call to your backend
-      const response = await fetch('http://localhost:5000/influencer/profile', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(profileData),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update profile');
+      // Add profile photo if selected
+      if (profilePhoto) {
+        const filename = profilePhoto.split('/').pop();
+        const match = /\.(\w+)$/.exec(filename || '');
+        const type = match ? `image/${match[1]}` : 'image';
+        
+        formData.append('profilePhoto', {
+          uri: profilePhoto,
+          name: filename,
+          type,
+        } as any);
       }
       
-      const data = await response.json();
+      // Add other data
+      formData.append('bio', bio);
+      formData.append('instagram', instagramLink);
+      formData.append('interests', JSON.stringify(interests));
+      formData.append('userId', userId);
       
-      // Update Redux store with profile info
-      dispatch(updateProfileSuccess(data));
+      // Make API call to your backend
+      const response = await api.post('/influencer/profile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       
-      // Navigate to home or dashboard
-      navigation.navigate('Home');
+      if (response.data && response.data.success) {
+        // Update Redux store with profile info
+        dispatch(updateProfileSuccess(response.data.influencer));
+        
+        // Navigate to home or dashboard
+        navigation.navigate('Home');
+      } else {
+        throw new Error(response.data?.message || 'Failed to update profile');
+      }
       
     } catch (err: any) {
       console.error("Error updating profile:", err);
       dispatch(updateProfileFailure(err.message || "An error occurred during profile update"));
+      Alert.alert('Error', err.message || 'Failed to update profile');
     }
   };
 
@@ -146,10 +183,14 @@ const InfluencerPlacementScreen: React.FC<InfluencerPlacementScreenProps> = ({ n
           
           {/* Profile Photo */}
           <View style={styles.photoContainer}>
-            <View style={styles.photoPlaceholder}>
-              <Feather name="user" size={40} color="#8A7FD6" />
-            </View>
-            <TouchableOpacity style={styles.photoButton}>
+            {profilePhoto ? (
+              <Image source={{ uri: profilePhoto }} style={styles.photoImage} />
+            ) : (
+              <View style={styles.photoPlaceholder}>
+                <Feather name="user" size={40} color="#8A7FD6" />
+              </View>
+            )}
+            <TouchableOpacity style={styles.photoButton} onPress={handleChoosePhoto}>
               <Text style={styles.photoButtonText}>Choisir une photo</Text>
             </TouchableOpacity>
           </View>
@@ -311,6 +352,15 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     backgroundColor: '#E0DCFC',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  photoImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    // backgroundColor: '#E0DCFC',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
