@@ -3,7 +3,7 @@ import { GridComponent, ColumnsDirective, ColumnDirective, Resize, Sort, Context
 
 import { ordersData, contextMenuItems, ordersGrid } from '../data/dummy';
 import { deleteUserbyUsername, getAllUsers, SRchByUsername, updateUser } from '../services/pub2winService';
-import { Header } from '../components';
+import { AideService, Header } from '../components';
 import Swal from 'sweetalert2';
 
 const Orders = () => {
@@ -149,7 +149,9 @@ const Orders = () => {
   };
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-      <Header category="Page" title="Utilisateurs" />
+      <AideService 
+          des={"Cher Administrateur, ceci est un espace de gestion de comptes avec toutes les fonctionnalités essentielles. Il intègre recherche avancée, multifiltrage et options d'exportation de données vers différents formats. En cliquant sur l'utilisateur souhaité, vous pouvez accéder à toutes les fonctionnalités de gestion disponibles."}
+        />
       
       <div className="mb-6 flex flex-col md:flex-row items-start md:items-center gap-4">
         <form onSubmit={handleSearch} className="flex w-full md:w-auto">
