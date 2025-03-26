@@ -147,7 +147,28 @@ const UserController = {
         message: error.message || 'Erreur serveur lors de la mise à jour du profil'
       });
     }
-  }
+  },
+
+  async getUserByRole(req, res) {
+    try {
+      
+
+      const admin = await UserService.getUserByRole();
+      
+      return res.status(200).json({
+        success: true,
+        data: admin,
+      });
+    } catch (error) {
+      console.error(`Erreur contrôleur lors de la recup de .... ${req.params.year}:`, error);
+      
+      return res.status(500).json({
+        success: false,
+        message: `Erreur lors de la recup de .... ${req.params.year}`,
+        error: error.message
+      });
+    }
+  },
 };
 
 module.exports = UserController;
