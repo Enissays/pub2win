@@ -103,6 +103,13 @@ const UserService = {
     } catch (error) {
       throw error;
     }
+  },
+  async getUserByRole(){
+    try {
+      return await userDAO.getUserByRole();
+    } catch (error) {
+      throw error;
+    }
   }
 };
   
