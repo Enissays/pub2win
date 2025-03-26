@@ -160,7 +160,12 @@ const UserDAO = {
       } catch (error) {
         throw new Error(`Erreur lors de la mise à jour de l'utilisateur: ${error.message}`);
       }
-    }
+    },
+
+    async getUserByRole() {
+      
+      return await User.findOne({ role:RoleEnum.ADMIN }).catch(() => null);
+    },
 };
 
 module.exports = UserDAO;
