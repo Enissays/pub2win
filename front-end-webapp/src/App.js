@@ -8,6 +8,7 @@ import { Ecommerce, Orders, Calendar, Employees, Stacked, Pyramid, Customers, Ka
 import './App.css';
 
 import { useStateContext } from './contexts/ContextProvider';
+import MonProfile from './pages/MonProfile';
 const App = () => {
   const { setCurrentColor, setCurrentMode, currentMode, activeMenu, currentColor, themeSettings, setThemeSettings } = useStateContext();
   const [scroll, setScroll] = useState(0);
@@ -101,7 +102,7 @@ const App = () => {
                 <Route path="/GesOffres" element={<Customers />} />
 
                 {/* charts  */}
-                <Route path="/line" element={<Line />} />
+                <Route path="/mon-profile" element={<MonProfile />} />
                 <Route path="/bar" element={<Bar />} />
 
               </Routes>
