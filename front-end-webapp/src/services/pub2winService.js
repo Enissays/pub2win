@@ -289,6 +289,9 @@ export async function deleteUserbyUsername(username){
 };
 
 export async function updateUser(username,updatedata){
+  console.log("username: ",username)
+  console.log("updatedata: ",updatedata)
+  
   try { 
     const response = await fetch(url +'user/profileUpdate', {
       method: 'PUT',
@@ -313,3 +316,11 @@ export async function updateUser(username,updatedata){
     throw error;
   }
 };
+
+
+export async function getAdminInformation() {
+    
+  let response = await fetch(url + 'user/profileAdmin');
+  let adminInfo = await response.json();
+  return adminInfo;
+}
