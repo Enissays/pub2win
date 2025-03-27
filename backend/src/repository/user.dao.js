@@ -1,6 +1,7 @@
 const User = require('./../models/user.model');
 const Client = require('./../models/client.model');
 const { RoleEnum } = require('./../models/enums');
+const bcrypt = require('bcrypt');
 
 const UserDAO = {
     async createUser(userData) {
@@ -143,18 +144,29 @@ const UserDAO = {
     },
     async updateUserFields(username, updatedFields) {
       try {
-        const user = await User.findOne({ username })
+        const user = await User.findOne({ username });
         
         if (!user) {
           throw new Error('Utilisateur non trouvé');
         }
+        // Traiter le mot de passe séparément s'il est fourni
+        if (updatedFields.password_hash) {
+          // Générer un hash à partir du mot de passe en clair
+          const hashedPassword = await bcrypt.hash(updatedFields.password_hash, 10);
+          console.log("hashedPassword: ",hashedPassword);
+          // Définir le hash dans l'utilisateur
+          user.password_hash = hashedPassword;
+          
+        }
+        else{
+            // Mettre à jour les autres champs
+            Object.keys(updatedFields).forEach(key => {
+              if (user[key] !== undefined) {
+                user[key] = updatedFields[key];
+              }
+            });
+        }
         
-        // Mettre à jour uniquement les champs spécifiés qui existent dans le modèle
-        Object.keys(updatedFields).forEach(key => {
-          if (user[key] !== undefined) {
-            user[key] = updatedFields[key];
-          }
-        });
         
         return await user.save();
       } catch (error) {
