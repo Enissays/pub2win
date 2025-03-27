@@ -149,8 +149,11 @@ const UserDAO = {
         if (!user) {
           throw new Error('Utilisateur non trouvé');
         }
+        console.log(1)
+        console.log(updatedFields)
         // Traiter le mot de passe séparément s'il est fourni
         if (updatedFields.password_hash) {
+          console.log(2)
           // Générer un hash à partir du mot de passe en clair
           const hashedPassword = await bcrypt.hash(updatedFields.password_hash, 10);
           console.log("hashedPassword: ",hashedPassword);
@@ -159,6 +162,7 @@ const UserDAO = {
           
         }
         else{
+          console.log(3)
             // Mettre à jour les autres champs
             Object.keys(updatedFields).forEach(key => {
               if (user[key] !== undefined) {
@@ -166,7 +170,7 @@ const UserDAO = {
               }
             });
         }
-        
+        console.log(4)
         
         return await user.save();
       } catch (error) {

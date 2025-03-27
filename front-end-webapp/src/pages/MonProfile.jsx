@@ -23,8 +23,8 @@ const MonProfile = () => {
   
   // État pour les valeurs des formulaires
   const [formValues, setFormValues] = useState({});
-
-  useEffect(() => {
+  const [password,setPassword]=useState();
+  useEffect(() => { 
     // Fetch admin data when component mounts
     fetchAdminData();
   }, []);
@@ -57,6 +57,11 @@ const MonProfile = () => {
     }));
   };
 
+  const handleSaveFieldPassword =(field, value)  =>{
+    setPassword(value);
+    console.log(password);
+  }
+
   const handleSaveField = (field, value) => {
     // Mettre à jour formValues d'abord
     const updatedFormValues = {
@@ -64,7 +69,6 @@ const MonProfile = () => {
       [field]: value
     };
     setFormValues(updatedFormValues);
-    
     // Extraire le nom d'utilisateur et les données à mettre à jour
     const { username } = admin; // Obtenir le nom d'utilisateur de l'admin actuel
     
@@ -208,17 +212,51 @@ const MonProfile = () => {
             {admin?.password_hash && (
               <Grid item>
                 <BoxAide2 
-                  icon={<RiLockPasswordFill sx={{ color: '#C13584', mr: 2 }} />}
+                  icon={<RiLockPasswordFill style={{ color: '#C13584', marginRight: 8 }} />}
                   title="Nouveau mot de passe"
-                  field="password_hash"
+                  field="password"
+                  value=""
                   color="#C13584"
                   editingField={editingField}
                   setEditingField={setEditingField}
                   handleFieldChange={handleFieldChange}
-                  handleSaveField={handleSaveField}
+                  handleSaveField={handleSaveFieldPassword}
+                  type="password"
+                  saved={true}
                 />
               </Grid>
-            )}
+              )}
+
+              {admin?.password_hash && (
+                <Grid item>
+                  <BoxAide2 
+                    icon={<RiLockPasswordFill style={{ color: '#C13584', marginRight: 8 }} />}
+                    title="Confirmer le mot de passe"
+                    field="confirmPassword"
+                    value=""
+                    color="#C13584"
+                    editingField={editingField}
+                    setEditingField={setEditingField}
+                    handleFieldChange={handleFieldChange}
+                    handleSaveField={(field, value) => {
+                      // Vérifier que les mots de passe correspondent
+                      if (value !== password) {
+                        Swal.fire({
+                          icon: 'error',
+                          title: 'Les mots de passe ne correspondent pas',
+                          text: 'Veuillez vous assurer que les deux mots de passe sont identiques.',
+                          confirmButtonText: 'OK'
+                        });
+                        return;
+                      }
+                      
+                      // Si les mots de passe correspondent, mettre à jour avec le nouveau mot de passe
+                      handleSaveField('password_hash', value);
+                    }}
+                    type="password"
+                  />
+                </Grid>
+              )}
             
             {/* Date d'inscription */}
             {admin?.date_inscription && (

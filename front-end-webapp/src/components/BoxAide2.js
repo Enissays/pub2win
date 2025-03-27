@@ -5,7 +5,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 // Composant BoxAide2 amélioré avec les concepts de BoxAide
-const BoxAide2 = ({ icon, title, field, value, color, url, editingField, setEditingField, handleSaveField }) => {
+const BoxAide2 = ({ icon, title, field, value, color, url, editingField, setEditingField, handleSaveField,type = "text", saved=true}) => {
   const [inputValue, setInputValue] = useState(value);
   
   useEffect(() => {
@@ -96,13 +96,18 @@ const BoxAide2 = ({ icon, title, field, value, color, url, editingField, setEdit
             value={inputValue}
             onChange={handleChange}
             autoFocus
+            type={type}
             sx={{ mb: 1 }}
           />
-          <IconButton onClick={handleSave} color="primary" size="small">
-            <SaveIcon />
-          </IconButton>
+          {saved && (
+            <>
+              <IconButton onClick={handleSave} color="primary" size="small">
+                <SaveIcon />
+              </IconButton>
+            </>
+          )}
           <IconButton onClick={handleCancel} color="error" size="small">
-            <CancelIcon />
+                <CancelIcon />
           </IconButton>
         </Box>
       )}

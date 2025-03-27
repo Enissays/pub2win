@@ -289,8 +289,7 @@ export async function deleteUserbyUsername(username){
 };
 
 export async function updateUser(username,updatedata){
-  console.log("username: ",username)
-  console.log("updatedata: ",updatedata)
+  
   
   try { 
     const response = await fetch(url +'user/profileUpdate', {
