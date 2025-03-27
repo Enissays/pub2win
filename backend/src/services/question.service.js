@@ -2,17 +2,17 @@ const QuestionRepository = require('../repository/question.dao');
 const { QuestionStatusEnum } = require('../models/enums');
 
 class QuestionService {
-    async createQuestion(questionData) {
+    async createQuestion(user_id, content) {
+
         // Validation des données avant création
-        if (!questionData.user_id || !questionData.content) {
+        if (!user_id || !content) {
             throw new Error('Les champs user_id et contenu sont obligatoires');
         }
 
         // Données par défaut
         const questionToCreate = {
-            user_id: questionData.user_id,
-            content: questionData.content,
-            statut: QuestionStatusEnum.EN_ATTENTE
+            user_id: user_id,
+            content: content,
         };
 
         return await QuestionRepository.create(questionToCreate);

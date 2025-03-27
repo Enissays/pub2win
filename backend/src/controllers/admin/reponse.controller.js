@@ -1,45 +1,34 @@
-const reponseService = require('../../services/Reponse.service');
+const answerService = require('../../services/Reponse.service');
 
-class ReponseController {
-  async createReponse(req, res) {
+class AnswerController {
+  async createAnswer(req, res) {
     try {
-      const reponseData = {
-        user_id: req.body.user_id,
-        content: req.body.content,
-      };
+      const { questionId, content } = req.body;
+      const adminId = req.params.adminId; 
       
-      const nouvelleReponse = await reponseService.createReponse(reponseData);
+      if (!questionId || !content) {
+        return res.status(400).json({
+          success: false,
+          message: 'L\'ID de la question et le contenu sont requis'
+        });
+      }
+      
+      const answer = await answerService.createAnswer(adminId, questionId, content);
+      
       return res.status(201).json({
         success: true,
         message: 'Réponse créée avec succès',
-        data: nouvelleReponse
+        data: answer
       });
     } catch (error) {
-      return res.status(400).json({
+      console.error('Erreur lors de la création de la réponse:', error);
+      return res.status(500).json({
         success: false,
-        message: error.message || 'Échec de la création de la réponse',
-        error: error
-      });
-    }
-  }
-
-  async getReponseByUserId(req, res) {
-    try {
-      const user_id = req.params.user_id;
-      const reponse = await reponseService.getReponseByUserId(user_id);
-      
-      return res.status(200).json({
-        success: true,
-        data: reponse
-      });
-    } catch (error) {
-      return res.status(404).json({
-        success: false,
-        message: error.message || 'Réponse non trouvée',
-        error: error
+        message: 'Erreur serveur',
+        error: error.message
       });
     }
   }
 }
 
-module.exports = new ReponseController();
+module.exports = new AnswerController();
