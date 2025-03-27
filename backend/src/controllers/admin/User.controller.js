@@ -120,7 +120,7 @@ const UserController = {
   async updateProfile(req, res){
     try {
       const { username, ...updateData } = req.body;
-      console.log( updateData);
+
       // Appeler le service pour mettre à jour le profil
       const updatedUser = await UserService.updateUserProfile(username, updateData);
       
