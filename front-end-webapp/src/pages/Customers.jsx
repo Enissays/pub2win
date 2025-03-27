@@ -7,6 +7,7 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import { AttractiveButton, BoxAide,AideService } from '../components';
 import { useAide } from '../contexts/AideContext';
+import { updateAIDE } from '../services/pub2winService';
 
 const Customers = () => {
   // Utiliser le contexte partagé au lieu de gérer l'état localement
@@ -168,7 +169,7 @@ const Customers = () => {
         </CardContent>
       </Card>
 
-      <AttractiveButton formValues={formValues} />
+      <AttractiveButton func={updateAIDE} formValues={formValues} title={"Mettre à jour les informations"}/>
     </div>
   );
 };
