@@ -13,6 +13,7 @@ const FAQ = () => {
   const [responseStatus, setResponseStatus] = useState({ show: false, type: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [idAmdin,setIdAdmin]=useState();
+  
   useEffect(() => {
     fetchQuestions();
     fetchIdAdmin();
@@ -32,6 +33,7 @@ const FAQ = () => {
         setIsLoading(false);
       });
   };
+  
   const fetchQuestions = () => {
     setIsLoading(true);
     getAllQuestionReponse()
@@ -99,7 +101,6 @@ const FAQ = () => {
   };
 
   const handleDeleteQuestion = async (questionId) => {
-
     setIsSubmitting(true);
     try {
       const response = await deleteById(questionId);
@@ -134,7 +135,6 @@ const FAQ = () => {
     }
   };
 
-
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <AideService des={"Cet espace vous permet de consulter et répondre aux questions posées par les utilisateurs. Pour ajouter une nouvelle réponse à une question, cliquez sur la question puis utilisez le formulaire de réponse. Vous pouvez fournir plusieurs réponses à une même question si nécessaire."} />
@@ -143,8 +143,8 @@ const FAQ = () => {
         <Box display="flex" justifyContent="center" alignItems="center" height="200px">
           <CircularProgress />
         </Box>
-      ) : (
-        questionReponse && questionReponse.map((item) => (
+      ) : questionReponse && questionReponse.length > 0 ? (
+        questionReponse.map((item) => (
           <Accordion
             key={item.question._id}
             expanded={expandedId === item.question._id}
@@ -215,41 +215,59 @@ const FAQ = () => {
                   onChange={(e) => setNewResponse(e.target.value)}
                   sx={{ mb: 2 }}
                 />
-                <Box sx={{display: 'flex', justifyContent: 'space-between', width :'auto'}}>
-                    <Button
+                <Box sx={{display: 'flex', justifyContent: 'space-between', width: 'auto'}}>
+                  <Button
                     variant="contained"
                     color="primary"
                     onClick={() => handleResponseSubmit(item.question._id)}
                     disabled={isSubmitting}
                     sx={{ 
-                        textTransform: 'none',
-                        bgcolor: '#0052cc',
-                        '&:hover': { bgcolor: '#0043a4' },
-                        borderRadius: '4px'
+                      textTransform: 'none',
+                      bgcolor: '#0052cc',
+                      '&:hover': { bgcolor: '#0043a4' },
+                      borderRadius: '4px'
                     }}
-                    >
+                  >
                     {isSubmitting ? "Envoi en cours..." : "Envoyer"}
-                    </Button>
+                  </Button>
 
-                    <Button
+                  <Button
                     variant="contained"
                     color="error"
                     onClick={() => handleDeleteQuestion(item.question._id)}
                     disabled={isSubmitting}
                     sx={{ 
-                        textTransform: 'none',
-                        bgcolor: '#d32f2f',
-                        '&:hover': { bgcolor: '#b71c1c' },
-                        borderRadius: '4px'
+                      textTransform: 'none',
+                      bgcolor: '#d32f2f',
+                      '&:hover': { bgcolor: '#b71c1c' },
+                      borderRadius: '4px'
                     }}
-                    >
+                  >
                     {isSubmitting ? "Suppression..." : "Supprimer"}
-                    </Button>
+                  </Button>
                 </Box>
               </Box>
             </AccordionDetails>
           </Accordion>
         ))
+      ) : (
+        <Box 
+          sx={{ 
+            textAlign: 'center', 
+            py: 6, 
+            px: 3, 
+            borderRadius: 2, 
+            bgcolor: '#f5f5f5', 
+            border: '1px dashed #ccc'
+          }}
+        >
+          <Typography variant="h6" color="text.secondary" gutterBottom>
+            Aucune question n'a été posée pour le moment
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Les questions posées par les utilisateurs apparaîtront ici.
+          </Typography>
+        </Box>
       )}
     </div>
   );
