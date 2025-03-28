@@ -6,6 +6,10 @@ class AnswerController {
       const { questionId, content } = req.body;
       const adminId = req.params.adminId; 
       
+      console.log("adminId: ",adminId);
+      console.log("questionId: ",questionId);
+      console.log("content: ",content);
+      
       if (!questionId || !content) {
         return res.status(400).json({
           success: false,

@@ -13,6 +13,10 @@ class QuestionDao {
     async findById(id) {
       return await Question.findById(id).populate('userId', 'username email');
     }
+
+    async deleteById(id){
+        return await Question.findByIdAndDelete(id).populate('userId', 'username email');
+    }
   }
   
 module.exports = new QuestionDao();

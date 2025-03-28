@@ -4,11 +4,12 @@ import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 
 import { Navbar, Footer, Sidebar, ThemeSettings } from './components';
-import { Ecommerce, Orders, Calendar, Employees, Stacked, Pyramid, Customers, Kanban, Line, Area, Bar, Pie, Financial, ColorPicker, ColorMapping, Editor } from './pages';
+import { Ecommerce, Orders, Calendar, Employees, Stacked, Pyramid, Customers, Kanban, Line, Area, Bar, Pie, Financial, ColorPicker, ColorMapping, Editor,FAQ } from './pages';
 import './App.css';
 
 import { useStateContext } from './contexts/ContextProvider';
 import MonProfile from './pages/MonProfile';
+
 const App = () => {
   const { setCurrentColor, setCurrentMode, currentMode, activeMenu, currentColor, themeSettings, setThemeSettings } = useStateContext();
   const [scroll, setScroll] = useState(0);
@@ -98,7 +99,7 @@ const App = () => {
                 <Route path="/GesComptes" element={<Orders />} />
                 <Route path="/signalement" element={<Employees />} />
                 <Route path="/AIDE" element={<Customers />} />
-                <Route path="/FAQ" element={<Customers />} />
+                <Route path="/FAQ" element={<FAQ/>} />
                 <Route path="/GesOffres" element={<Customers />} />
 
                 {/* charts  */}

@@ -27,6 +27,10 @@ class QuestionService {
         
         return question;
     }
+
+    async deleteByQUestionId(id){
+        return await QuestionRepository.deleteById(id);
+    }
 }
 
 module.exports = new QuestionService();

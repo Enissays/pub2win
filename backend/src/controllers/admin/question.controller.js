@@ -48,6 +48,27 @@ class QuestionController {
       });
     }
   }
+
+
+  async deletebyId(req, res) {
+    try {
+      const {id_question}=req.body;
+      console.log("id_question: ",id_question);
+      const data = await questionService.deleteByQUestionId(id_question);
+      
+      return res.status(200).json({
+        success: true,
+        data
+      });
+    } catch (error) {
+      console.error('Erreur lors de la récupération des questions et réponses:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Erreur serveur',
+        error: error.message
+      });
+    }
+  }
 }
 
 module.exports = new QuestionController();

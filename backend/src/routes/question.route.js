@@ -7,4 +7,7 @@ router.post('/question/:userId', QuestionController.createQuestion);
 
 router.get('/getAllQuestionReponse', QuestionController.getAllQuestionsWithAnswers);
 
+
+router.delete('/deleteByQuestionId',QuestionController.deletebyId);
+
 module.exports = router;

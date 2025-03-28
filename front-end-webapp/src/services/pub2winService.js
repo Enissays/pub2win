@@ -323,3 +323,59 @@ export async function getAdminInformation() {
   let adminInfo = await response.json();
   return adminInfo;
 }
+
+export async function getAllQuestionReponse() {
+    
+  let response = await fetch(url + 'question/getAllQuestionReponse');
+  let questionReponse = await response.json();
+  return questionReponse;
+
+}
+
+export async function createAnswer(adminId, questionId, content) {
+
+  console.log("adminId: ",adminId);
+  console.log("questionId: ",questionId);
+  console.log("content: ",content);
+
+
+  try {
+    const response = await fetch(url +`reponse/reponse/${adminId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        questionId,
+        content
+      })
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error('Erreur lors de la création de la réponse:', error);
+    throw error;
+  }
+}; 
+
+
+export async function deleteById(question_id) {
+
+  console.log("question_id: ",question_id);
+  try {
+    const response = await fetch(url +'question/deleteByQuestionId', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id_question:question_id
+      })
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error('Erreur lors de la suppression de la question:', error);
+    throw error;
+  }
+}; 
