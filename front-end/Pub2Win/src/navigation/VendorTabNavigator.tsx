@@ -9,7 +9,7 @@ import VendorPlace from '../screens/vendor/VendorPlace';
 import Chat from '../screens/vendor/Chat';
 
 // Create a type for your Tab Navigator
-type RootTabParamList = {
+type VendorTabParamList = {
   VendorDashboard: undefined;
   VendorProfile: undefined;
   Chat: undefined;
@@ -17,77 +17,77 @@ type RootTabParamList = {
 };
 
 // Create the Tab Navigator
-const Tab = createBottomTabNavigator<RootTabParamList>();
+const Tab = createBottomTabNavigator<VendorTabParamList>();
 
 const VendorTabNavigator = () => {
-    return (
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          headerShown: false,
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName: keyof typeof Feather.glyphMap = 'home';
-  
-            switch (route.name) {
-              case 'VendorDashboard':
-                iconName = 'home';
-                break;
-              case 'VendorProfile':
-                iconName = 'user';
-                break;
-              case 'VendorPlace':
-                iconName = 'map-pin';
-                break;
-              case 'Chat':
-                iconName = 'message-square';
-                break;
-            }
-  
-            return <Feather name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: '#003049',
-          tabBarInactiveTintColor: '#AAAAAA',
-          tabBarStyle: {
-            backgroundColor: '#FFFFFF',
-            borderTopWidth: 1,
-            borderTopColor: '#EEEEEE',
-          },
-          tabBarLabelStyle: {
-            fontFamily: 'Montserrat',
-            fontSize: 12,
-          },
-        })}
-      >
-        <Tab.Screen 
-          name="VendorDashboard" 
-          component={VendorDashboard} 
-          options={{ 
-            title: 'Accueil',
-          }} 
-        />
-        <Tab.Screen 
-          name="VendorProfile" 
-          component={VendorProfile} 
-          options={{ 
-            title: 'Profil',
-          }} 
-        />
-        <Tab.Screen 
-          name="VendorPlace" 
-          component={VendorPlace} 
-          options={{ 
-            title: 'Place',
-          }} 
-        />
-        <Tab.Screen 
-          name="Chat" 
-          component={Chat} 
-          options={{ 
-            title: 'Chat',
-            tabBarStyle: { display: 'none' }, // Hide bottom tab for Chat screen
-          }} 
-        />
-      </Tab.Navigator>
-    );
-  };
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName: keyof typeof Feather.glyphMap = 'home';
 
-  export default VendorTabNavigator;
+          switch (route.name) {
+            case 'VendorDashboard':
+              iconName = 'home';
+              break;
+            case 'VendorProfile':
+              iconName = 'user';
+              break;
+            case 'VendorPlace':
+              iconName = 'map-pin';
+              break;
+            case 'Chat':
+              iconName = 'message-square';
+              break;
+          }
+
+          return <Feather name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#003049',
+        tabBarInactiveTintColor: '#AAAAAA',
+        tabBarStyle: {
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 1,
+          paddingBottom: 12,
+          borderTopColor: '#EEEEEE',
+        },
+        tabBarLabelStyle: {
+          fontFamily: 'Montserrat-Bold',
+          fontSize: 12,
+        },
+      })}
+    >
+      <Tab.Screen 
+        name="VendorDashboard" 
+        component={VendorDashboard} 
+        options={{ 
+          title: 'Accueil',
+        }} 
+      />
+      <Tab.Screen 
+        name="Chat" 
+        component={Chat} 
+        options={{ 
+          title: 'Chat',
+        }} 
+      />
+      <Tab.Screen 
+        name="VendorPlace" 
+        component={VendorPlace} 
+        options={{ 
+          title: 'My place',
+        }} 
+      />
+      <Tab.Screen 
+        name="VendorProfile" 
+        component={VendorProfile} 
+        options={{ 
+          title: 'Profile',
+        }} 
+      />
+    </Tab.Navigator>
+  );
+};
+
+export default VendorTabNavigator;

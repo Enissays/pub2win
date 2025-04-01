@@ -14,6 +14,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useApi } from '../../hooks/useApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -50,7 +51,7 @@ type RootStackParamList = {
   PartnerDetails: { partnerId: string };
 };
 
-type SearchNavigationProp = StackNavigationProp<RootStackParamList>;
+type SearchNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const Search: React.FC = () => {
   const navigation = useNavigation<SearchNavigationProp>();
@@ -171,22 +172,6 @@ const Search: React.FC = () => {
     navigation.navigate('PartnerDetails', { partnerId });
   };
   
-  const handleNavigation = (screen: string) => {
-    switch(screen) {
-      case 'home':
-        navigation.navigate('InfluencerDashboard');
-        break;
-      case 'search':
-        // Already on search
-        break;
-      case 'chat':
-        navigation.navigate('Chat');
-        break;
-      case 'wallet':
-        navigation.navigate('Wallet');
-        break;
-    }
-  };
   
   const handleMarkerPress = (partner: Partner) => {
     setSelectedPartner(partner);
@@ -407,7 +392,7 @@ const Search: React.FC = () => {
       </View>
       
       {/* Bottom Navigation */}
-      <BottomNavigation activeScreen="search" />
+      {/* <BottomNavigation activeScreen="search" /> */}
     </SafeAreaView>
   );
 };

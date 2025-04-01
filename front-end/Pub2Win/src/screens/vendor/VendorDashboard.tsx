@@ -65,7 +65,7 @@ const VendorDashboard: React.FC = () => {
   const [vendorStats, setVendorStats] = useState<VendorStats>({
     servicesCount: 0,
     servicesGrowth: 0,
-    status: 'pending'
+    status: 'pending' 
   });
   
   const subscriptionPlans: SubscriptionPlan[] = [
@@ -369,41 +369,6 @@ const VendorDashboard: React.FC = () => {
           <Text style={styles.helpText}>Besoin de l'aide ?</Text>
         </TouchableOpacity>
       </ScrollView>
-
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('home')}
-        >
-          <Feather name="home" size={24} color="#003049" />
-          <Text style={[styles.navText, styles.navTextActive]}>Accueil</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('chat')}
-        >
-          <Feather name="message-square" size={24} color="#AAAAAA" />
-          <Text style={styles.navText}>Chat</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('place')}
-        >
-          <Feather name="map-pin" size={24} color="#AAAAAA" />
-          <Text style={styles.navText}>My place</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('profile')}
-        >
-          <Feather name="user" size={24} color="#AAAAAA" />
-          <Text style={styles.navText}>Profile</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 };

@@ -267,7 +267,7 @@ const VendorProfile: React.FC = () => {
       </ScrollView>
       
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
+      {/* <View style={styles.bottomNav}>
         <TouchableOpacity 
           style={styles.navItem} 
           onPress={() => navigation.navigate('VendorDashboard')}
@@ -298,7 +298,7 @@ const VendorProfile: React.FC = () => {
           <Feather name="user" size={24} color="#003049" />
           <Text style={[styles.navText, styles.navTextActive]}>Profile</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };

@@ -151,7 +151,7 @@ const Wallet: React.FC = () => {
       </ScrollView>
       
       {/* Bottom Navigation */}
-      <BottomNavigation activeScreen="wallet" />
+      {/* <BottomNavigation activeScreen="wallet" /> */}
     </SafeAreaView>
   );
 };

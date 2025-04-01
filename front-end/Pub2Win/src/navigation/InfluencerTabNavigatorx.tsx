@@ -9,7 +9,7 @@ import ChatScreen from '../screens/vendor/Chat';
 import WalletScreen from '../screens/influencer/Wallet';
 
 // Create a type for your Tab Navigator
-type RootTabParamList = {
+type InfluencerTabParamList = {
   InfluencerDashboard: undefined;
   Search: undefined;
   Chat: undefined;
@@ -17,7 +17,7 @@ type RootTabParamList = {
 };
 
 // Create the Tab Navigator
-const Tab = createBottomTabNavigator<RootTabParamList>();
+const Tab = createBottomTabNavigator<InfluencerTabParamList>();
 
 const InfluencerTabNavigator = () => {
   return (
@@ -54,7 +54,7 @@ const InfluencerTabNavigator = () => {
           fontFamily: 'Montserrat',
           fontSize: 12,
         },
-        headerShown: false, // Hide the default header
+        headerShown: false,
       })}
     >
       <Tab.Screen 
@@ -76,7 +76,6 @@ const InfluencerTabNavigator = () => {
         component={ChatScreen} 
         options={{ 
           title: 'Chat',
-          tabBarStyle: { display: 'none' }, // Hide bottom tab for Chat screen
         }} 
       />
       <Tab.Screen 

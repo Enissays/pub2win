@@ -17,7 +17,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useApi } from '../../hooks/useApi';
 import { useAuth } from '@clerk/clerk-expo';
 import BottomNavigation from '../../components/BottomNavigation';
-
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 const { width } = Dimensions.get('window');
 
 interface InfluencerStats {
@@ -36,7 +36,7 @@ interface Partner {
   points: number;
 }
 
-type RootStackParamList = {
+export type RootStackParamList = {
   Home: undefined;
   Search: undefined;
   Chat: undefined;
@@ -47,7 +47,7 @@ type RootStackParamList = {
   PartnerDetails: { partnerId: string };
 };
 
-type InfluencerDashboardNavigationProp = StackNavigationProp<RootStackParamList>;
+type InfluencerDashboardNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const InfluencerDashboard: React.FC = () => {
   const navigation = useNavigation<InfluencerDashboardNavigationProp>();
@@ -135,23 +135,6 @@ const InfluencerDashboard: React.FC = () => {
 
   const handlePartnerPress = (partnerId: string) => {
     navigation.navigate('PartnerDetails', { partnerId });
-  };
-
-  const handleNavigation = (screen: string) => {
-    switch(screen) {
-      case 'home':
-        // Already on home
-        break;
-      case 'search':
-        navigation.navigate('Search');
-        break;
-      case 'chat':
-        navigation.navigate('Chat');
-        break;
-      case 'wallet':
-        navigation.navigate('Wallet');
-        break;
-    }
   };
 
   // if (loading) {
@@ -265,7 +248,7 @@ const InfluencerDashboard: React.FC = () => {
       </ScrollView>
 
       {/* Bottom Navigation */}
-      <BottomNavigation activeScreen="home" />
+      {/* <BottomNavigation activeScreen="home" /> */}
     </SafeAreaView>
   );
 };
