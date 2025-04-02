@@ -9,6 +9,7 @@ import './App.css';
 
 import { useStateContext } from './contexts/ContextProvider';
 import MonProfile from './pages/MonProfile';
+import Signalement from './pages/Signalement';
 
 const App = () => {
   const { setCurrentColor, setCurrentMode, currentMode, activeMenu, currentColor, themeSettings, setThemeSettings } = useStateContext();
@@ -97,7 +98,7 @@ const App = () => {
 
                 {/* pages  */}
                 <Route path="/GesComptes" element={<Orders />} />
-                <Route path="/signalement" element={<Employees />} />
+                <Route path="/signalement" element={<Signalement />} />
                 <Route path="/AIDE" element={<Customers />} />
                 <Route path="/FAQ" element={<FAQ/>} />
                 <Route path="/GesOffres" element={<Customers />} />

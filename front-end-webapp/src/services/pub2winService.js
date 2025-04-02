@@ -379,3 +379,10 @@ export async function deleteById(question_id) {
     throw error;
   }
 }; 
+
+export async function getAllSignalemntUsers() {
+    
+  let response = await fetch(url + 'signalement/Sig/all');
+  let allSigUsers = await response.json();
+  return allSigUsers;
+}
