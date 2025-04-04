@@ -2,6 +2,9 @@ let bodyParser = require('body-parser');
 let express = require('express');
 let xhub = require('express-x-hub');
 let router = express.Router();
+const axios = require('axios');
+
+const { getClientByInstagramUsername, setInstagramId } = require('../repository/client.dao');
 
 router.use(xhub({ algorithm: 'sha1', secret: process.env.APP_SECRET }));
 router.use(bodyParser.json());
@@ -14,7 +17,7 @@ router.use(function(req, res, next) {
   next();
 });
 
-router.get('/instagram', function(req, res) {
+function getWebhook(req, res) {
   if (
   req.query['hub.mode'] == 'subscribe' &&
   req.query['hub.verify_token'] == token
@@ -23,13 +26,60 @@ router.get('/instagram', function(req, res) {
   } else {
   res.sendStatus(400);
   }
-});
+}
 
-router.post('/instagram', function(req, res) {
+function postWebhook(req, res) {
   console.log('Instagram request body:');
   console.log(req.body);
   received_updates.unshift(req.body);
+  
   res.sendStatus(200);
-});
+}
 
-module.exports = router;
+function testGetAllReceivedUpdates(req, res) {
+  res.send(received_updates);
+}
+
+async function callBackInstagram(req, res) {
+  const { code, state: userId } = req.query; // Récupère `code` et `state`
+
+  if (!code || !userId) {
+      return res.status(400).send("Code d'autorisation ou ID utilisateur manquant");
+  }
+
+  try {
+    console.log(process.env.INSTAGRAM_APP_ID);
+
+      // Échanger le code contre un access_token
+      const response = await axios.post('https://api.instagram.com/oauth/access_token', new URLSearchParams({
+          client_id: process.env.INSTAGRAM_APP_ID,
+          client_secret: process.env.INSTAGRAM_APP_SECRET,
+          grant_type: 'authorization_code',
+          redirect_uri: process.env.INSTAGRAM_REDIRECT_URI,
+          code
+      }).toString(), {
+          headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+          }
+      });
+      const { access_token, user_id: instagramId } = response.data;
+
+
+        // Associer l'ID Instagram à ton utilisateur dans la base de données
+        console.log(`Utilisateur App ID: ${userId}, Instagram ID: ${instagramId}`);
+        await setInstagramId(userId, instagramId);
+
+        res.send("Authentification Instagram réussie");
+    } catch (error) {
+        console.error("Erreur lors de l'échange du code :", error);
+        res.status(500).send("Erreur lors de l'authentification Instagram");
+    }
+}
+
+
+module.exports = {
+  getWebhook,
+  postWebhook,
+  testGetAllReceivedUpdates,
+  callBackInstagram
+}

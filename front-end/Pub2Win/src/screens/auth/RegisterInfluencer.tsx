@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -19,12 +19,14 @@ import { useSignUp, useAuth } from '@clerk/clerk-expo';
 import { Feather } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { registerRequest, registerSuccess, registerFailure } from '../../store/slices/authSlice';
+import { useApi } from '../../hooks/useApi'; // Import useApi hook
 
 type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Register: undefined;
   RegisterInfluencer:undefined;
+  InfluencerPlacement:undefined;
 };
 
 type RegisterInfluencerNavigationProp = StackNavigationProp<RootStackParamList, 'RegisterInfluencer'>;
@@ -42,12 +44,60 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
   const [password, setPassword] = useState<string>('');
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   
+  // Add these state variables for verification
+  const [verificationCode, setVerificationCode] = useState<string>('');
+  const [showVerification, setShowVerification] = useState<boolean>(false);
+  
+  // Add a loading state specifically for Clerk
+  const [clerkReady, setClerkReady] = useState<boolean>(false);
+  
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector(state => state.auth);
   const { isLoaded, signUp, setActive } = useSignUp();
+  const api = useApi();
+  
+  // Modify the useEffect to set our local state
+  useEffect(() => {
+    if (!isLoaded) {
+      console.log('Clerk authentication is still loading...');
+      setClerkReady(false);
+    } else {
+      console.log('Clerk authentication is ready');
+      setClerkReady(true);
+    }
+  }, [isLoaded]);
+  
+  // Add a delay before allowing sign up attempts
+  useEffect(() => {
+    // Give Clerk some time to initialize fully
+    const timer = setTimeout(() => {
+      if (!clerkReady && isLoaded) {
+        setClerkReady(true);
+      }
+    }, 2000); // 2 second delay
+    
+    return () => clearTimeout(timer);
+  }, [clerkReady, isLoaded]);
   
   const handleSignUp = async () => {
+    // Check if Clerk is ready using our local state
+    if (!clerkReady) {
+      console.error('Clerk authentication is not loaded yet');
+      Alert.alert('Please wait', 'The authentication system is initializing. Please try again in a moment.');
+      return;
+    }
+    
+    // Wait for Clerk to be fully loaded
     if (!isLoaded) {
+      console.error('Clerk authentication is not loaded yet');
+      Alert.alert('Please wait', 'The authentication system is initializing. Please try again in a moment.');
+      return;
+    }
+    
+    // Check if signUp object is available
+    if (!signUp) {
+      console.error('SignUp object is not available');
+      Alert.alert('Error', 'Authentication system is not properly initialized. Please restart the app and try again.');
       return;
     }
 
@@ -70,26 +120,14 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
         lastName,
         emailAddress: email,
         password,
+        username: identifier || undefined,
       });
 
       // Send verification email
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
       
-      // Navigate to verification screen or handle in another way
-      Alert.alert(
-        "Verification Email Sent",
-        "Please check your email for a verification code.",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              // You could navigate to a verification screen here
-              // For now, we'll just go back to login
-              navigation.navigate('Login');
-            }
-          }
-        ]
-      );
+      // Show verification UI instead of navigating immediately
+      setShowVerification(true);
       
     } catch (err: any) {
       console.error("Error signing up:", err);
@@ -105,6 +143,141 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
     // Handle adding social media links
     console.log('Add social media links');
   };
+
+  const handleVerification = async () => {
+    if (!isLoaded || !signUp) {
+      Alert.alert('Error', 'Authentication system is not ready. Please try again.');
+      return;
+    }
+
+    if (!verificationCode) {
+      Alert.alert('Error', 'Please enter the verification code');
+      return;
+    }
+
+    try {
+      dispatch(registerRequest());
+      
+      // Attempt to verify the email
+      const completeSignUp = await signUp.attemptEmailAddressVerification({
+        code: verificationCode,
+      });
+
+      if (completeSignUp.status !== "complete") {
+        // Handle verification error
+        throw new Error("Email verification failed");
+      }
+
+      // Set the user as active - add null check before calling setActive
+      if (setActive) {
+        await setActive({ session: completeSignUp.createdSessionId });
+      } else {
+        console.error("setActive is undefined");
+        throw new Error("Authentication error: Unable to set active session");
+      }
+      
+      // Update Redux store with user info
+      if (completeSignUp.createdUserId) {
+        dispatch(registerSuccess({
+          id: completeSignUp.createdUserId,
+          name: `${firstName} ${lastName}`,
+          email: email,
+          isLoggedIn: true,
+        }));
+        
+        // Register the user in your backend using the API hook
+        try {
+          await api.post('/user/register', {
+            userId: completeSignUp.createdUserId,
+            firstName,
+            lastName,
+            email,
+            username: identifier || undefined,
+            phoneNumber: phoneNumber || undefined,
+            userType: 'influencer'
+          });
+          
+          // Navigate to influencer placement screen
+          navigation.navigate('InfluencerPlacement');
+        } catch (apiError: any) {
+          console.error("Error registering with backend:", apiError);
+          // Still navigate to placement screen but show an error
+          Alert.alert(
+            "Registration Warning",
+            "Your account was created but we couldn't complete your profile setup. Some features may be limited.",
+            [
+              { text: "OK", onPress: () => navigation.navigate('InfluencerPlacement') }
+            ]
+          );
+        }
+      } else {
+        // Navigate to influencer placement screen as fallback
+        navigation.navigate('InfluencerPlacement');
+      }
+    } catch (err: any) {
+      console.error("Error verifying email:", err);
+      dispatch(registerFailure(err.message || "Verification failed. Please try again."));
+    }
+  };
+
+  // Add verification UI rendering
+  if (showVerification) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.container}
+        >
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.logoContainer}>
+              <Image 
+                source={require('../../assets/logo2.png')}
+                style={styles.logo}
+                resizeMode='contain'
+              />
+            </View>
+            
+            <View style={styles.headerContainer}>
+              <Text style={styles.headerTitle}>Vérifiez votre email</Text>
+              <Text style={styles.headerSubtitle}>
+                Nous avons envoyé un code de vérification à {email}. Veuillez entrer ce code ci-dessous.
+              </Text>
+            </View>
+            
+            <View style={styles.formContainer}>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Code de vérification"
+                  value={verificationCode}
+                  onChangeText={setVerificationCode}
+                  keyboardType="number-pad"
+                  editable={!loading}
+                />
+              </View>
+              
+              {error && (
+                <Text style={styles.errorText}>{error}</Text>
+              )}
+              
+              <TouchableOpacity 
+                style={styles.registerButton}
+                onPress={handleVerification}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#FFFFFF" size="small" />
+                ) : (
+                  <Text style={styles.registerButtonText}>Vérifier</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -251,14 +424,14 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
             </TouchableOpacity>
             
             {/* Login Link */}
-            {/* <View style={styles.loginContainer}>
+            <View style={styles.loginContainer}>
               <Text style={styles.loginText}>
                 Avez-vous déjà un compte ? {' '}
               </Text>
               <TouchableOpacity onPress={handleLogin}>
                 <Text style={styles.loginLink}>Veuillez se connecter</Text>
               </TouchableOpacity>
-            </View> */}
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -274,8 +447,6 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     paddingHorizontal: 20,
-    // paddingTop: 20,
-    // paddingBottom: 30,
   },
   logoContainer: {
     alignItems: 'center',

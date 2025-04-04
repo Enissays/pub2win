@@ -3,6 +3,16 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const http = require('http');
 const dotenv = require('dotenv');
+const { Clerk } = require('@clerk/clerk-sdk-node');
+const routes = require('./routes/route');
+
+
+// Check if key is loaded
+console.log('Clerk Secret Key available:', !!process.env.CLERK_SECRET_KEY);
+
+// Initialize Clerk
+const clerk = Clerk({ secretKey: process.env.CLERK_SECRET_KEY });
+
 const CommercantRoute = require('.//routes/vendor.route');
 const offreRoutes = require('.//routes/offre.route');
 const userRoutes = require('.//routes/user.route');
@@ -20,8 +30,8 @@ const socketIO = require('socket.io');
 dotenv.config();
 // Initialize Express app
 const app = express();
-const server = http.createServer(app);  // Create server here
-const io = socketIO(server);  // Initialize socket.io with the server
+const server = http.createServer(app);
+const io = socketIO(server);
 
 // Middleware
 app.use(cors());
@@ -51,6 +61,8 @@ app.get('/', (req, res) => {
   utilis.addUser();  
   res.send('Welcome to Pub2Win API');
 });
+// Add your routes
+app.use('/', routes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const VendorController = require('../controllers/admin/VendorController');
+const VendorController = require('../controllers/admin/vendorController');
 
 
 router.get('/years', VendorController.getAvailableAboComYears);

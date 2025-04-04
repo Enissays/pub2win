@@ -17,6 +17,8 @@ type RootStackParamList = {
   Register:undefined;
   RegisterInfluencer: undefined;
   RegisterVender: undefined;
+  InfluencerPlacement: undefined;
+  VendorPlacement: undefined;
 };
 
 // Define the navigation prop type
@@ -41,14 +43,14 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
     if (navigation) {
       navigation.navigate('RegisterInfluencer');
     } else {
-      console.log('Navigate to login screen');
+      console.log('Navigate to Register Influencer');
     }
   }
   const handleRegisterVender = ():void=>{
     if (navigation) {
       navigation.navigate('RegisterVender');
     } else {
-      console.log('Navigate to login screen');
+      console.log('Navigate to Register Influencer');
     }
   }
   const handleConnect = (): void => {
@@ -152,8 +154,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 24,
-    // fontWeight: 'bold',
     fontFamily:'Montserrat-Bold',
+    // fontWeight: 'bold',
     textAlign: 'left',
     marginTop: 60,
     marginBottom: 40,

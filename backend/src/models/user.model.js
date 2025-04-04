@@ -3,6 +3,9 @@ const Schema = mongoose.Schema;
 const { RoleEnum } = require('./enums');
 
 const UserSchema = new Schema({
+  // Add this field to link with Clerk
+  clerkId: { type: String, unique: true },
+  
   email: { type: String, required: true, unique: true },
   nom: { type: String, required: true },
   prenom: { type: String, required: true },

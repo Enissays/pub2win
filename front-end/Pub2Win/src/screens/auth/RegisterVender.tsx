@@ -19,12 +19,14 @@ import { useSignUp, useAuth } from '@clerk/clerk-expo';
 import { Feather } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { registerRequest, registerSuccess, registerFailure } from '../../store/slices/authSlice';
+import { useApi } from '../../hooks/useApi'; // Add this import
 
 type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Register: undefined;
   RegisterVender:undefined;
+  VendorPlacement:undefined;
 };
 
 type RegisterInfluencerNavigationProp = StackNavigationProp<RootStackParamList, 'RegisterVender'>;
@@ -42,12 +44,18 @@ const RegisterVender: React.FC<RegisterScreenProps> = ({ navigation }) => {
   const [password, setPassword] = useState<string>('');
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   
+  // Add these state variables for verification if they don't exist
+  const [verificationCode, setVerificationCode] = useState<string>('');
+  const [showVerification, setShowVerification] = useState<boolean>(false);
+  
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector(state => state.auth);
   const { isLoaded, signUp, setActive } = useSignUp();
+  const api = useApi(); // Add this line to use the API hook
   
   const handleSignUp = async () => {
-    if (!isLoaded) {
+    if (!isLoaded || !signUp) {
+      Alert.alert('Error', 'Authentication system is not ready. Please try again.');
       return;
     }
 
@@ -70,32 +78,154 @@ const RegisterVender: React.FC<RegisterScreenProps> = ({ navigation }) => {
         lastName,
         emailAddress: email,
         password,
+        username: identifier || undefined,
       });
 
       // Send verification email
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
       
-      // Navigate to verification screen or handle in another way
-      Alert.alert(
-        "Verification Email Sent",
-        "Please check your email for a verification code.",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              // You could navigate to a verification screen here
-              // For now, we'll just go back to login
-              navigation.navigate('Login');
-            }
-          }
-        ]
-      );
+      // Show verification UI instead of navigating immediately
+      setShowVerification(true);
       
     } catch (err: any) {
       console.error("Error signing up:", err);
       dispatch(registerFailure(err.errors?.[0]?.message || "An error occurred during sign up"));
     }
   };
+
+  const handleVerification = async () => {
+    if (!isLoaded || !signUp) {
+      Alert.alert('Error', 'Authentication system is not ready. Please try again.');
+      return;
+    }
+
+    if (!verificationCode) {
+      Alert.alert('Error', 'Please enter the verification code');
+      return;
+    }
+
+    try {
+      dispatch(registerRequest());
+      
+      // Attempt to verify the email
+      const completeSignUp = await signUp.attemptEmailAddressVerification({
+        code: verificationCode,
+      });
+
+      if (completeSignUp.status !== "complete") {
+        // Handle verification error
+        throw new Error("Email verification failed");
+      }
+
+      // Set the user as active - add null check before calling setActive
+      if (setActive) {
+        await setActive({ session: completeSignUp.createdSessionId });
+      } else {
+        console.error("setActive is undefined");
+        throw new Error("Authentication error: Unable to set active session");
+      }
+      
+      // Update Redux store with user info
+      if (completeSignUp.createdUserId) {
+        dispatch(registerSuccess({
+          id: completeSignUp.createdUserId,
+          name: `${firstName} ${lastName}`,
+          email: email,
+          isLoggedIn: true,
+        }));
+        
+        // Register the user in your backend using the API hook
+        try {
+          await api.post('/user/register', {
+            userId: completeSignUp.createdUserId,
+            firstName,
+            lastName,
+            email,
+            username: identifier || undefined,
+            phoneNumber: phoneNumber || undefined,
+            userType: 'vendor'
+          });
+          
+          // Navigate to vendor placement screen
+          navigation.navigate('VendorPlacement');
+        } catch (apiError: any) {
+          console.error("Error registering with backend:", apiError);
+          Alert.alert(
+            "Registration Warning",
+            "Your account was created but we couldn't complete your profile setup. Some features may be limited.",
+            [
+              { text: "OK", onPress: () => navigation.navigate('VendorPlacement') }
+            ]
+          );
+        }
+      } else {
+        // Navigate to vendor placement screen as fallback
+        navigation.navigate('VendorPlacement');
+      }
+    } catch (err: any) {
+      console.error("Error verifying email:", err);
+      dispatch(registerFailure(err.message || "Verification failed. Please try again."));
+    }
+  };
+
+  // Add verification UI rendering
+  if (showVerification) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.container}
+        >
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.logoContainer}>
+              <Image 
+                source={require('../../assets/logo2.png')}
+                style={styles.logo}
+                resizeMode='contain'
+              />
+            </View>
+            
+            <View style={styles.headerContainer}>
+              <Text style={styles.headerTitle}>Vérifiez votre email</Text>
+              <Text style={styles.headerSubtitle}>
+                Nous avons envoyé un code de vérification à {email}. Veuillez entrer ce code ci-dessous.
+              </Text>
+            </View>
+            
+            <View style={styles.formContainer}>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Code de vérification"
+                  value={verificationCode}
+                  onChangeText={setVerificationCode}
+                  keyboardType="number-pad"
+                  editable={!loading}
+                />
+              </View>
+              
+              {error && (
+                <Text style={styles.errorText}>{error}</Text>
+              )}
+              
+              <TouchableOpacity 
+                style={styles.registerButton}
+                onPress={handleVerification}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#FFFFFF" size="small" />
+                ) : (
+                  <Text style={styles.registerButtonText}>Vérifier</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    );
+  }
 
   const handleLogin = (): void => {
     navigation.navigate('Login');
@@ -133,135 +263,170 @@ const RegisterVender: React.FC<RegisterScreenProps> = ({ navigation }) => {
           
           {/* Form */}
           <View style={styles.formContainer}>
-            {/* First Name */}
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="Prénom*"
-                value={firstName}
-                onChangeText={setFirstName}
-                editable={!loading}
-              />
-            </View>
-            
-            {/* Last Name */}
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="Nom*"
-                value={lastName}
-                onChangeText={setLastName}
-                editable={!loading}
-              />
-            </View>
-            
-            {/* Identifier */}
-            <View style={styles.inputContainer}>
-              <Feather name="user" size={18} color="#999" style={styles.inputIcon} />
-              <TextInput
-                style={styles.inputWithIcon}
-                placeholder="Identifiant*"
-                value={identifier}
-                onChangeText={setIdentifier}
-                editable={!loading}
-              />
-            </View>
-            
-            {/* Email */}
-            <View style={styles.inputContainer}>
-              <Feather name="mail" size={18} color="#999" style={styles.inputIcon} />
-              <TextInput
-                style={styles.inputWithIcon}
-                placeholder="Email*"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                editable={!loading}
-              />
-            </View>
-            
-            {/* Phone Number */}
-            <View style={styles.inputContainer}>
-              <Feather name="phone" size={18} color="#999" style={styles.inputIcon} />
-              <TextInput
-                style={styles.inputWithIcon}
-                placeholder="Numéro de téléphone*"
-                value={phoneNumber}
-                onChangeText={setPhoneNumber}
-                keyboardType="phone-pad"
-                editable={!loading}
-              />
-            </View>
-            
-            {/* Password */}
-            <View style={styles.inputContainer}>
-              <Feather name="lock" size={18} color="#999" style={styles.inputIcon} />
-              <TextInput
-                style={styles.inputWithIcon}
-                placeholder="Mot de passe"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                editable={!loading}
-              />
-            </View>
-            
-            {/* Social Media Links */}
-            <TouchableOpacity 
-              style={styles.socialMediaButton}
-              onPress={handleAddSocialMedia}
-            >
-              <Text style={styles.socialMediaButtonText}>
-                Ajoutez les liens vers vos réseaux sociaux
-              </Text>
-              <Feather name="plus-circle" size={20} color="#00BCD4" />
-            </TouchableOpacity>
+            {!showVerification ? (
+              <>
+                {/* First Name */}
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Prénom*"
+                    value={firstName}
+                    onChangeText={setFirstName}
+                    editable={!loading}
+                  />
+                </View>
+                
+                {/* Last Name */}
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Nom*"
+                    value={lastName}
+                    onChangeText={setLastName}
+                    editable={!loading}
+                  />
+                </View>
+                
+                {/* Identifier */}
+                <View style={styles.inputContainer}>
+                  <Feather name="user" size={18} color="#999" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.inputWithIcon}
+                    placeholder="Identifiant*"
+                    value={identifier}
+                    onChangeText={setIdentifier}
+                    editable={!loading}
+                  />
+                </View>
+                
+                {/* Email */}
+                <View style={styles.inputContainer}>
+                  <Feather name="mail" size={18} color="#999" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.inputWithIcon}
+                    placeholder="Email*"
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    editable={!loading}
+                  />
+                </View>
+                
+                {/* Phone Number */}
+                <View style={styles.inputContainer}>
+                  <Feather name="phone" size={18} color="#999" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.inputWithIcon}
+                    placeholder="Numéro de téléphone*"
+                    value={phoneNumber}
+                    onChangeText={setPhoneNumber}
+                    keyboardType="phone-pad"
+                    editable={!loading}
+                  />
+                </View>
+                
+                {/* Password */}
+                <View style={styles.inputContainer}>
+                  <Feather name="lock" size={18} color="#999" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.inputWithIcon}
+                    placeholder="Mot de passe"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    editable={!loading}
+                  />
+                </View>
+                
+                {/* Social Media Links */}
+                <TouchableOpacity 
+                  style={styles.socialMediaButton}
+                  onPress={handleAddSocialMedia}
+                >
+                  <Text style={styles.socialMediaButtonText}>
+                    Ajoutez les liens vers vos réseaux sociaux
+                  </Text>
+                  <Feather name="plus-circle" size={20} color="#00BCD4" />
+                </TouchableOpacity>
+                
+                {/* Terms and Conditions */}
+                <View style={styles.termsContainer}>
+                  <TouchableOpacity 
+                    style={[
+                      styles.checkbox, 
+                      acceptTerms ? styles.checkboxChecked : {}
+                    ]}
+                    onPress={() => setAcceptTerms(!acceptTerms)}
+                    disabled={loading}
+                  >
+                    {acceptTerms && <Feather name="check" size={14} color="#fff" />}
+                  </TouchableOpacity>
+                  <Text style={styles.termsText}>
+                    J'accepte les <Text style={styles.termsLink}>politiques</Text> et <Text style={styles.termsLink}>conditions d'utilisations</Text>
+                  </Text>
+                </View>
+                
+                {/* Register Button */}
+                <TouchableOpacity 
+                  style={styles.registerButton}
+                  onPress={handleSignUp}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <ActivityIndicator color="#FFFFFF" size="small" />
+                  ) : (
+                    <Text style={styles.registerButtonText}>S'inscrire</Text>
+                  )}
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                {/* Verification Code Input */}
+                <Text style={styles.verificationText}>
+                  Veuillez entrer le code de vérification envoyé à votre email
+                </Text>
+                <View style={styles.inputContainer}>
+                  <Feather name="key" size={18} color="#999" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.inputWithIcon}
+                    placeholder="Code de vérification"
+                    value={verificationCode}
+                    onChangeText={setVerificationCode}
+                    keyboardType="number-pad"
+                    editable={!loading}
+                  />
+                </View>
+                
+                {/* Verify Button */}
+                <TouchableOpacity 
+                  style={styles.registerButton}
+                  onPress={handleVerification}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <ActivityIndicator color="#FFFFFF" size="small" />
+                  ) : (
+                    <Text style={styles.registerButtonText}>Vérifier</Text>
+                  )}
+                </TouchableOpacity>
+              </>
+            )}
             
             {/* Error message */}
             {error && (
               <Text style={styles.errorText}>{error}</Text>
             )}
             
-            {/* Terms and Conditions */}
-            <View style={styles.termsContainer}>
-              <TouchableOpacity 
-                style={[
-                  styles.checkbox, 
-                  acceptTerms ? styles.checkboxChecked : {}
-                ]}
-                onPress={() => setAcceptTerms(!acceptTerms)}
-                disabled={loading}
-              >
-                {acceptTerms && <Feather name="check" size={14} color="#fff" />}
-              </TouchableOpacity>
-              <Text style={styles.termsText}>
-                J'accepte les <Text style={styles.termsLink}>politiques</Text> et <Text style={styles.termsLink}>conditions d'utilisations</Text>
-              </Text>
-            </View>
-            
-            {/* Register Button */}
-            <TouchableOpacity 
-              style={styles.registerButton}
-              onPress={handleSignUp}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator color="#FFFFFF" size="small" />
-              ) : (
-                <Text style={styles.registerButtonText}>S'inscrire</Text>
-              )}
-            </TouchableOpacity>
-            
             {/* Login Link */}
-            {/* <View style={styles.loginContainer}>
+            <View style={styles.loginContainer}>
               <Text style={styles.loginText}>
                 Avez-vous déjà un compte ? {' '}
               </Text>
               <TouchableOpacity onPress={handleLogin}>
                 <Text style={styles.loginLink}>Veuillez se connecter</Text>
               </TouchableOpacity>
-            </View> */}
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -407,10 +572,18 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontFamily: 'Montserrat',
   },
-  loginContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
+  verificationText: {
+      fontSize: 16,
+      color: '#333',
+      textAlign: 'center',
+      marginBottom: 20,
+      fontFamily: 'Montserrat',
+    },
+    loginContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginTop: 15,
+    },
   loginText: {
     color: '#333333',
     fontSize: 14,

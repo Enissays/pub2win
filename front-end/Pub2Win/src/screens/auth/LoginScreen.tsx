@@ -20,6 +20,7 @@ import { useSignIn, useAuth, useOAuth, useUser } from '@clerk/clerk-expo';
 import { Feather } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { loginRequest, loginSuccess, loginFailure } from '../../store/slices/authSlice';
+import { useApi } from '../../hooks/useApi'; // Add this import
 
 type RootStackParamList = {
   Home: undefined;
@@ -45,6 +46,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const { user } = useUser();
   const { startOAuthFlow: googleAuth } = useOAuth({ strategy: "oauth_google" });
   const { startOAuthFlow: appleAuth } = useOAuth({ strategy: "oauth_apple" });
+  const api = useApi(); // Add this line to use the API hook
 
   const handleEmailSignIn = async () => {
     if (!isLoaded) {
@@ -71,12 +73,26 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         // Update Redux store with user info
         // We need to wait for the user object to be available after sign-in
         if (userId && user) {
-          dispatch(loginSuccess({
+          const userData = {
             id: userId,
             name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
             email: user.primaryEmailAddress?.emailAddress || '',
             isLoggedIn: true,
-          }));
+          };
+          
+          dispatch(loginSuccess(userData));
+          
+          // Send login data to backend
+          try {
+            await api.post('/user/login', {
+              userId: userId,
+              email: user.primaryEmailAddress?.emailAddress || '',
+              lastLogin: new Date().toISOString()
+            });
+          } catch (apiError: any) {
+            console.error("Error syncing login with backend:", apiError);
+            // Continue with navigation even if backend sync fails
+          }
         }
         
         // Navigate to home
@@ -104,13 +120,30 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       
       if (result?.createdSessionId && result?.setActive) {
         await result.setActive({ session: result.createdSessionId });
+        
+        // Sync with backend after successful OAuth login
+        if (userId && user) {
+          try {
+            await api.post('/user/oauth-login', {
+              userId: userId,
+              provider: 'google',
+              email: user.primaryEmailAddress?.emailAddress || '',
+              name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+              lastLogin: new Date().toISOString()
+            });
+          } catch (apiError: any) {
+            console.error("Error syncing OAuth login with backend:", apiError);
+            // Continue with navigation even if backend sync fails
+          }
+        }
+        
         navigation.replace('Home');
       } else {
-        throw new Error('Apple sign in failed - missing session data');
+        throw new Error('Google sign in failed - missing session data');
       }
     } catch (err: any) {
-      console.error("Error with Apple sign in:", err);
-      dispatch(loginFailure("Apple sign in failed"));
+      console.error("Error with Google sign in:", err);
+      dispatch(loginFailure("Google sign in failed"));
     }
   };
 
@@ -123,6 +156,23 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       
       if (result?.createdSessionId && result?.setActive) {
         await result.setActive({ session: result.createdSessionId });
+        
+        // Sync with backend after successful OAuth login
+        if (userId && user) {
+          try {
+            await api.post('/user/oauth-login', {
+              userId: userId,
+              provider: 'apple',
+              email: user.primaryEmailAddress?.emailAddress || '',
+              name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+              lastLogin: new Date().toISOString()
+            });
+          } catch (apiError: any) {
+            console.error("Error syncing OAuth login with backend:", apiError);
+            // Continue with navigation even if backend sync fails
+          }
+        }
+        
         navigation.replace('Home');
       } else {
         throw new Error('Apple sign in failed - missing session data');
@@ -287,7 +337,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 100,
     paddingTop: 20,
     paddingLeft: 20,
-    position: 'relative',
+    // position: 'relative',
   },
   greeting: {
     color: '#FFFFFF',

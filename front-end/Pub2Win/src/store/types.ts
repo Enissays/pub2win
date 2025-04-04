@@ -17,6 +17,9 @@ export interface Influencer {
 // These interfaces will be used in the slices
 export interface AuthState {
   user: User | null;
+  token: string | null;
+  userType: 'vendor' | 'influencer' | null;
+  isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
 }
