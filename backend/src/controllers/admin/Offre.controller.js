@@ -102,10 +102,10 @@ const OffreController = {
 
   async getallInfluenceurperCommercantYears(req, res) {
     try {
-        const { commercant_id } = req.params;
+        const { username } = req.params;
         
-        console.log("commercant_id: "+commercant_id);
-        const results = await OffreService.getallInfluenceurperCommercantYears(commercant_id);
+        console.log("username: "+username);
+        const results = await OffreService.getallInfluenceurperCommercantYears(username);
         
         return res.status(200).json({
             success: true,
@@ -124,8 +124,8 @@ const OffreController = {
 
    async getNombreInfluenceurParMois(req, res) {
     try {
-        const { commercant_id,year} = req.body;
-        const results = await OffreService.getNombreInfluenceurParMois(commercant_id,parseInt(year));
+        const { username,year} = req.body;
+        const results = await OffreService.getNombreInfluenceurParMois(username,parseInt(year));
         
         return res.status(200).json({
             success: true,

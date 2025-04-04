@@ -1,74 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Card, CardContent, Typography, Grid, Divider, CircularProgress, Paper } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import SupportAgentIcon from '@mui/icons-material/SupportAgent';
-import { getAIDE } from '../services/pub2winService';
-import { AttractiveButton, BoxAide} from '../components';
-
+import { AttractiveButton, BoxAide,AideService } from '../components';
+import { useAide } from '../contexts/AideContext';
+import { updateAIDE } from '../services/pub2winService';
 
 const Customers = () => {
-  const [aide, setAide] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // Utiliser le contexte partagé au lieu de gérer l'état localement
+  const { aide, loading, error, formValues, handleFieldChange, handleSaveField } = useAide();
   
   // État pour suivre quel champ est en cours d'édition
   const [editingField, setEditingField] = useState('');
-  
-  // État pour stocker les valeurs modifiées
-  const [formValues, setFormValues] = useState({
-    email: '',
-    telephone: '',
-    facebook_url: '',
-    instagram_url: '',
-    twitter_url: ''
-  });
-
-  // Fonction pour gérer le changement de valeur d'un champ
-  const handleFieldChange = (e, field) => {
-    setFormValues({
-      ...formValues,
-      [field]: e.target.value
-    });
-  };
-
-  // Fonction pour sauvegarder la valeur d'un champ
-  const handleSaveField = (field) => {
-    const updatedAide = { ...aide };
-    updatedAide[field] = formValues[field];
-    setAide(updatedAide);
-    setEditingField('');
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    getAIDE()
-      .then(response => {
-        if (response.success) {
-          setAide(response.data);
-          // Initialiser formValues avec les données actuelles
-          setFormValues({
-            email: response.data.email || '',
-            telephone: response.data.telephone || '',
-            facebook_url: response.data.facebook_url || '',
-            instagram_url: response.data.instagram_url || '',
-            twitter_url: response.data.twitter_url || ''
-          });
-        } else {
-          setError("Impossible de récupérer les données");
-        }
-      })
-      .catch(error => {
-        console.error("Erreur lors de la récupération des données:", error);
-        setError("Une erreur est survenue lors de la récupération des données");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
 
   if (loading) {
     return (
@@ -95,29 +41,11 @@ const Customers = () => {
       </Typography>
       
       {/* Section d'introduction attrayante */}
-      <Paper 
-        elevation={3} 
-        sx={{ 
-          p: 3, 
-          mb: 4, 
-          borderRadius: '16px', 
-          background: 'linear-gradient(135deg, #4dabf5 0%, #2196f3 100%)',
-          color: 'white',
-          display: 'flex',
-          alignItems: 'center'
-        }}
-      >
-        <SupportAgentIcon sx={{ fontSize: 60, mr: 3 }} />
-        <Box>
-          <Typography variant="h5" fontWeight="bold" gutterBottom>
-            À votre service !
-          </Typography>
-          <Typography variant="body1">
-            Bienvenue, cher administrateur ! Cet espace vous permet de visualiser les informations de contact actuelles de pub2win, ainsi vous permettra d'actualiser ces données dès que nécessaire.
-          </Typography>
-        </Box>
-      </Paper>
       
+      <AideService  
+        des="Bienvenue, cher administrateur ! Cet espace vous permet de visualiser les informations de contact actuelles de pub2win, ainsi vous permettra d'actualiser ces données dès que nécessaire."
+      />
+
       <Card elevation={3} sx={{ borderRadius: '16px' }}>
         <CardContent>
           <Grid container spacing={3} direction="column">
@@ -135,7 +63,10 @@ const Customers = () => {
                   editingField={editingField}
                   setEditingField={setEditingField}
                   handleFieldChange={handleFieldChange}
-                  handleSaveField={handleSaveField}
+                  handleSaveField={(field) => {
+                    handleSaveField(field);
+                    setEditingField('');
+                  }}
                 />
               </Grid>
             )}
@@ -154,7 +85,10 @@ const Customers = () => {
                   editingField={editingField}
                   setEditingField={setEditingField}
                   handleFieldChange={handleFieldChange}
-                  handleSaveField={handleSaveField}
+                  handleSaveField={(field) => {
+                    handleSaveField(field);
+                    setEditingField('');
+                  }}
                 />
               </Grid>
             )}
@@ -180,7 +114,10 @@ const Customers = () => {
                   editingField={editingField}
                   setEditingField={setEditingField}
                   handleFieldChange={handleFieldChange}
-                  handleSaveField={handleSaveField}
+                  handleSaveField={(field) => {
+                    handleSaveField(field);
+                    setEditingField('');
+                  }}
                 />
               </Grid>
             )}
@@ -199,7 +136,10 @@ const Customers = () => {
                   editingField={editingField}
                   setEditingField={setEditingField}
                   handleFieldChange={handleFieldChange}
-                  handleSaveField={handleSaveField}
+                  handleSaveField={(field) => {
+                    handleSaveField(field);
+                    setEditingField('');
+                  }}
                 />
               </Grid>
             )}
@@ -218,7 +158,10 @@ const Customers = () => {
                   editingField={editingField}
                   setEditingField={setEditingField}
                   handleFieldChange={handleFieldChange}
-                  handleSaveField={handleSaveField}
+                  handleSaveField={(field) => {
+                    handleSaveField(field);
+                    setEditingField('');
+                  }}
                 />
               </Grid>
             )}
@@ -226,7 +169,7 @@ const Customers = () => {
         </CardContent>
       </Card>
 
-      <AttractiveButton formValues={formValues} />
+      <AttractiveButton func={updateAIDE} formValues={formValues} title={"Mettre à jour les informations"}/>
     </div>
   );
 };

@@ -14,4 +14,17 @@ router.get('/count',UserController.getCountUsers);
 
 
 router.get('/allUsers',UserController.getAllUsers);
+
+router.post('/SrchByUn',UserController.getByuserName);
+
+
+router.delete('/delete/:username',UserController.deleteByUsername);
+
+//changer le nom ou le prenom d'un user
+router.put('/profileUpdate', UserController.updateProfile);
+
+router.get('/profileAdmin', UserController.getUserByRole);
+
+
+
 module.exports = router;

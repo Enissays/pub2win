@@ -7,8 +7,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 const BoxAide = ({ 
   icon, 
   title, 
-  field, 
-  value, 
+  field,  
   color, 
   url, 
   formValues, 

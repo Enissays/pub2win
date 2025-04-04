@@ -123,8 +123,8 @@ const Offreservice = {
         }
       },
 
-      async getallInfluenceurperCommercantYears(commercant_id){
-        const results= await OffreDAO.getallInfluenceurperCommercantYears(commercant_id)
+      async getallInfluenceurperCommercantYears(username){
+        const results= await OffreDAO.getallInfluenceurperCommercantYears(username)
 
         if (results === null){
           return null
@@ -133,7 +133,7 @@ const Offreservice = {
         return results;
       },
 
-      async getNombreInfluenceurParMois(commercant_id,year) {
+      async getNombreInfluenceurParMois(username,year) {
         try {
           // Vérifier que year est un nombre valide
           const requestedYear = parseInt(year);
@@ -142,7 +142,7 @@ const Offreservice = {
           }
           
           // Obtenir les données brutes du DAO
-          const InfByMonth = await OffreDAO.getNombreInfluenceurParMois(commercant_id,year);
+          const InfByMonth = await OffreDAO.getNombreInfluenceurParMois(username,year);
           
           // Initialiser le résultat avec tous les mois de l'année à zéro
           const result = {};

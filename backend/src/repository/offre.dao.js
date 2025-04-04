@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Offre = require('./../models/offre.model');
+const Commercant = require('../models/commercant.model');
+const commercantService = require('../services/commercant.service');
 const { ObjectId } = mongoose.Types;
 
 const OffreDAO = {
@@ -222,17 +224,23 @@ const OffreDAO = {
       }
     },
 
-    async getallInfluenceurperCommercantYears(commercant_id) {
+    async getallInfluenceurperCommercantYears(username) {
       try {
-        const allOffre = await Offre.find();
-        console.log(JSON.stringify(allOffre, null, 2)); 
+        /*const allOffre = await Offre.find();
+        console.log(JSON.stringify(allOffre, null, 2)); */
+        const commercants = await Commercant.find({},username);
+        console.log("commercants: ",commercants);
+        const commercant_id=commercants.map(commercant => commercant._id);
+        console.log("commercant_id: ",commercant_id);
+
+        const commercantObjectId = commercant_id[0];
 
 
       const resultats = await Offre.aggregate([
           // Filtrer pour le commerçant spécifique
           { 
               $match: { 
-                  commercant_id: new ObjectId(commercant_id),
+                  commercant_id: commercantObjectId,
                   is_active: true
               } 
           },
@@ -279,69 +287,83 @@ const OffreDAO = {
     }
   },
 
-  async getNombreInfluenceurParMois(commercant_id, requestedYear) {
-    try {
-        const influenceurParMois = await Offre.aggregate([
-            // 1. Filtrer par commerçant et offres actives
-            { 
-                $match: { 
-                    commercant_id: new mongoose.Types.ObjectId(commercant_id),
-                    is_active: true
-                } 
-            },
+  async getNombreInfluenceurParMois(username, requestedYear) {
 
-            // 2. Déplier les clients
-            { $unwind: "$clients" },
-            {
-              $match :{ 
-                "clients.is_completed":  false 
-              } 
-            },
-            // 3. Filtrer par année
-            {
-                $match: {
-                    "clients.date_utilisation": {
-                        $gte: new Date(`${requestedYear}-01-01T00:00:00.000Z`),
-                        $lt: new Date(`${requestedYear + 1}-01-01T00:00:00.000Z`)
-                    }
-                }
-            },
-
-            // 4. Extraire le mois de la date d'utilisation
-            {
-                $addFields: {
-                    mois: { $month: "$clients.date_utilisation" }
-                }
-            },
-
-            // 5. Grouper par mois et compter TOUS les clients
-            {
-                $group: {
-                    _id: "$mois",
-                    nombre_clients: { $push: "$clients._id" }
-                }
-            },
-
-            // 6. Transformer pour obtenir le compte
-            {
-                $project: {
-                    mois: "$_id",
-                    nbrInfluenceur: { $size: "$nombre_clients" },
-                    _id: 0
-                }
-            },
-            
-            // 7. Trier par mois
-            {
-                $sort: { mois: 1 }
-            }
-        ]);
-        console.log("influenceurParMois: ",influenceurParMois);
-        return influenceurParMois;
-    } catch (error) {
-        console.error('Erreur lors de la récupération des clients par mois:', error);
-        throw error;
+    console.log("username: ",username);
+    const commercants = await Commercant.find({ username: username });
+    console.log("commercants: ",commercants);
+    if(commercants == null){
+      return null;
     }
+    const commercant_id=commercants.map(commercant => commercant._id);
+    //console.log("commercant_id: ",commercant_id);
+    
+
+    const commercantObjectId = commercant_id[0];
+    console.log("commercantObjectId: ",commercantObjectId);
+    try {
+      const influenceurParMois = await Offre.aggregate([
+          // 1. Filtrer par commerçant et offres actives
+          { 
+              $match: { 
+                  commercant_id: commercantObjectId,
+                  is_active: true
+              } 
+          },
+
+          // 2. Déplier les clients
+          { $unwind: "$clients" },
+          {
+            $match :{ 
+              "clients.is_completed":  false 
+            } 
+          },
+          // 3. Filtrer par année
+          {
+              $match: {
+                  "clients.date_utilisation": {
+                      $gte: new Date(`${requestedYear}-01-01T00:00:00.000Z`),
+                      $lt: new Date(`${requestedYear + 1}-01-01T00:00:00.000Z`)
+                  }
+              }
+          },
+
+          // 4. Extraire le mois de la date d'utilisation
+          {
+              $addFields: {
+                  mois: { $month: "$clients.date_utilisation" }
+              }
+          },
+
+          // 5. Grouper par mois et compter TOUS les clients
+          {
+              $group: {
+                  _id: "$mois",
+                  nombre_clients: { $push: "$clients._id" }
+              }
+          },
+
+          // 6. Transformer pour obtenir le compte
+          {
+              $project: {
+                  mois: "$_id",
+                  nbrInfluenceur: { $size: "$nombre_clients" },
+                  _id: 0
+              }
+          },
+          
+          // 7. Trier par mois
+          {
+              $sort: { mois: 1 }
+          }
+      ]);
+      console.log("influenceurParMois: ",influenceurParMois);
+      return influenceurParMois;
+  } catch (error) {
+      console.error('Erreur lors de la récupération des clients par mois:', error);
+      throw error;
+  }
+    
   },
 
   async getCountActiveOffres() {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AiOutlineCalendar, AiOutlineShoppingCart, AiOutlineAreaChart, AiOutlineBarChart, AiOutlineStock } from 'react-icons/ai';
+import { AiOutlineCalendar, AiOutlineShoppingCart, AiOutlineAreaChart, AiOutlineBarChart, AiOutlineStock,AiOutlineUser,AiOutlineLogout } from 'react-icons/ai';
 import { FiShoppingBag, FiEdit, FiPieChart, FiBarChart, FiCreditCard, FiStar, FiShoppingCart } from 'react-icons/fi';
 import { BsKanban, BsBarChart, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft } from 'react-icons/bs';
 import { BiColorFill } from 'react-icons/bi';
@@ -28,12 +28,8 @@ export const gridOrderImage = (props) => (
   <div>
     <img
       className="rounded-xl h-20 md:ml-3"
-      src={props.profileImage || 'https://via.placeholder.com/40/808080/FFFFFF/?text=User'}
+      src={props.profileImage || "/NoLogo.jpg"}
       alt="user-avatar"
-      onError={(e) => {
-        e.target.onerror = null; 
-        e.target.src = 'https://via.placeholder.com/40/808080/FFFFFF/?text=User';
-      }}
     />
   </div>
 );
@@ -491,7 +487,7 @@ export const links = [
     links: [
       {
         name: 'Gestion des comptes',
-        icon: <AiOutlineShoppingCart />,
+        icon: <AiOutlineSolution />,
         path:'GesComptes'
       },
       {
@@ -511,23 +507,23 @@ export const links = [
       },
       {
         name: 'Gestion des offres',
-        icon: <AiOutlineSolution />,
+        icon: <AiOutlineShoppingCart />,
         path:'GesOffres'
       },
     ],
   },
   {
-    title: 'Charts',
+    title: 'Espace Administrateur ',
     links: [
       {
-        name: 'line',
-        icon: <AiOutlineStock />,
-        path:'line'
+        name: 'Mon profile',
+        icon: <AiOutlineUser />,
+        path:'mon-profile'
       },
       {
-        name: 'bar',
-        icon: <AiOutlineBarChart />,
-        path:'bar'
+        name: 'Déconnexion',
+        icon: <AiOutlineLogout />,
+        path:'dec'
       }
     ],
   },
@@ -837,12 +833,14 @@ export const ordersGrid = [
     template: gridOrderImage,
     textAlign: 'Center',
     width: '120',
+    allowEditing: false 
   },
   {
     field: 'username',
     headerText: 'Nom d\'utilisateur',
     width: '150',
     textAlign: 'Center',
+    allowEditing: false 
   },
   { 
     field: 'nom',
@@ -861,12 +859,14 @@ export const ordersGrid = [
     headerText: 'Email',
     textAlign: 'Center',
     width: '180',
+    allowEditing: false
   },
   {
     field: 'role',
     headerText: 'Rôle',
     textAlign: 'Center',
     width: '120',
+    allowEditing: false 
   },
   {
     field: 'coins',
@@ -874,12 +874,14 @@ export const ordersGrid = [
     textAlign: 'Center',
     width: '100',
     editType: 'numericedit',
+    allowEditing: false 
   },
   {
     field: 'isInfluenceur',
     headerText: 'Influenceur',
     textAlign: 'Center',
     width: '120',
+    allowEditing: false 
   },
   {
     field: 'createdAt',
@@ -887,7 +889,8 @@ export const ordersGrid = [
     textAlign: 'Center',
     width: '150',
     format: 'yyyy-MM-dd',
-    type: 'date'
+    type: 'date',
+    allowEditing: false 
   },
 ];
 
@@ -3110,7 +3113,7 @@ export const contextMenuItems = [
   'Delete',
   'Save',
   'Cancel',
-  'PdfExport',
+  //'PdfExport',
   'ExcelExport',
   'CsvExport',
   'FirstPage',

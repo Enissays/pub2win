@@ -2,16 +2,17 @@ import { Button } from '@mui/material';
 import UpdateIcon from '@mui/icons-material/Update';
 import React, { useState } from 'react';
 import { Box, Snackbar, Alert } from '@mui/material';
-import { updateAIDE } from '../services/pub2winService';
 
-const AttractiveButton = ({ formValues }) => {
+const AttractiveButton = ({ func,formValues, title}) => {
     const [updating, setUpdating] = useState(false);
     const [notification, setNotification] = useState({ open: false, message: '', severity: 'info' });
 
     const handleUpdate = async () => {
+        
+        
         setUpdating(true);
         try {
-            await updateAIDE(formValues);
+            await func(formValues);
             setNotification({
                 open: true,
                 message: 'Informations de contact mises à jour avec succès !',
@@ -50,7 +51,7 @@ const AttractiveButton = ({ formValues }) => {
                     }
                 }}
             >
-                {updating ? 'Mise à jour en cours...' : 'Mettre à jour les informations'}
+                {updating ? 'Mise à jour en cours...' : title}
             </Button>
 
             <Snackbar 

@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const QuestionController = require('../controllers/admin/question.controller');
 
-// Route pour créer une nouvelle question
-router.post('/quest', QuestionController.createQuestion);
 
-// Route pour récupérer une question par son ID
-router.get('/questionUser/:id', QuestionController.getQuestionById);
+router.post('/question/:userId', QuestionController.createQuestion);
+
+router.get('/getAllQuestionReponse', QuestionController.getAllQuestionsWithAnswers);
+
+
+router.delete('/deleteByQuestionId',QuestionController.deletebyId);
 
 module.exports = router;

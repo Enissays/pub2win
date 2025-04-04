@@ -5,6 +5,7 @@ const Signalement = require('./models/signalement.model');
 const Offre = require('./models/offre.model');
 const { ObjectId } = mongoose.Types;
 const transaction=require('./models/transaction.model');
+const Commercant = require('./models/commercant.model');
 
 async function getDbCollections() {
   const collections = await db.listCollections().toArray();
@@ -15,21 +16,21 @@ async function getDbCollections() {
 async function addUser() {
  
   const newUser = new User({
-    email: "nouvelle-boutique@exemple.com",
-    nom: "Martin",
-    prenom: "Sophie",
-    username: "boutique_sm",
+    email: "Ceci est suelement pou le test",
+    nom: "test",
+    prenom: "test",
+    username: "test",
     password_hash: "$2b$10$AbCdEfGhIjKlMnOpQrStUvWxYz1234567890AbCdEfGhIj",
     isBanned: false,
     isTimeouted: false,
-    role: "COMMERCANT",
+    role: "CLIENT",
     date_inscription: new Date("2025-02-11T15:04:56.637+00:00"),
-    userType: "Commercant",
+    userType: "Client",
     coins: 250,
     status: "pending",
     createdAt: new Date("2025-02-11T15:04:56.664+00:00"),
     updatedAt: new Date("2025-02-11T15:04:56.664+00:00"),
-    __v: 0
+    abonnement: {}
   });
   await newUser.save();
     console.log("Utilisateur ajouté avec succès");
@@ -53,20 +54,14 @@ async function addSignalemnt() {
 
 async function addOffre() {
   const newOffre = new Offre({
-    commercant_id: new ObjectId("67d4025718735d7d882100a6"), // ID du commerçant
+    commercant_id: new ObjectId("67e16cf4db896856822c7ced"), // ID du commerçant
     titre: "Annonce pour la bar",
     description: "Annonce la Bière",
     montant_coins: 50,
-    date_debut: new Date("2025-01-10T15:01:17.154+00:00"),
-    date_fin: new Date("2025-01-10T15:01:17.154+00:00"),
+    date_debut: new Date("2025-03-10T15:01:17.154+00:00"),
+    date_fin: new Date("2025-03-10T15:01:17.154+00:00"),
     is_active: true,
-    clients: [
-      {
-        client: new ObjectId("67cefebdfef058f544720bb6"), // ID du client
-        is_completed: false,
-        date_utilisation: new Date("2025-03-15T10:30:00.000Z") // Date d'utilisation
-      }
-    ]
+    clients: []
   });
   
   await newOffre.save();
@@ -82,12 +77,12 @@ async function addClientToOffre() {
     throw new Error("Offre introuvable");
   }
   offre.clients.push({
-    client: new ObjectId("67d4025718735d7d882100a6"),
+    client: new ObjectId("67e1ddcf013c043eec9f8c75"),
     is_completed: false,
-    date_utilisation: new Date("2024-03-11T15:04:56.637+00:00")
+    date_utilisation: new Date("2025-01-11T15:04:56.637+00:00")
   });
   await offre.save();
-  console.log("Client ajouté avec succès");
+  console.log("Client to offre ajouté avec succès");
   return offre;
   
 }
@@ -142,6 +137,40 @@ async function updateClientStatus (){
   }
 };
 
+async function getAllUsernamesUtilis() {
+  try {
+    const commercantsFromUser = await User.find({ role: "COMMERCANT" });
+    console.log("Nombre de commerçants dans la collection User:", commercantsFromUser.length);
+    return docuemnts;
+  } catch (error) {
+    throw new Error(`Erreur lors de la récupération des usernames : ${error.message}`);
+}
+}
+
+
+
+
+async function updateClientInf (){
+  try {
+    const clientId = "67e1ddcf013c043eec9f8c75"; // ID du premier élément du tableau clients
+    
+    // Mise à jour avec l'opérateur $set pour changer is_completed à true pour ce client spécifique
+    const result = await User.updateOne(
+      { 
+        "_id": clientId, 
+      },
+      { 
+        "$set": { "date_inscription": new Date("2024-10-11T15:04:56.637+00:00") } 
+      }
+    );
+    
+    console.log("Résultat de la mise à jour:", result);
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour:", error);
+  }
+};
+
+
 
 module.exports = {
   getDbCollections,
@@ -150,5 +179,7 @@ module.exports = {
   addOffre,
   addClientToOffre,
   addTransaction,
-  updateClientStatus
+  updateClientStatus,
+  getAllUsernamesUtilis,
+  updateClientInf
 };

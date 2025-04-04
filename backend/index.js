@@ -20,6 +20,7 @@ const startServer = () => {
   });
 };
 
+
 process.on('uncaughtException', (error) => {
   console.error('Erreur non interceptée:', error);
 });

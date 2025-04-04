@@ -118,7 +118,9 @@ const CommercantDAO = {
           if (isNaN(requestedYear)) {
             throw new Error("L'année fournie n'est pas valide");
           }
-          
+          let commercant=await Commercant.find({'abonnement.status': AbonnementStatusEnum.ACTIF});
+          console.log("commercant",commercant)
+
           // Récupérer le nombre d'abonnements actifs par mois pour l'année demandée
           const subscriptionsByMonth = await Commercant.aggregate([
             // 1. Filtrer les commerçants avec abonnement actif ET qui ont une date de début
@@ -158,7 +160,7 @@ const CommercantDAO = {
               $sort: { _id: 1 }
             }
           ]);
-          console.log(subscriptionsByMonth);
+          console.log("subscriptionsByMonth: ",subscriptionsByMonth);
           return subscriptionsByMonth;
         } catch (error) {
           console.error(`Erreur lors du comptage des abonnements actifs par mois pour l'année ${year}:`, error);
@@ -168,8 +170,8 @@ const CommercantDAO = {
 
       async getAllUsernames() {
         try {
-          const commercants = await Commercant.find({}, '_id');
-          return commercants.map(commercant => commercant._id);
+          const commercants = await Commercant.find({}, 'username');
+          return commercants.map(commercant => commercant.username);
         } catch (error) {
           throw new Error(`Erreur lors de la récupération des usernames : ${error.message}`);
       }

@@ -72,6 +72,44 @@ const UserService = {
     } catch (error) {
       throw new Error(`Service - Erreur lors de recuperation des tout des users: ${error.message}`);
     }
+  },
+
+  async getByuserName(username) {
+    try {
+      return await userDAO.getUserByUsername(username);
+    } catch (error) {
+      throw new Error(`Service - Erreur lors de recuperation des tout des users: ${error.message}`);
+    }
+  },
+  //
+  async deleteByUsername(username) {
+    try {
+      return await userDAO.deleteByUsername(username);
+    } catch (error) {
+      throw new Error(`Service - Erreur lors de la suppresion de user: ${error.message}`);
+    }
+  },
+
+  async updateUserProfile(username, updateData) {
+    try {
+      
+      // Mettre à jour les champs de l'utilisateur
+      const updatedUser = await userDAO.updateUserFields(username, updateData);
+      
+      // Retourner les données mises à jour sans les informations sensibles
+      return {
+        username: updatedUser.username
+      };
+    } catch (error) {
+      throw error;
+    }
+  },
+  async getUserByRole(){
+    try {
+      return await userDAO.getUserByRole();
+    } catch (error) {
+      throw error;
+    }
   }
 };
   

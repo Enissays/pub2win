@@ -110,7 +110,7 @@ export async function fetchNbrInfPerCommercant(commercantId, year){
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          commercant_id: commercantId,
+          username: commercantId,
           year: year
         })
       });
@@ -235,4 +235,154 @@ export async function getAllUsers() {
   let data = await fetch(url + 'user/allUsers');
   let users = await data.json();
   return users;
+}
+
+
+export async function SRchByUsername(username){
+  try { 
+    const response = await fetch(url +'user/SrchByUn', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        usernane: username
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur de requête');
+    }
+
+    const comInf = await response.json();
+    return comInf;
+
+  } catch (error) {
+    console.error('Erreur:', error);
+    throw error;
+  }
+};
+
+//
+
+export async function deleteUserbyUsername(username){
+  try { 
+
+    const response = await fetch(url +`user/delete/${username}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur de requête');
+    }
+
+    const comInf = await response.json();
+    return comInf;
+
+  } catch (error) {
+    console.error('Erreur:', error);
+    throw error;
+  }
+};
+
+export async function updateUser(username,updatedata){
+  
+  
+  try { 
+    const response = await fetch(url +'user/profileUpdate', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        ...updatedata
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur de requête');
+    }
+
+    const comInf = await response.json();
+    return comInf;
+
+  } catch (error) {
+    console.error('Erreur:', error);
+    throw error;
+  }
+};
+
+
+export async function getAdminInformation() {
+    
+  let response = await fetch(url + 'user/profileAdmin');
+  let adminInfo = await response.json();
+  return adminInfo;
+}
+
+export async function getAllQuestionReponse() {
+    
+  let response = await fetch(url + 'question/getAllQuestionReponse');
+  let questionReponse = await response.json();
+  return questionReponse;
+
+}
+
+export async function createAnswer(adminId, questionId, content) {
+
+  console.log("adminId: ",adminId);
+  console.log("questionId: ",questionId);
+  console.log("content: ",content);
+
+
+  try {
+    const response = await fetch(url +`reponse/reponse/${adminId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        questionId,
+        content
+      })
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error('Erreur lors de la création de la réponse:', error);
+    throw error;
+  }
+}; 
+
+
+export async function deleteById(question_id) {
+
+  console.log("question_id: ",question_id);
+  try {
+    const response = await fetch(url +'question/deleteByQuestionId', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id_question:question_id
+      })
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error('Erreur lors de la suppression de la question:', error);
+    throw error;
+  }
+}; 
+
+export async function getAllSignalemntUsers() {
+    
+  let response = await fetch(url + 'signalement/Sig/all');
+  let allSigUsers = await response.json();
+  return allSigUsers;
 }

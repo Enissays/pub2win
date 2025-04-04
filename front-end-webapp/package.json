@@ -17,6 +17,7 @@
     "@syncfusion/ej2-react-popups": "^19.4.52",
     "@syncfusion/ej2-react-richtexteditor": "^19.4.50",
     "@syncfusion/ej2-react-schedule": "^19.4.50",
+    "antd": "^5.24.5",
     "bootstrap": "^5.3.3",
     "project_syncfusion_dashboard": "file:",
     "react": "^17.0.2",
@@ -25,7 +26,8 @@
     "react-icons": "^4.12.0",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
-    "recharts": "^2.15.1"
+    "recharts": "^2.15.1",
+    "sweetalert2": "^11.17.2"
   },
   "scripts": {
     "start": "react-scripts start",

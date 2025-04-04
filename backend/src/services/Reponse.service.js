@@ -1,34 +1,20 @@
-const reponseDao = require('..//repository/reponse.dao');
+const answerDao = require('../repository/reponse.dao');
+const questionService = require('../repository/question.dao');
 
-class ReponseService {
-
-  async createReponse(reponseData) {
-    try {
-      if (!reponseData.user_id) {
-        throw new Error('L\'ID de la question est requis');
-      }
-      
-      if (!reponseData.content || reponseData.content.trim() === '') {
-        throw new Error('Le contenu de la réponse est requis');
-      }
-      
-      return await reponseDao.createReponse(reponseData);
-    } catch (error) {
-      throw error;
+class AnswerService {
+  async createAnswer(adminId, questionId, content) {
+    // Vérifier si la question existe
+    const question = await questionService.findById(questionId);
+    if (!question) {
+      throw new Error('Question non trouvée');
     }
+    
+    return await answerDao.create({ adminId, questionId, content });
   }
 
-  async getReponseByUserId(user_id) {
-    try {
-      const reponse = await reponseDao.getReponseByUserId(user_id);
-      if (!reponse) {
-        throw new Error('Réponse non trouvée');
-      }
-      return reponse;
-    } catch (error) {
-      throw error;
-    }
+  async getAnswersByQuestionId(questionId) {
+    return await answerDao.findByQuestionId(questionId);
   }
 }
 
-module.exports = new ReponseService();
+module.exports = new AnswerService();
