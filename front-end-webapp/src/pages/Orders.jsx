@@ -17,7 +17,8 @@ const Orders = () => {
 
   useEffect(() => {
     loadAllUsers();
-  }, []);
+    console.log("Username: ",username)
+  }, [searchUsername]);
 
   useEffect(() => {
     if (username && Object.keys(updateData).length > 0) {
@@ -28,53 +29,47 @@ const Orders = () => {
   const loadAllUsers = () => {
     setLoading(true);
     setError('');
-    getAllUsers()
-      .then(response => {
-        if (response.success) {
-          setUsers(response.allusers);
-        } else {
-          setError('Erreur lors du chargement des utilisateurs');
-        }
-      })
-      .catch(error => {
-        console.error("Erreur lors de la récupération des utilisateurs:", error);
-        setError('Erreur de connexion au serveur');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
+    // Si searchUsername est vide, chargez tous les utilisateurs
+    // Sinon, effectuez une recherche avec le texte actuel
     if (!searchUsername.trim()) {
-      setError('Veuillez entrer un nom d\'utilisateur');
-      return;
+      getAllUsers()
+        .then(response => {
+          if (response.success) {
+            setUsers(response.allusers);
+          } else {
+            setError('Erreur lors du chargement des utilisateurs');
+          }
+        })
+        .catch(error => {
+          console.error("Erreur lors de la récupération des utilisateurs:", error);
+          setError('Erreur de connexion au serveur');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      // Utilisez le service de recherche avec le texte actuel
+      SRchByUsername(searchUsername)
+        .then(response => {
+          if (response.success && response.user) {
+            setUsers(response.user);
+          } else {
+            setError('Aucun utilisateur correspondant trouvé');
+            setUsers([]);
+          }
+        })
+        .catch(error => {
+          console.error("Erreur lors de la recherche:", error);
+          setError('Erreur lors de la recherche');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
-
-    setLoading(true);
-    setError('');
-    
-    SRchByUsername(searchUsername)
-      .then(response => {
-        if (response.success && response.user) {
-          // Afficher uniquement l'utilisateur recherché
-          setUsers([response.user]);
-        } else {
-          setError('Utilisateur non trouvé');
-          // Conserver les utilisateurs actuels ou vider la liste selon votre préférence
-          // setUsers([]);
-        }
-      })
-      .catch(error => {
-        console.error("Erreur lors de la recherche de l'utilisateur:", error);
-        setError('Erreur lors de la recherche');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
   };
 
+  
   const handleReset = () => {
     setSearchUsername('');
     loadAllUsers();
@@ -154,7 +149,7 @@ const Orders = () => {
         />
       
       <div className="mb-6 flex flex-col md:flex-row items-start md:items-center gap-4">
-        <form onSubmit={handleSearch} className="flex w-full md:w-auto">
+        <form className="flex w-full md:w-auto">
           <input
             type="text"
             value={searchUsername}
@@ -163,14 +158,6 @@ const Orders = () => {
             className="p-2 border border-gray-300 md:w-64"
             style={{marginRight:'15px'}}
           />
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white rounded font-bold py-2 px-4 rounded-r-md"
-            disabled={loading}
-          >
-            {loading ? 'Recherche...' : 'Rechercher'}
-          </button>
-
         </form>
         
         
