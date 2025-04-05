@@ -104,7 +104,10 @@ const UserDAO = {
         return null;
       }
       
-      return await User.findOne({ username }).catch(() => null);
+      // Création d'une expression régulière qui simule le comportement de LIKE
+      const regexPattern = new RegExp(`^${username}`, 'i'); // 'i' rend la recherche insensible à la casse
+      
+      return await User.find({ role: { $ne: RoleEnum.ADMIN },username: regexPattern }).catch(() => null);
     },
   
     async updateUser(userId, updateData) {
