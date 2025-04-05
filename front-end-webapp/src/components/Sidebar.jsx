@@ -20,7 +20,7 @@ const Sidebar = () => {
   const activeLink = 'flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-white text-md m-2';
   
   // Ajouter une classe personnalisée pour le survol avec les nouvelles couleurs
-  const normalLink = 'flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-md text-gray-700 dark:text-gray-200 hover:bg-[#F0F0F0] hover:text-[#023047] hover:border-l-4 hover:border-[#00B8D2] transition-all duration-300 m-2';
+  const normalLink = 'flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg white:hover:text-black dark:hover:text-white dark:text-white hover:drop-shadow-lg m-2 transition duration-200 ease-in-out transform hover:-translate-y-1 hover:scale-105';
 
   return (
     <div className="ml-3 h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10">
