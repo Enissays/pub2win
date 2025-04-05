@@ -10,6 +10,7 @@ import './App.css';
 import { useStateContext } from './contexts/ContextProvider';
 import MonProfile from './pages/MonProfile';
 import Signalement from './pages/Signalement';
+import GestionOffres from './pages/GestionOffres';
 
 const App = () => {
   const { setCurrentColor, setCurrentMode, currentMode, activeMenu, currentColor, themeSettings, setThemeSettings } = useStateContext();
@@ -101,7 +102,9 @@ const App = () => {
                 <Route path="/signalement" element={<Signalement />} />
                 <Route path="/AIDE" element={<Customers />} />
                 <Route path="/FAQ" element={<FAQ/>} />
-                <Route path="/GesOffres" element={<Customers />} />
+
+                
+                <Route path="/GesOffres" element={<GestionOffres />} />
 
                 {/* charts  */}
                 <Route path="/mon-profile" element={<MonProfile />} />
