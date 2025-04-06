@@ -6,10 +6,28 @@ import { AideService } from "../components";
 const Signalement = () =>{
     const [usersSignalement,setUsersSignalement]=useState([]);
     const [getDayOfBTemp,setGetDayOfBTemp]=useState("");
+    const [warningType, setWarningType] = useState(null);
+    const [temporaryBlockDays, setTemporaryBlockDays] = useState(7);
 
-    const handDeyOfBTmp = (event) =>{
-        console.log(event.target.value)
-    }
+    const warningMessages = {
+      firstWarning: "Vous êtes averti",
+      temporaryBlock: `Votre compte est bloqué temporairement pour ${temporaryBlockDays} jours.`,
+      permanentBlock: "Votre compte a été définitivement bloqué"
+    };
+
+    const handleWarning = (type) => {
+      setWarningType(type);
+    };
+  
+    const handleSend = () => {
+      // Implement your send logic here (e.g., API call to send warning)
+      onClose();
+    };
+  
+    const handDeyOfBTmp = (e) => {
+      setTemporaryBlockDays(e.target.value);
+    };
+
     useEffect(() => {
         getAllSignalemntUsers()
           .then(response => {
@@ -64,33 +82,72 @@ const Signalement = () =>{
                               </div>
                             </div>
                           </div>
-
-                          {/*make a desicion*/}
-                          
+                        
                         </div>
                       )
                 })}
+
+              {warningType ? (
+                <textarea 
+                className="w-full p-2 border rounded-md"
+                rows="4"
+                defaultValue={
+                  warningType === 'firstWarning' 
+                    ? warningMessages.firstWarning 
+                    : warningType === 'temporaryBlock'
+                    ? warningMessages.temporaryBlock
+                    : warningMessages.permanentBlock
+                }
+              />
+              ):(
                 <div className="p-4 flex flex-wrap gap-2 justify-end">
-                          <button className="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-4 py-2 rounded-md flex items-center transition-colors duration-300">
-                            <span className="material-symbols-outlined mr-2 text-sm">warning</span>
-                            Premier avertissement
-                          </button>
-                        <button className="bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-md flex items-center transition-colors duration-300">
-                            <span className="material-symbols-outlined mr-2 text-sm">block</span>
-                            Blocage temporaire
-                            <input 
-                            id="Jours"
-                            className="ml-2 bg-white text-orange-800 text-xs px-2 py-1 rounded-full" placeholder="7 jours"
-                            onChange={handDeyOfBTmp}
-                            >
-                            </input>
-                        </button>
-                        <button className="bg-red-100 hover:bg-red-200 text-red-800 px-4 py-2 rounded-md flex items-center transition-colors duration-300">
-                            <span className="material-symbols-outlined mr-2 text-sm">gpp_bad</span>
-                            Blocage définitif
-                        </button>
-                          </div>
+                  <button className="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-4 py-2 rounded-md flex items-center transition-colors duration-300"
+                   onClick={() => handleWarning('firstWarning')}
+                   >
+                    <span className="material-symbols-outlined mr-2 text-sm">warning</span>
+                      Premier avertissement
+                  </button>
+
+                  <button className="bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-md flex items-center transition-colors duration-300"
+                  
+                  onClick={() => handleWarning('temporaryBlock')}
+                  >
+                    <span className="material-symbols-outlined mr-2 text-sm">block</span>
+                      Blocage temporaire
+                        <input 
+                          id="Jours"
+                          className="ml-2 bg-white text-orange-800 text-xs px-2 py-1 rounded-full" placeholder="7 jours"
+                          onChange={handDeyOfBTmp}
+                          >
+                        </input>
+                  </button>
+
+                  <button className="bg-red-100 hover:bg-red-200 text-red-800 px-4 py-2 rounded-md flex items-center transition-colors duration-300"
+                  onClick={() => handleWarning('permanentBlock')}
+                  >
+                    <span className="material-symbols-outlined mr-2 text-sm">gpp_bad</span>
+                      Blocage définitif
+                  </button>
+                </div>
+              )} 
+                
               </div>
+              {warningType && (
+          <div className="flex justify-end space-x-2 m-10">
+            <button 
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+              onClick={handleSend}
+            >
+              Envoyer
+            </button>
+            <button 
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md"
+              onClick={() => setWarningType(null)}
+            >
+              Annuler
+            </button>
+          </div>
+        )}
             </details>
           ))}
         </div>
