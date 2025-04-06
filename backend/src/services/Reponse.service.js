@@ -11,10 +11,7 @@ class AnswerService {
     
     return await answerDao.create({ adminId, questionId, content });
   }
-
-  async getAnswersByQuestionId(questionId) {
-    return await answerDao.findByQuestionId(questionId);
-  }
+  
 }
 
 module.exports = new AnswerService();
