@@ -1,31 +1,58 @@
 import React, { useEffect, useState } from "react";
 import { getAllSignalemntUsers } from "../services/pub2winService";
 import { AideService } from "../components";
+import { Typography } from "@mui/material";
 
 
 const Signalement = () =>{
     const [usersSignalement,setUsersSignalement]=useState([]);
-    const [getDayOfBTemp,setGetDayOfBTemp]=useState("");
+    const [getDayOfBTemp,setGetDayOfBTemp]=useState(7);
     const [warningType, setWarningType] = useState(null);
     const [temporaryBlockDays, setTemporaryBlockDays] = useState(7);
+    const [commentaire, setCommentaire] = useState('');
+    const [openDetailsId, setOpenDetailsId] = useState(null);
 
     const warningMessages = {
       firstWarning: "Vous êtes averti",
       temporaryBlock: `Votre compte est bloqué temporairement pour ${temporaryBlockDays} jours.`,
       permanentBlock: "Votre compte a été définitivement bloqué"
     };
+    
+
+    useEffect(() => {
+      // Mettre à jour commentaire quand warningType change
+      const initialMessage = 
+        warningType === 'firstWarning' 
+          ? warningMessages.firstWarning 
+          : warningType === 'temporaryBlock'
+          ? warningMessages.temporaryBlock 
+          : warningMessages.permanentBlock;
+      
+      setCommentaire(initialMessage);
+    }, [warningType]);
+
 
     const handleWarning = (type) => {
       setWarningType(type);
     };
   
-    const handleSend = () => {
-      // Implement your send logic here (e.g., API call to send warning)
-      onClose();
+    const handleSend = (e) => {
+
+      console.log("Commentaire envoyé: ",commentaire);
+      console.log(" User ID: ",openDetailsId);
     };
   
     const handDeyOfBTmp = (e) => {
       setTemporaryBlockDays(e.target.value);
+    };
+
+
+    const toggleDetails = (userId) => {
+      // Si l'utilisateur clique sur une nouvelle section, 
+      // elle s'ouvre et la précédente se ferme
+      setOpenDetailsId(userId);
+      // Réinitialise le type d'avertissement
+      setWarningType(null);
     };
 
     useEffect(() => {
@@ -44,14 +71,22 @@ const Signalement = () =>{
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
             <AideService des={"Cher Administrateur, ceci est un espace de gestion de signalements où vous pouvez avertir, bloquer temporairement pour un nombre de jours défini ou bloquer définitivement un utilisateur selon le motif de signalement. Soyez très attentif à vos décisions !"}/>
           {usersSignalement.map(user => (
-            <details key={user.user_signale_id} className="bg-white border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-all duration-300 mb-5">
-              <summary className="flex items-center justify-between p-4 cursor-pointer bg-gray-50 hover:bg-primary-50">
+            <details key={user.user_signale_id} className="bg-white border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-all duration-300 mb-5"
+            open={openDetailsId === user.user_signale_id}
+            >
+              <summary className="flex items-center justify-between p-4 cursor-pointer bg-gray-50 hover:bg-primary-50"
+              onClick={(e) => {
+                e.preventDefault(); // Empêche le comportement par défaut
+                toggleDetails(user.user_signale_id);
+              }}
+              
+              >
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
                     <span className="material-symbols-outlined text-primary-700">person</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">{user.user_username}</h3>
+                    <h3  className="font-semibold text-lg">{user.user_username}</h3>
                     <p className="text-gray-500 text-sm">{user.signalements.length} signalements actifs</p>
                   </div>
                 </div>
@@ -88,42 +123,61 @@ const Signalement = () =>{
                 })}
 
               {warningType ? (
+                <>
+                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 2 }}>
+                  Ajouter un commentaire
+                </Typography>
+
                 <textarea 
+                placeholder="Donnez votre commentaire a cet utilisateur..."
                 className="w-full p-2 border rounded-md"
                 rows="4"
-                defaultValue={
-                  warningType === 'firstWarning' 
-                    ? warningMessages.firstWarning 
-                    : warningType === 'temporaryBlock'
-                    ? warningMessages.temporaryBlock
-                    : warningMessages.permanentBlock
-                }
-              />
+                value={commentaire}
+                  onChange={(e) => {
+                    // Permet d'ajouter du texte supplémentaire
+                    setCommentaire(e.target.value);
+                  }}
+                  />
+                </>
+                
               ):(
                 <div className="p-4 flex flex-wrap gap-2 justify-end">
                   <button className="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-4 py-2 rounded-md flex items-center transition-colors duration-300"
-                   onClick={() => handleWarning('firstWarning')}
+                   onClick={(e) => {
+                    e.stopPropagation();
+                    handleWarning('firstWarning')}}
+                   
                    >
                     <span className="material-symbols-outlined mr-2 text-sm">warning</span>
-                      Premier avertissement
+                      Avertissement
                   </button>
 
-                  <button className="bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-md flex items-center transition-colors duration-300"
-                  
-                  onClick={() => handleWarning('temporaryBlock')}
-                  >
+                  <div className="bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-md flex items-center transition-colors duration-300">
                     <span className="material-symbols-outlined mr-2 text-sm">block</span>
                       Blocage temporaire
-                        <input 
-                          id="Jours"
-                          className="ml-2 bg-white text-orange-800 text-xs px-2 py-1 rounded-full" placeholder="7 jours"
-                          onChange={handDeyOfBTmp}
-                          >
-                        </input>
-                  </button>
+                    <input 
+                        id="Jours"
+                        type="number"
+                        className="ml-2 bg-white text-orange-800 text-xs px-2 py-1 rounded-full" 
+                        placeholder="7 jours"
+                        onChange={handDeyOfBTmp}
+                    />
+                    <button 
+                        className="ml-2 bg-blue-100 hover:bg-blue-200 text-blue-800 px-2 py-1 rounded-md"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleWarning('temporaryBlock')}}
+                    >
+                        Confirmer
+                    </button>
+                </div>
+                  
+                  
 
                   <button className="bg-red-100 hover:bg-red-200 text-red-800 px-4 py-2 rounded-md flex items-center transition-colors duration-300"
-                  onClick={() => handleWarning('permanentBlock')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleWarning('permanentBlock')}}
                   >
                     <span className="material-symbols-outlined mr-2 text-sm">gpp_bad</span>
                       Blocage définitif

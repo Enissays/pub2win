@@ -40,10 +40,10 @@ async function addUser() {
 async function addSignalemnt() {
    
   const newSignalement = new Signalement({
-    user_signale_id: "67d0511820c7d8db66df6430",
-    raison: "harcelement",
-    user_username: "boutique_md",
-    date_signalement: new Date("2024-07-11T15:04:56.637+00:00"),
+    user_signale_id: "67e2a79e2d8e1bb6eb3b54ca",
+    raison: "raciste",
+    user_username: "test",
+    date_signalement: new Date("2025-04-06T15:04:56.637+00:00"),
   });
 
   await newSignalement.save();
