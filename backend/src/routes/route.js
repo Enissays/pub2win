@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { requireAuth, syncUser, isVendor, isInfluencer } = require('../middlewares/clerkAuth');
+const { requireAuth, syncUser, isVendor, isInfluencer } = require('../middlewares/clerkauth');
 const { isAdmin } = require('../middlewares/auth'); // Keep your admin middleware
 const userController = require('../controllers/userController');
 const influencerController = require('../controllers/influencerController');

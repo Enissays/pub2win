@@ -76,7 +76,7 @@ const AppNavigator: React.FC = () => {
     <NavigationContainer>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         {/* Directly show the influencer app for development */}
-        <RootStack.Screen name="VendorApp" component={VendorTabNavigator} />
+        <RootStack.Screen name="InfluencerApp" component={InfluencerTabNavigator} />
         <RootStack.Screen name="PartnerDetails" component={PartnerDetails} />
         <RootStack.Screen name="InfluencerNotifications" component={InfluencerNotifications} />
         <RootStack.Screen name="InfluencerHelp" component={InfluencerHelp} />

@@ -190,9 +190,7 @@ const EditEndroit: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <View>
-            <Feather name="arrow-left" size={24} color="#003049" />
-          </View>
+          <Feather name="arrow-left" size={24} color="#003049" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Modifier l'endroit</Text>
         <View style={{ width: 24 }} /> {/* For alignment */}
@@ -205,9 +203,7 @@ const EditEndroit: React.FC = () => {
             <Image source={{ uri: image }} style={styles.previewImage} />
           ) : (
             <View style={styles.uploadPlaceholder}>
-              <View>
-                <Feather name="image" size={40} color="#AAAAAA" />
-              </View>
+              <Feather name="image" size={40} color="#AAAAAA" />
               <Text style={styles.uploadText}>Modifier la photo</Text>
             </View>
           )}

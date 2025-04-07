@@ -54,7 +54,10 @@ const VendorTabNavigator = () => {
         },
         tabBarLabelStyle: {
           fontFamily: 'Montserrat-Bold',
-          fontSize: 12,
+          fontSize: 10,
+          paddingBottom:12,
+          // margin:12,
+          // borderBottomWidth: 2,
         },
       })}
     >

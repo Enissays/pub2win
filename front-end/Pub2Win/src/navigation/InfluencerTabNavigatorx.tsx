@@ -51,8 +51,8 @@ const InfluencerTabNavigator = () => {
           borderTopColor: '#EEEEEE',
         },
         tabBarLabelStyle: {
-          fontFamily: 'Montserrat',
-          fontSize: 12,
+          fontFamily: 'Montserrat-Bold',
+          // fontSize: 12,
         },
         headerShown: false,
       })}
@@ -62,6 +62,7 @@ const InfluencerTabNavigator = () => {
         component={InfluencerDashboard} 
         options={{ 
           title: 'Accueil',
+          lazy:true
         }} 
       />
       <Tab.Screen 
