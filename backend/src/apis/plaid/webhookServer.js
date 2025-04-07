@@ -3,11 +3,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { syncTransactions } = require("./routes/transactions");
 
-/**
- * Our server running on a different port that we'll use for handling webhooks.
- * We run this on a separate port so that it's easier to expose just this
- * server to the world using a tool like ngrok
- */
 const WEBHOOK_PORT = process.env.WEBHOOK_PORT || 8001;
 
 const webhookApp = express();
