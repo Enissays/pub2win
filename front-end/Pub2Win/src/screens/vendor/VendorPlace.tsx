@@ -23,6 +23,7 @@ type RootStackParamList = {
   VendorPlace: undefined;
   VendorProfile: undefined;
   CreateEndroit: undefined;
+  EditEndroit: { placeId: string };
 };
 
 // Create a typed navigation prop
@@ -97,8 +98,7 @@ const VendorPlace: React.FC = () => {
   };
   
   const handleEditPlace = (placeId: string) => {
-    // Navigate to edit place screen
-    console.log(`Edit place ${placeId}`);
+    navigation.navigate('EditEndroit', { placeId });
   };
   
   const togglePlaceStatus = async (placeId: string, currentStatus: boolean) => {
@@ -218,7 +218,7 @@ const VendorPlace: React.FC = () => {
       )}
       
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
+      {/* <View style={styles.bottomNav}>
         <TouchableOpacity 
           style={styles.navItem} 
           onPress={() => navigation.navigate('VendorDashboard')}
@@ -249,7 +249,7 @@ const VendorPlace: React.FC = () => {
           <Feather name="user" size={24} color="#AAAAAA" />
           <Text style={styles.navText}>Profile</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };

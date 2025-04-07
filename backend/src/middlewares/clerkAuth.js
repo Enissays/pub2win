@@ -1,22 +1,21 @@
-// Update your clerkAuth.js file to properly load the secret key
 const { clerkClient, ClerkExpressRequireAuth } = require('@clerk/clerk-sdk-node');
 const dotenv = require('dotenv');
 
-// Make sure dotenv is configured at the top of the file
 dotenv.config();
 
-// Check if the secret key is available and log a helpful message if not
 if (!process.env.CLERK_SECRET_KEY) {
   console.error('CLERK_SECRET_KEY is not defined in environment variables');
-  // You might want to throw an error here in production
+  process.exit(1); // Exit if the key is missing - critical for security
 }
 
-// Create the middleware with proper error handling
 const requireAuth = ClerkExpressRequireAuth({
-  // Optional: customize the error handling
   onError: (err, req, res) => {
     console.error('Clerk authentication error:', err);
-    res.status(401).json({ error: 'Unauthorized' });
+    res.status(401).json({ 
+      success: false,
+      message: 'Authentication failed',
+      error: process.env.NODE_ENV === 'development' ? err.message : 'Unauthorized access'
+    });
   }
 });
 
@@ -24,18 +23,8 @@ const User = require('../models/user.model');
 const Client = require('../models/client.model');
 const Commercant = require('../models/commercant.model');
 
-// Middleware to verify Clerk token and attach user to request
-exports.requireAuth = ClerkExpressRequireAuth({
-  // Optional: Customize the error response
-  onError: (err, req, res) => {
-    res.status(401).json({
-      success: false,
-      message: 'Unauthorized: Invalid or missing authentication'
-    });
-  }
-});
+exports.requireAuth = requireAuth;
 
-// Middleware to sync Clerk user with your database
 exports.syncUser = async (req, res, next) => {
   try {
     if (!req.auth || !req.auth.userId) {
@@ -47,18 +36,13 @@ exports.syncUser = async (req, res, next) => {
 
     const clerkUserId = req.auth.userId;
     
-    // Check if user exists in your database
     let user = await User.findOne({ clerkId: clerkUserId });
     
     if (!user) {
-      // Get user data from Clerk
-      const clerkUser = req.auth;
-      
-      // Determine user role based on metadata or other criteria
+      const clerkUser = await clerkClient.users.getUser(clerkUserId);
       const role = clerkUser.publicMetadata?.role || 'CLIENT';
       const isInfluencer = clerkUser.publicMetadata?.isInfluencer || false;
       
-      // Create new user in your database
       if (role.toLowerCase() === 'commercant') {
         user = new Commercant({
           clerkId: clerkUserId,
@@ -86,7 +70,6 @@ exports.syncUser = async (req, res, next) => {
       await user.save();
     }
     
-    // Attach user to request
     req.user = user;
     req.userId = user._id;
     req.userRole = user.role;
@@ -101,9 +84,8 @@ exports.syncUser = async (req, res, next) => {
   }
 };
 
-// Middleware to check if user is an influencer
 exports.isInfluencer = (req, res, next) => {
-  if (!req.user || !req.user.isInfluenceur) {
+  if (!req.user || req.userRole !== 'CLIENT' || !req.user.isInfluenceur) {
     return res.status(403).json({
       success: false,
       message: 'Access denied: Influencer role required'
@@ -112,12 +94,21 @@ exports.isInfluencer = (req, res, next) => {
   next();
 };
 
-// Middleware to check if user is a vendor
 exports.isVendor = (req, res, next) => {
-  if (!req.user || req.user.role !== 'COMMERCANT') {
+  if (!req.user || req.userRole !== 'COMMERCANT') {
     return res.status(403).json({
       success: false,
       message: 'Access denied: Vendor role required'
+    });
+  }
+  next();
+};
+
+exports.isAdmin = (req, res, next) => {
+  if (!req.user || req.userRole !== 'ADMIN') {
+    return res.status(403).json({
+      success: false,
+      message: 'Access denied: Admin role required'
     });
   }
   next();

@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useApi } from '../../hooks/useApi';
 import { useAuth } from '@clerk/clerk-expo';
+import BottomNavigation from '../../components/BottomNavigation';
 
 const { width } = Dimensions.get('window');
 
@@ -24,7 +25,7 @@ interface Reward {
 }
 
 type RootStackParamList = {
-  Home: undefined;
+  InfluencerDashboard: undefined;
   Search: undefined;
   Chat: undefined;
   Wallet: undefined;
@@ -85,7 +86,7 @@ const Wallet: React.FC = () => {
   const handleNavigation = (screen: string) => {
     switch(screen) {
       case 'home':
-        navigation.navigate('Home');
+        navigation.navigate('InfluencerDashboard');
         break;
       case 'search':
         navigation.navigate('Search');
@@ -150,38 +151,7 @@ const Wallet: React.FC = () => {
       </ScrollView>
       
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('home')}
-        >
-          <Feather name="home" size={24} color="#AAAAAA" />
-          <Text style={styles.navText}>Accueil</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem}
-          onPress={() => handleNavigation('search')}
-        >
-          <Feather name="search" size={24} color="#AAAAAA" />
-          <Text style={styles.navText}>Recherche</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('chat')}
-        >
-          <Feather name="message-square" size={24} color="#AAAAAA" />
-          <Text style={styles.navText}>Chat</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem}
-        >
-          <Feather name="credit-card" size={24} color="#003049" />
-          <Text style={[styles.navText, styles.navTextActive]}>Mon solde</Text>
-        </TouchableOpacity>
-      </View>
+      {/* <BottomNavigation activeScreen="wallet" /> */}
     </SafeAreaView>
   );
 };

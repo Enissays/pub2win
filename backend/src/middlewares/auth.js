@@ -3,7 +3,6 @@ const User = require('../models/user.model');
 
 exports.authenticateToken = async (req, res, next) => {
   try {
-    // Get token from header
     const authHeader = req.header('Authorization');
     const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"
     
@@ -14,10 +13,8 @@ exports.authenticateToken = async (req, res, next) => {
       });
     }
     
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // Check if user still exists
     const user = await User.findById(decoded.userId);
     if (!user) {
       return res.status(401).json({ 
@@ -26,7 +23,6 @@ exports.authenticateToken = async (req, res, next) => {
       });
     }
     
-    // Add user and role to request
     req.user = user;
     req.userId = decoded.userId;
     req.userRole = decoded.role;
@@ -48,9 +44,6 @@ exports.authenticateToken = async (req, res, next) => {
   }
 };
 
-/**
- * Middleware to ensure user has vendor role
- */
 exports.isVendor = (req, res, next) => {
   if (req.userRole !== 'COMMERCANT') {
     return res.status(403).json({ 
@@ -61,9 +54,6 @@ exports.isVendor = (req, res, next) => {
   next();
 };
 
-/**
- * Middleware to ensure user has influencer role
- */
 exports.isInfluencer = (req, res, next) => {
   if (req.userRole !== 'INFLUENCER') {
     return res.status(403).json({ 
@@ -74,9 +64,6 @@ exports.isInfluencer = (req, res, next) => {
   next();
 };
 
-/**
- * Middleware to ensure user has admin role
- */
 exports.isAdmin = (req, res, next) => {
   if (req.userRole !== 'admin') {
     return res.status(403).json({ 

@@ -16,7 +16,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useApi } from '../../hooks/useApi';
 import { useAuth } from '@clerk/clerk-expo';
-
+import BottomNavigation from '../../components/BottomNavigation';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 const { width } = Dimensions.get('window');
 
 interface InfluencerStats {
@@ -35,7 +36,7 @@ interface Partner {
   points: number;
 }
 
-type RootStackParamList = {
+export type RootStackParamList = {
   Home: undefined;
   Search: undefined;
   Chat: undefined;
@@ -46,7 +47,7 @@ type RootStackParamList = {
   PartnerDetails: { partnerId: string };
 };
 
-type InfluencerDashboardNavigationProp = StackNavigationProp<RootStackParamList>;
+type InfluencerDashboardNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const InfluencerDashboard: React.FC = () => {
   const navigation = useNavigation<InfluencerDashboardNavigationProp>();
@@ -136,33 +137,16 @@ const InfluencerDashboard: React.FC = () => {
     navigation.navigate('PartnerDetails', { partnerId });
   };
 
-  const handleNavigation = (screen: string) => {
-    switch(screen) {
-      case 'home':
-        // Already on home
-        break;
-      case 'search':
-        navigation.navigate('Search');
-        break;
-      case 'chat':
-        navigation.navigate('Chat');
-        break;
-      case 'wallet':
-        navigation.navigate('Wallet');
-        break;
-    }
-  };
-
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#003049" />
-          <Text style={styles.loadingText}>Loading your dashboard...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <SafeAreaView style={styles.container}>
+  //       <View style={styles.loadingContainer}>
+  //         <ActivityIndicator size="large" color="#003049" />
+  //         <Text style={styles.loadingText}>Loading your dashboard...</Text>
+  //       </View>
+  //     </SafeAreaView>
+  //   );
+  // }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -171,7 +155,7 @@ const InfluencerDashboard: React.FC = () => {
         <TouchableOpacity onPress={handleSettings}>
           <Feather name="settings" size={24} color="#003049" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleNotifications}>
+        <TouchableOpacity onPress={handleNotifications}style={styles.notif}>
           <Feather name="bell" size={24} color="#003049" />
           <Image 
             source={{ uri: influencerData?.profileImage || 'https://randomuser.me/api/portraits/men/32.jpg' }}
@@ -264,39 +248,7 @@ const InfluencerDashboard: React.FC = () => {
       </ScrollView>
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('home')}
-        >
-          <Feather name="home" size={24} color="#003049" />
-          <Text style={[styles.navText, styles.navTextActive]}>Accueil</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('search')}
-        >
-          <Feather name="search" size={24} color="#AAAAAA" />
-          <Text style={styles.navText}>Recherche</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('chat')}
-        >
-          <Feather name="message-square" size={24} color="#AAAAAA" />
-          <Text style={styles.navText}>Chat</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
-          onPress={() => handleNavigation('wallet')}
-        >
-          <Feather name="credit-card" size={24} color="#AAAAAA" />
-          <Text style={styles.navText}>Mon solde</Text>
-        </TouchableOpacity>
-      </View>
+      {/* <BottomNavigation activeScreen="home" /> */}
     </SafeAreaView>
   );
 };
@@ -421,6 +373,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 150,
     resizeMode: 'cover',
+  },
+  notif:{
+    flexDirection:'row'
   },
   partnerContent: {
     padding: 16,

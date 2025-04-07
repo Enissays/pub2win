@@ -6,7 +6,6 @@ import { store } from './src/store';
 import ClerkAuthProvider from './src/utils/ClerkProvider';
 import ErrorBoundary from './src/utils/ErrorBoundary';
 import { StatusBar } from 'react-native';
-// import HomeScreen from './src/screens/HomeScreen';
 import LoginScreen from './src/screens/auth/LoginScreen';
 import RegisterScreen from './src/screens/auth/RegisterScreen';
 import SplashScreen from './src/screens/SplashScreen';
@@ -23,6 +22,8 @@ import InfluencerDashboard from './src/screens/influencer/InfluencerDashboard';
 import Search from './src/screens/influencer/Search';
 import Wallet from './src/screens/influencer/Wallet';
 import PartnerDetails from './src/screens/influencer/PartnerDetails';
+import HomeScreen from './src/screens/HomeScreen';
+import AppNavigator from './src/navigation/AppNavigator';
 
 
 const Stack = createStackNavigator();
@@ -49,25 +50,7 @@ export default function App() {
       <ErrorBoundary>
       <ClerkAuthProvider>
         <StatusBar hidden={true} />
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="VendorDashboard">
-            <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="RegisterInfluencer" component={RegisterInfluencer} options={{ headerShown: false }} />
-            <Stack.Screen name="RegisterVender" component={RegisterVender} options={{ headerShown: false }} />
-            <Stack.Screen name="InfluencerPlacement" component={InfluencerPlacementScreen} options={{ headerShown: false }} />
-            {/* <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} /> */}
-            <Stack.Screen name="VendorPlacement" component={VendorPlacementScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="VendorDashboard" component={VendorDashboard} options={{ headerShown: false }} />
-            <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
-            <Stack.Screen name="VendorPlace" component={VendorPlace} options={{ headerShown: false }} />
-            <Stack.Screen name="VendorProfile" component={VendorProfile} options={{ headerShown: false }} />
-            <Stack.Screen name="InfluencerDashboard" component={InfluencerDashboard} options={{ headerShown: false }} />
-            <Stack.Screen name="Search" component={Search} options={{ headerShown: false }} />
-            <Stack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
-            <Stack.Screen name="PartnerDetails" component={PartnerDetails} options={{ headerShown: false }} />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <AppNavigator/>
       </ClerkAuthProvider>
       </ErrorBoundary>
     </Provider>

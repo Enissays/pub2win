@@ -18,6 +18,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useApi } from '../../hooks/useApi';
+import { useAuth } from '@clerk/clerk-expo';
 
 type RootStackParamList = {
   Home: undefined;
@@ -45,6 +47,8 @@ const VendorPlacementScreen: React.FC<VendorPlacementScreenProps> = ({ navigatio
   const [loading, setLoading] = useState<boolean>(false);
   
   const dispatch = useAppDispatch();
+  const api = useApi();
+  const { userId, getToken } = useAuth();
   
   const handleCategorySelect = (selected: BusinessCategory) => {
     setCategory(selected);
@@ -104,11 +108,43 @@ const VendorPlacementScreen: React.FC<VendorPlacementScreenProps> = ({ navigatio
     setLoading(true);
     
     try {
-      // Here you would typically send the data to your backend
-      // For now, we'll just simulate a successful submission
+      // Get auth token
+      const token = await getToken();
       
-      setTimeout(() => {
-        setLoading(false);
+      // Create form data for image upload
+      const formData = new FormData();
+      
+      // Add images to form data
+      photos.forEach((photo, index) => {
+        const filename = photo.split('/').pop();
+        const match = /\.(\w+)$/.exec(filename || '');
+        const type = match ? `image/${match[1]}` : 'image';
+        
+        formData.append('photos', {
+          uri: photo,
+          name: filename,
+          type,
+        } as any);
+      });
+      
+      // Add other data
+      formData.append('nom', businessName);
+      formData.append('description', description);
+      formData.append('adresse', address);
+      formData.append('type', category);
+      formData.append('userId', userId || '');
+      
+      // Send data to backend
+      const response = await api.post('/endroit/create', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      setLoading(false);
+      
+      if (response.data && response.data.success) {
         Alert.alert(
           'Success',
           'Your business has been registered successfully!',
@@ -119,9 +155,11 @@ const VendorPlacementScreen: React.FC<VendorPlacementScreenProps> = ({ navigatio
             }
           ]
         );
-      }, 1500);
-      
+      } else {
+        Alert.alert('Error', response.data?.message || 'Failed to register your business. Please try again.');
+      }
     } catch (error) {
+      console.error('Error submitting business data:', error);
       setLoading(false);
       Alert.alert('Error', 'Failed to register your business. Please try again.');
     }
