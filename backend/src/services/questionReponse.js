@@ -29,6 +29,19 @@ class QuestionService {
     
     return questionsWithAnswers;
   }
+
+  async getAllQuestionsWithAnswersByquestionId(questionId) {
+    const question=await this.getQuestionById(questionId);
+
+    console.log("id_question: ",questionId);
+    console.log("question: ",question);
+    
+    const answers = await answerDao.findByQuestionId(question._id);
+    return {
+      question,
+      answers
+    };
+  }
 }
 
 module.exports = new QuestionService();

@@ -506,9 +506,13 @@ export const links = [
         path:'FAQ'
       },
       {
-        name: 'Gestion des offres',
-        icon: <AiOutlineShoppingCart />,
-        path:'GesOffres'
+        name: "Espace Offres",
+        path: "GesOffres",
+        icon: <FiShoppingBag />,
+        subMenu: [
+          { name: "Messagerie", path: "Messagerie" },
+          { name: "Gestion des offres", path: "GesOffress" }
+        ]
       },
     ],
   },
@@ -740,6 +744,7 @@ export const productsPerformance = [
     earningAmount: '$123,000',
   },
 ];
+
 
 export const medicalproBranding = {
   data: [
