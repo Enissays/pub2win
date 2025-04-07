@@ -386,3 +386,54 @@ export async function getAllSignalemntUsers() {
   let allSigUsers = await response.json();
   return allSigUsers;
 }
+
+
+export async function createNotification(userId, dataContent) {
+  try { 
+
+    console.log("userId: ",userId);
+    console.log("dataContent: ",dataContent);
+
+    const response = await fetch(url + 'signalement/NotificationSignalement/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId:userId,
+        dataContent:{...dataContent}
+      })
+    });
+
+    // Récupérer le texte de la réponse pour le débogage
+    const responseText = await response.text();
+
+    // Vérifier si la réponse est du JSON valide
+    let notificationInfo;
+    try {
+      notificationInfo = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('Erreur de parsing JSON:', parseError);
+      console.error('Réponse brute:', responseText);
+      throw new Error('Réponse du serveur non valide');
+    }
+
+    // Vérifier le statut de la réponse
+    if (!response.ok) {
+      // Si la réponse contient un message d'erreur
+      throw new Error(notificationInfo.message || 'Erreur de requête');
+    }
+
+    return {
+      success: true,
+      data: notificationInfo
+    };
+
+  } catch (error) {
+    console.error('Erreur lors de la création de la notification:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { getAllSignalemntUsers } from "../services/pub2winService";
+import { createNotification, getAllSignalemntUsers } from "../services/pub2winService";
 import { AideService } from "../components";
 import { Typography } from "@mui/material";
+import Swal from "sweetalert2";
 
 
 const Signalement = () =>{
@@ -38,8 +39,28 @@ const Signalement = () =>{
   
     const handleSend = (e) => {
 
-      console.log("Commentaire envoyé: ",commentaire);
-      console.log(" User ID: ",openDetailsId);
+      
+      createNotification(openDetailsId, {
+        type: warningType,
+        content: commentaire,
+        ...(warningType === 'temporaryBlock' && { days: temporaryBlockDays })
+      }).then(response => {
+        if (response.data) {
+          Swal.fire({
+            title: 'Succès!',
+            text: 'Votre avis a été envoyé avec succès.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+        } else {
+          Swal.fire({
+            title: 'Erreur!',
+            text: response.error,
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      });// Délai de 1 seconde avant le rechargement
     };
   
     const handDeyOfBTmp = (e) => {
