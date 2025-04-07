@@ -54,6 +54,12 @@ const RoleEnum = {
     CLOTURE: 'VALIDEE',
   };
 
+  const SignalementEnum={
+    temporaryBlock: 'temporaryBlock',
+    permanentBlock: 'permanentBlock',
+    firstWarning: 'firstWarning',
+  }
+
   module.exports = {
     RoleEnum,
     TransactionStatusEnum,
@@ -63,5 +69,6 @@ const RoleEnum = {
     GroupeRoleEnum,
     AbonnementStatusEnum,
     FacturationStatusEnum,
-    QuestionStatusEnum
+    QuestionStatusEnum,
+    SignalementEnum
   };

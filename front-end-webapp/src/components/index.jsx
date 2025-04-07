@@ -27,3 +27,4 @@ export {default as AttractiveButton} from './AttractiveButton';
 export {default as BoxAide} from './BoxAide';
 export {default as AideService} from './AideService';
 export {default as BoxAide2} from './BoxAide2';
+export {default as Sawl} from './Sawl';
