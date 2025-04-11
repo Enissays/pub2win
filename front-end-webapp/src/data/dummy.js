@@ -62,6 +62,9 @@ export const kanbanGrid = [
     keyField: 'Close',
     allowToggle: true },
 ];
+
+
+
 const gridEmployeeProfile = (props) => (
   <div className="flex items-center gap-2">
     <img
@@ -160,6 +163,11 @@ export const areaPrimaryYAxis = {
   labelStyle: { color: 'gray' },
 
 };
+
+export const errorData ={
+  data :"Aucune donnée disponible",
+}
+
 export const barPrimaryXAxis = {
   valueType: 'Category',
   interval: 1,

@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
-import { Line1,CollapsibleChart,Line2, Line3, Line4, Line5, Line6, Line7, BoxO, AideService} from '../components';
-
-
-
-
+import { Line1,CollapsibleChart,Line2, Line3, Line4, Line5, Line6, Line7, BoxO} from '../components';
 
 const Ecommerce = () => {
   const [openChart, setOpenChart] = useState(null);
-  
   
   // Gérer le clic sur un graphique
   const handleChartClick = (chartId, event) => {
@@ -16,14 +11,16 @@ const Ecommerce = () => {
       event.stopPropagation();
       return;
     }
-    
     setOpenChart(openChart === chartId ? null : chartId);
   };
+
+
 
   return (
     <div className="mt-12">
       <div>
       </div>
+      
       <BoxO/>
 
       <div className="flex flex-col gap-4 dark:text-gray-200">
@@ -33,7 +30,9 @@ const Ecommerce = () => {
           isOpen={openChart === 'chart1'}
           onClick={(e) => handleChartClick('chart1', e)}
         >
-          <Line1 />
+          <Line1 onRequestStatus={(status)  =>{
+            console.log("Requête réussie ?", status);
+          }}/>
         </CollapsibleChart>
         
         {/* Graphique 2 */}

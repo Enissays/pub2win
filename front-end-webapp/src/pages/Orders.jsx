@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective, Resize, Sort, ContextMenu, Filter, Page, ExcelExport, PdfExport, Edit, Inject } from '@syncfusion/ej2-react-grids';
 
-import { ordersData, contextMenuItems, ordersGrid } from '../data/dummy';
+import { ordersData, contextMenuItems, ordersGrid, errorData } from '../data/dummy';
 import { deleteUserbyUsername, getAllUsers, SRchByUsername, updateUser } from '../services/pub2winService';
-import { AideService, Header } from '../components';
+import { AideService, Error, Header, Loading } from '../components';
 import Swal from 'sweetalert2';
 
 const Orders = () => {
@@ -142,6 +142,17 @@ const Orders = () => {
         });
       
   };
+
+  if (loading) {
+      return <Loading />;
+    }
+  
+    console.log("error: ",typeof error);
+    if (error) {
+      return <Error error={errorData.data} />
+  }
+
+
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <AideService 

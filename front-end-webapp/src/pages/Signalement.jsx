@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { createNotification, getAllSignalemntUsers } from "../services/pub2winService";
-import { AideService } from "../components";
+import { AideService, Error, Loading } from "../components";
 import { Typography } from "@mui/material";
 import Swal from "sweetalert2";
+import { errorData } from "../data/dummy";
 
 
 const Signalement = () =>{
@@ -12,7 +13,8 @@ const Signalement = () =>{
     const [temporaryBlockDays, setTemporaryBlockDays] = useState(7);
     const [commentaire, setCommentaire] = useState('');
     const [openDetailsId, setOpenDetailsId] = useState(null);
-
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const warningMessages = {
       firstWarning: "Vous êtes averti",
       temporaryBlock: `Votre compte est bloqué temporairement pour ${temporaryBlockDays} jours.`,
@@ -21,6 +23,7 @@ const Signalement = () =>{
     
 
     useEffect(() => {
+      setLoading(true);
       // Mettre à jour commentaire quand warningType change
       const initialMessage = 
         warningType === 'firstWarning' 
@@ -59,7 +62,12 @@ const Signalement = () =>{
             icon: 'error',
             confirmButtonText: 'OK'
           });
+
         }
+      }).catch(err =>{
+          setError(err);
+      }).finally(() => {
+        setLoading(false);
       });// Délai de 1 seconde avant le rechargement
     };
   
@@ -77,6 +85,7 @@ const Signalement = () =>{
     };
 
     useEffect(() => {
+      setLoading(true);
         getAllSignalemntUsers()
           .then(response => {
             if (response.success) {
@@ -85,9 +94,21 @@ const Signalement = () =>{
           })
           .catch(error => {
             console.error("Erreur lors de la récupération des SignalementUsers:", error);
-          })
+            setError(true);
+          }).finally(() => {
+            setLoading(false);
+          });
       }, []);
-
+      
+      if (loading) {
+        return <Loading />;
+      }
+    
+      console.log("error: ",typeof error);
+      if (error) {
+        return <Error error={errorData.data} />
+      }
+      
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
             <AideService des={"Cher Administrateur, ceci est un espace de gestion de signalements où vous pouvez avertir, bloquer temporairement pour un nombre de jours défini ou bloquer définitivement un utilisateur selon le motif de signalement. Soyez très attentif à vos décisions !"}/>

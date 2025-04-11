@@ -6,16 +6,15 @@ import PersonIcon from '@mui/icons-material/Person';        // Pour le nom
 import BadgeIcon from '@mui/icons-material/Badge';          // Pour le prénom
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'; 
 import { getAdminInformation, updateUser } from '../services/pub2winService';
-import { AttractiveButton, BoxAide2 } from '../components';
+import { AideService, AttractiveButton, BoxAide2, Error, Loading } from '../components';
 import Swal from 'sweetalert2';
-import { MdPassword } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
+import { errorData } from '../data/dummy';
+import { useProfileContext } from '../contexts/ProfileContext';
 
 const MonProfile = () => {
   // État pour les données administrateur
-  const [admin, setAdmin] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { admin, loading, error, updateField, refreshProfile, setLoading, setAdmin} = useProfileContext();
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'info' });
   
   // État pour suivre quel champ est en cours d'édition
@@ -26,28 +25,8 @@ const MonProfile = () => {
   const [password,setPassword]=useState();
   useEffect(() => { 
     // Fetch admin data when component mounts
-    fetchAdminData();
+    refreshProfile();
   }, []);
-
-  const fetchAdminData = () => {
-    setLoading(true);
-    getAdminInformation()
-      .then(response => {
-        if (response.success) {
-          setAdmin(response.data);
-          setFormValues(response.data);
-        } else {
-          setError("Échec de la récupération des données");
-        }
-      })
-      .catch(error => {
-        console.error("Erreur lors de la récupération des informations:", error);
-        setError("Erreur de connexion au serveur");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
 
   const handleFieldChange = (e) => {
     const { name, value } = e.target;
@@ -129,26 +108,18 @@ const MonProfile = () => {
       });
 };
 
-  if (loading && !admin) {
-    return (
-      <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl flex justify-center items-center" style={{ minHeight: '300px' }}>
-        <CircularProgress />
-      </div>
-    );
-  }
 
-  if (error && !admin) {
-    return (
-      <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-        <Typography color="error" variant="h6" align="center">
-          {error || "Aucune donnée disponible"}
-        </Typography>
-      </div>
-    );
+  if (loading) {
+    return <Loading />;
+  }
+  console.log("error: ",typeof error);
+  if (error) {
+    return <Error error={errorData.data} />
   }
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
+      <AideService des={"Mon Profile"}/>
       <Typography variant="h4" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
         Profil Administrateur
       </Typography>

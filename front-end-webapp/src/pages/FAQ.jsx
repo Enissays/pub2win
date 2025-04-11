@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { getAllQuestionReponse, createAnswer, getAdminInformation, deleteById } from "../services/pub2winService";
 import { Box, Typography, Accordion, AccordionSummary, AccordionDetails, CircularProgress, TextField, Button, Alert } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { AideService } from "../components";
+import { AideService, Loading } from "../components";
 import Swal from "sweetalert2";
+import Error from "../components/Error";
+import { errorData } from "../data/dummy";
 
 const FAQ = () => {
   const [questionReponse, setQuestionReponse] = useState([]);
@@ -13,7 +15,8 @@ const FAQ = () => {
   const [responseStatus, setResponseStatus] = useState({ show: false, type: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [idAmdin,setIdAdmin]=useState();
-  
+  const [error,setError]=useState(null);
+
   useEffect(() => {
     fetchQuestions();
     fetchIdAdmin();
@@ -28,6 +31,7 @@ const FAQ = () => {
       })
       .catch(error => {
         console.error("Erreur lors de la récupération des questions/réponses:", error);
+        setError("Une erreur est survenue lors de la récupération des données");
       })
       .finally(() => {
         setIsLoading(false);
@@ -43,7 +47,7 @@ const FAQ = () => {
         }
       })
       .catch(error => {
-        console.error("Erreur lors de la récupération des questions/réponses:", error);
+        console.log("Erreur lors de la récupération des questions/réponses:", error);
       })
       .finally(() => {
         setIsLoading(false);
@@ -135,15 +139,20 @@ const FAQ = () => {
     }
   };
 
+
+  if (isLoading) {
+    return <Loading />;
+  }
+  
+  if (error) {
+    return <Error error={errorData.data} />
+  }
+
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <AideService des={"Cet espace vous permet de consulter et répondre aux questions posées par les utilisateurs. Pour ajouter une nouvelle réponse à une question, cliquez sur la question puis utilisez le formulaire de réponse. Vous pouvez fournir plusieurs réponses à une même question si nécessaire."} />
 
-      {isLoading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height="200px">
-          <CircularProgress />
-        </Box>
-      ) : questionReponse && questionReponse.length > 0 ? (
+      {questionReponse && questionReponse.length > 0 ? (
         questionReponse.map((item) => (
           <Accordion
             key={item.question._id}
