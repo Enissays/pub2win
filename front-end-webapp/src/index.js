@@ -6,10 +6,13 @@ import App from './App';
 import { ContextProvider } from './contexts/ContextProvider';
 import { AideProvider } from './contexts/AideContext';
 import { ProfileProvider } from './contexts/ProfileContext';
+import { DashboardProvider } from './contexts/DashboardContext';
 
 ReactDOM.render(
   <React.StrictMode>
     <ContextProvider>
+
+    <DashboardProvider>
 
     <ProfileProvider>
 
@@ -20,6 +23,8 @@ ReactDOM.render(
       </AideProvider>
       
     </ProfileProvider>
+    
+    </DashboardProvider>
     </ContextProvider>
   </React.StrictMode>,
   document.getElementById('root'),
