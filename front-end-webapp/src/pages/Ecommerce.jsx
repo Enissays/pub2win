@@ -22,7 +22,7 @@ const Ecommerce = () => {
       </div>
       
       <BoxO/>
-
+      
       <div className="flex flex-col gap-4 dark:text-gray-200">
         {/* Graphique 1 */}
         <CollapsibleChart 

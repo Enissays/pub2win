@@ -70,6 +70,11 @@
       }
     };
 
+    // Rafraîchir les données du profil
+    const refreshData = () => {
+      return loadAideData();
+    };
+
     // Exposer les valeurs et fonctions via le contexte
     const value = {
       aide,
@@ -79,7 +84,10 @@
       setFormValues,
       handleFieldChange,
       handleSaveField,
-      refresh: loadAideData
+      setLoading,
+      setError,
+      refresh: loadAideData,
+      refreshData
     };
 
     return <AideContext.Provider value={value}>{children}</AideContext.Provider>;

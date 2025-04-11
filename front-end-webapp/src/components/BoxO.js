@@ -6,15 +6,20 @@ import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
 
 import { getTotalUsers,getTotalabco,getTotalInfOffres, getTotalOffres, getTotalTranaCommission,getTotalSignalement} from '../services/pub2winService';
-
+import Loading from './Loading';
+import Error from './Error';
+import { errorData } from '../data/dummy';
 
 
 const BoxO = () => {
 
     const [selectedCard, setSelectedCard] = useState(0);
     const [cards, setCards] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     useEffect(() => {
+      setLoading(true);
       Promise.all([
         getTotalUsers(),
         getTotalabco(),
@@ -24,6 +29,7 @@ const BoxO = () => {
         getTotalSignalement()
       ])
         .then(([usersResponse, abcoResponse, InfOffresRes,OffreResponse, TrTotalRes,TSRes]) => {
+
           const newCards = [];
           
           if (usersResponse.success) {
@@ -71,9 +77,21 @@ const BoxO = () => {
           setCards(prevCards => [...prevCards, ...newCards]);
         })
         .catch(error => {
+          setError(error);
           console.error("Erreur lors de la récupération des données:", error);
+        }).finally(() => {
+          setLoading(false);
         });
     }, []);
+
+
+    if (loading) {
+        return <Loading />;
+      }
+      
+      if (error) {
+        return <Error error={errorData.data} />
+      }
 
     return (
       <Box sx={{ padding: '0 24px', width: '100%' }}>

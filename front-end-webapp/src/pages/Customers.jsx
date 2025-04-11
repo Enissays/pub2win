@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Card, CardContent, Typography, Grid, Divider, CircularProgress, Paper } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -12,12 +12,15 @@ import { errorData } from '../data/dummy';
 
 const Customers = () => {
   // Utiliser le contexte partagé au lieu de gérer l'état localement
-  const { aide, loading, error ,formValues, handleFieldChange, handleSaveField } = useAide();
+  const { aide, loading, error ,formValues, handleFieldChange, handleSaveField, refreshData } = useAide();
   
   // État pour suivre quel champ est en cours d'édition
   const [editingField, setEditingField] = useState('');
 
-
+  useEffect(() => { 
+      // Fetch admin data when component mounts
+      refreshData();
+    }, []);
 
   if (loading) {
     return <Loading />;
