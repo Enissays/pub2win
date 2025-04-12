@@ -119,7 +119,7 @@ const MonProfile = () => {
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-      <AideService des={"Mon Profile"}/>
+      <AideService des={"Cet espace vous permet de consulter et modifier vos informations personelles"}/>
 
       {admin ? (
         <>
@@ -232,22 +232,6 @@ const MonProfile = () => {
                 </Grid>
               )}
             
-            {/* Date d'inscription */}
-            {admin?.date_inscription && (
-              <Grid item>
-                <BoxAide2 
-                  icon={<CalendarTodayIcon sx={{ color: '#1DA1F2', mr: 2 }} />}
-                  title="Date d'inscription"
-                  field="date_inscription"
-                  value={new Date(admin.date_inscription).toLocaleDateString()}
-                  color="#1DA1F2"
-                  editingField={editingField}
-                  setEditingField={setEditingField}
-                  handleFieldChange={handleFieldChange}
-                  handleSaveField={handleSaveField}
-                />
-              </Grid>
-            )}
           </Grid>
         </CardContent>
       </Card>

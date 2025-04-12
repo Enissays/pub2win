@@ -321,7 +321,7 @@ export async function getAdminInformation() {
     
   let response = await fetch(url + 'user/profileAdmin');
   let adminInfo = await response.json();
-  return {};
+  return adminInfo;
 }
 
 export async function getAllQuestionReponse() {

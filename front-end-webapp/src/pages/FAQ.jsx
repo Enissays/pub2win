@@ -259,7 +259,7 @@ const FAQ = () => {
             </AccordionDetails>
           </Accordion>
         ))
-      ) : <BoxVide Title={"Aucune question n'a été posée pour le moment"} des={"Les questions posées par les utilisateurs apparaîtront ici"}/>}
+      ) : <BoxVide Title={"Aucune question n'a été posée pour le moment"} des={"Les questions posées par les utilisateurs apparaîtront ici"}/>} 
     </div>
   );
 };
