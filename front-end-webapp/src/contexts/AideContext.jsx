@@ -35,8 +35,6 @@
               instagram_url: response.data.instagram_url || '',
               twitter_url: response.data.twitter_url || ''
             });
-          } else {
-            setError("Impossible de récupérer les données");
           }
         })
         .catch(error => {

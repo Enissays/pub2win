@@ -29,8 +29,6 @@ export const ProfileProvider = ({ children }) => {
         if (response.success) {
           setAdmin(response.data);
           setFormValues(response.data);
-        } else {
-          setError("Échec de la récupération des données");
         }
       })
       .catch(error => {

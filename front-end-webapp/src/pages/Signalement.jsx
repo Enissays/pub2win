@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createNotification, getAllSignalemntUsers } from "../services/pub2winService";
-import { AideService, Error, Loading } from "../components";
-import { Typography } from "@mui/material";
+import { AideService, BoxVide, Error, Loading } from "../components";
+import { Box, Typography } from "@mui/material";
 import Swal from "sweetalert2";
 import { errorData } from "../data/dummy";
 
@@ -23,7 +23,7 @@ const Signalement = () =>{
     
 
     useEffect(() => {
-      setLoading(true);
+      
       // Mettre à jour commentaire quand warningType change
       const initialMessage = 
         warningType === 'firstWarning' 
@@ -42,7 +42,7 @@ const Signalement = () =>{
   
     const handleSend = (e) => {
 
-      
+      setLoading(true);
       createNotification(openDetailsId, {
         type: warningType,
         content: commentaire,
@@ -112,13 +112,12 @@ const Signalement = () =>{
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
             <AideService des={"Cher Administrateur, ceci est un espace de gestion de signalements où vous pouvez avertir, bloquer temporairement pour un nombre de jours défini ou bloquer définitivement un utilisateur selon le motif de signalement. Soyez très attentif à vos décisions !"}/>
-          {usersSignalement.map(user => (
+          {usersSignalement.map (user => ( 
             <details key={user.user_signale_id} className="bg-white border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-all duration-300 mb-5"
             open={openDetailsId === user.user_signale_id}
             >
               <summary className="flex items-center justify-between p-4 cursor-pointer bg-gray-50 hover:bg-primary-50"
               onClick={(e) => {
-                e.preventDefault(); // Empêche le comportement par défaut
                 toggleDetails(user.user_signale_id);
               }}
               
@@ -245,7 +244,7 @@ const Signalement = () =>{
           </div>
         )}
             </details>
-          ))}
+          )) ? <BoxVide Title={"Aucune signalement n'a été signé pour le moment"} des={"Les signalement posées par les utilisateurs apparaîtront ici"}/> : null}
         </div>
       );
 }

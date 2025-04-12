@@ -3,7 +3,7 @@ import { GridComponent, ColumnsDirective, ColumnDirective, Resize, Sort, Context
 
 import { ordersData, contextMenuItems, ordersGrid, errorData } from '../data/dummy';
 import { deleteUserbyUsername, getAllUsers, SRchByUsername, updateUser } from '../services/pub2winService';
-import { AideService, Error, Header, Loading } from '../components';
+import { AideService, BoxVide, Error, Header, Loading } from '../components';
 import Swal from 'sweetalert2';
 
 const Orders = () => {
@@ -37,8 +37,6 @@ const Orders = () => {
         .then(response => {
           if (response.success) {
             setUsers(response.allusers);
-          } else {
-            setError('Erreur lors du chargement des utilisateurs');
           }
         })
         .catch(error => {
@@ -158,7 +156,8 @@ const Orders = () => {
       <AideService 
           des={"Cher Administrateur, ceci est un espace de gestion de comptes avec toutes les fonctionnalités essentielles. Il intègre recherche avancée, multifiltrage et options d'exportation de données vers différents formats. En cliquant sur l'utilisateur souhaité, vous pouvez accéder à toutes les fonctionnalités de gestion disponibles."}
         />
-      
+      {users.length > 0 ? (
+        <>
       <div className="mb-6 flex flex-col md:flex-row items-start md:items-center gap-4">
         <form className="flex w-full md:w-auto">
           <input
@@ -171,8 +170,6 @@ const Orders = () => {
           />
         </form>
         
-        
-
         <button
           onClick={handleReset}
           className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md w-full md:w-auto"
@@ -182,60 +179,55 @@ const Orders = () => {
         </button>
       </div>
       
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
-
-
-<GridComponent
-  ref={gridRef}
-  id="gridcomp"
-  dataSource={users}
-  allowPaging
-  allowSorting
-  allowExcelExport
-  contextMenuItems={contextMenuItems}
-  editSettings={editing}
-  actionBegin={(args) => {
-    if (args.requestType === 'delete') {
-      // Annuler la suppression par défaut du composant
-      args.cancel = true;
-      // Appeler notre fonction personnalisée de suppression
-      handleDeleteUser(args);
-    }
-  }}
-  actionComplete={(args) => {
-    if (args.requestType === 'save') {
-      // Récupérer toutes les cases qui ont été modifiées
-      const changedFields = {};
-      const originalData = args.previousData;
-      const newData = args.data;
-      
-      // Enregistrer l'username pour l'utiliser dans la mise à jour
-      setUsername(originalData.username);
-      
-      // Comparer les données originales et les nouvelles données
-      Object.keys(newData).forEach(key => {
-        if (originalData[key] !== newData[key]) {
-          changedFields[key] = newData[key];
-          
-          // Ajouter les champs modifiés à updateData
-          setUpdateData(prevData => ({
-            ...prevData,
-            [key]: newData[key]
-          }));
-        }
-      });
-    }
-  }}
->
-  <ColumnsDirective>
-    {ordersGrid.map((item, index) => <ColumnDirective key={index} {...item} />)}
-  </ColumnsDirective>
-  <Inject services={[Resize, Sort, ContextMenu, Filter, Page, ExcelExport, Edit]} />
-</GridComponent>
+      <GridComponent
+        ref={gridRef}
+        id="gridcomp"
+        dataSource={users}
+        allowPaging
+        allowSorting
+        allowExcelExport
+        contextMenuItems={contextMenuItems}
+        editSettings={editing}
+        actionBegin={(args) => {
+          if (args.requestType === 'delete') {
+            // Annuler la suppression par défaut du composant
+            args.cancel = true;
+            // Appeler notre fonction personnalisée de suppression
+            handleDeleteUser(args);
+          }
+        }}
+        actionComplete={(args) => {
+          if (args.requestType === 'save') {
+            // Récupérer toutes les cases qui ont été modifiées
+            const changedFields = {};
+            const originalData = args.previousData;
+            const newData = args.data;
+            
+            // Enregistrer l'username pour l'utiliser dans la mise à jour
+            setUsername(originalData.username);
+            
+            // Comparer les données originales et les nouvelles données
+            Object.keys(newData).forEach(key => {
+              if (originalData[key] !== newData[key]) {
+                changedFields[key] = newData[key];
+                
+                // Ajouter les champs modifiés à updateData
+                setUpdateData(prevData => ({
+                  ...prevData,
+                  [key]: newData[key]
+                }));
+              }
+            });
+          }
+        }}
+      >
+        <ColumnsDirective>
+          {ordersGrid.map((item, index) => <ColumnDirective key={index} {...item} />)}
+        </ColumnsDirective>
+        <Inject services={[Resize, Sort, ContextMenu, Filter, Page, ExcelExport, Edit]} />
+      </GridComponent>
+      </>
+      ) : <BoxVide Title={"Les utilisateurs apparaîtront ici"} des={"Aucun utilisateur trouvé."} />}
     </div>
   );
 };

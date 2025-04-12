@@ -6,7 +6,7 @@ import PersonIcon from '@mui/icons-material/Person';        // Pour le nom
 import BadgeIcon from '@mui/icons-material/Badge';          // Pour le prénom
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'; 
 import { getAdminInformation, updateUser } from '../services/pub2winService';
-import { AideService, AttractiveButton, BoxAide2, Error, Loading } from '../components';
+import { AideService, AttractiveButton, BoxAide2, BoxVide, Error, Loading } from '../components';
 import Swal from 'sweetalert2';
 import { RiLockPasswordFill } from 'react-icons/ri';
 import { errorData } from '../data/dummy';
@@ -120,6 +120,9 @@ const MonProfile = () => {
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <AideService des={"Mon Profile"}/>
+
+      {admin ? (
+        <>
       <Typography variant="h4" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
         Profil Administrateur
       </Typography>
@@ -248,6 +251,8 @@ const MonProfile = () => {
           </Grid>
         </CardContent>
       </Card>
+      </>
+      ) : <BoxVide Title={"Aucune information de contact trouvée"} des={"Les informations de contact de pub2win apparaîtront ici."}/>}
     </div>
   );
 };

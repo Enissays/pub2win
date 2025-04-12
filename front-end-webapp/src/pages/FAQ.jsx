@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getAllQuestionReponse, createAnswer, getAdminInformation, deleteById } from "../services/pub2winService";
 import { Box, Typography, Accordion, AccordionSummary, AccordionDetails, CircularProgress, TextField, Button, Alert } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { AideService, Loading } from "../components";
+import { AideService, BoxVide, Loading } from "../components";
 import Swal from "sweetalert2";
 import Error from "../components/Error";
 import { errorData } from "../data/dummy";
@@ -259,25 +259,7 @@ const FAQ = () => {
             </AccordionDetails>
           </Accordion>
         ))
-      ) : (
-        <Box 
-          sx={{ 
-            textAlign: 'center', 
-            py: 6, 
-            px: 3, 
-            borderRadius: 2, 
-            bgcolor: '#f5f5f5', 
-            border: '1px dashed #ccc'
-          }}
-        >
-          <Typography variant="h6" color="text.secondary" gutterBottom>
-            Aucune question n'a été posée pour le moment
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Les questions posées par les utilisateurs apparaîtront ici.
-          </Typography>
-        </Box>
-      )}
+      ) : <BoxVide Title={"Aucune question n'a été posée pour le moment"} des={"Les questions posées par les utilisateurs apparaîtront ici"}/>}
     </div>
   );
 };

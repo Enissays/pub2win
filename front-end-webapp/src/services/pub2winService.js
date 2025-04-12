@@ -234,7 +234,7 @@ export async function getAllUsers() {
     
   let data = await fetch(url + 'user/allUsers');
   let users = await data.json();
-  return users;
+  return {};
 }
 
 
@@ -321,7 +321,7 @@ export async function getAdminInformation() {
     
   let response = await fetch(url + 'user/profileAdmin');
   let adminInfo = await response.json();
-  return adminInfo;
+  return {};
 }
 
 export async function getAllQuestionReponse() {

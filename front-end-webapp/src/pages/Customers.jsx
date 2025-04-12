@@ -5,7 +5,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import { AttractiveButton, BoxAide,AideService, Loading, Error } from '../components';
+import { AttractiveButton, BoxAide,AideService, Loading, Error, BoxVide } from '../components';
 import { useAide } from '../contexts/AideContext';
 import { updateAIDE } from '../services/pub2winService';
 import { errorData } from '../data/dummy';
@@ -43,6 +43,8 @@ const Customers = () => {
         des="Bienvenue, cher administrateur ! Cet espace vous permet de visualiser les informations de contact actuelles de pub2win, ainsi vous permettra d'actualiser ces données dès que nécessaire."
       />
 
+      {aide ? (
+        <>
       <Card elevation={3} sx={{ borderRadius: '16px' }}>
         <CardContent>
           <Grid container spacing={3} direction="column">
@@ -167,6 +169,8 @@ const Customers = () => {
       </Card>
 
       <AttractiveButton func={updateAIDE} formValues={formValues} title={"Mettre à jour les informations"}/>
+      </>
+          ): <BoxVide Title={"Aucune information de contact trouvée"} des={"Les informations de contact de pub2win apparaîtront ici."}/>}
     </div>
   );
 };

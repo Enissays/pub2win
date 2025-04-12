@@ -30,3 +30,4 @@ export {default as BoxAide2} from './BoxAide2';
 export {default as Sawl} from './Sawl';
 export {default as Error} from './Error';
 export {default as Loading} from './Loading';
+export {default as BoxVide} from './BoxVide';
