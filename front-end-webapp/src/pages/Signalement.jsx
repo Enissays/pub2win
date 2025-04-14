@@ -108,11 +108,12 @@ const Signalement = () =>{
       if (error) {
         return <Error error={errorData.data} />
       }
-      
+      console.log("usersSignalement: ",usersSignalement);
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
             <AideService des={"Cher Administrateur, ceci est un espace de gestion de signalements où vous pouvez avertir, bloquer temporairement pour un nombre de jours défini ou bloquer définitivement un utilisateur selon le motif de signalement. Soyez très attentif à vos décisions !"}/>
-          {usersSignalement.map (user => ( 
+          {usersSignalement.length > 0 ?
+          usersSignalement.map (user => ( 
             <details key={user.user_signale_id} className="bg-white border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-all duration-300 mb-5"
             open={openDetailsId === user.user_signale_id}
             >
@@ -244,7 +245,7 @@ const Signalement = () =>{
           </div>
         )}
             </details>
-          )) ? <BoxVide Title={"Aucune signalement n'a été signé pour le moment"} des={"Les signalement posées par les utilisateurs apparaîtront ici"}/> : null}
+          )) : <BoxVide Title={"Aucune signalement n'a été signé pour le moment"} des={"Les signalement posées par les utilisateurs apparaîtront ici"}/>}
         </div>
       );
 }

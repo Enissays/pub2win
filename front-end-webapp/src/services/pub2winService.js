@@ -234,7 +234,7 @@ export async function getAllUsers() {
     
   let data = await fetch(url + 'user/allUsers');
   let users = await data.json();
-  return {};
+  return users;
 }
 
 

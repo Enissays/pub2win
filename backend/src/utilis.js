@@ -6,6 +6,7 @@ const Offre = require('./models/offre.model');
 const { ObjectId } = mongoose.Types;
 const transaction=require('./models/transaction.model');
 const Commercant = require('./models/commercant.model');
+const { AbonnementStatusEnum } = require('./models/enums');
 
 async function getDbCollections() {
   const collections = await db.listCollections().toArray();
@@ -40,10 +41,10 @@ async function addUser() {
 async function addSignalemnt() {
    
   const newSignalement = new Signalement({
-    user_signale_id: "67e2a79e2d8e1bb6eb3b54ca",
-    raison: "raciste",
-    user_username: "test",
-    date_signalement: new Date("2025-04-06T15:04:56.637+00:00"),
+    user_signale_id: "67f526f6c3ddcd175a3627f7",
+    raison: "Ce Client insulte les autres",
+    user_username: "johndoe",
+    date_signalement: new Date("2025-02-10T15:04:56.637+00:00"),
   });
 
   await newSignalement.save();
@@ -172,6 +173,52 @@ async function updateClientInf (){
 
 
 
+async function UpdateAbonnementAuCommercant() {
+  try {
+    
+    // ID du commerçant à mettre à jour
+    const commercantId = '67f52732c3ddcd175a3627fa';
+    
+    // ID de la formule d'abonnement (remplacez par un ID valide de votre base de données)
+    const formuleId = new mongoose.Types.ObjectId('67cee3a3d3ae689459451e58'); // Exemple d'ID
+    
+    // Dates pour l'abonnement
+    const dateDebut = new Date();
+    const dateFin = new Date();
+    dateFin.setMonth(dateFin.getMonth() + 1); // Abonnement d'un mois
+    
+    // Date du prochain paiement (un mois après la date de début)
+    const dateProchainPaiement = new Date(dateDebut);
+    dateProchainPaiement.setMonth(dateProchainPaiement.getMonth() + 1);
+    
+    // Mise à jour du commerçant
+    const commercantMisAJour = await Commercant.findByIdAndUpdate(
+      commercantId,
+      {
+        abonnement: {
+          formule_id: formuleId,
+          date_debut: dateDebut,
+          date_fin: dateFin,
+          auto_renouvellement: false,
+          status: AbonnementStatusEnum.ACTIF,
+          date_dernier_paiement: dateDebut,
+          date_prochain_paiement: dateProchainPaiement
+        },
+        status: 'active' // Mise à jour du statut du commerçant
+      },
+      { new: true } // Pour retourner le document mis à jour
+    );
+    
+    console.log('Abonnement ajouté avec succès:', commercantMisAJour);
+    
+  } catch (error) {
+    console.error('Erreur lors de l\'ajout de l\'abonnement:', error);
+  } finally {
+    // Fermer la connexion à la base de données
+    mongoose.connection.close();
+  }
+}
+
 module.exports = {
   getDbCollections,
   addUser,
@@ -181,5 +228,6 @@ module.exports = {
   addTransaction,
   updateClientStatus,
   getAllUsernamesUtilis,
-  updateClientInf
+  updateClientInf,
+  UpdateAbonnementAuCommercant
 };

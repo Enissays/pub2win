@@ -31,7 +31,12 @@ const BoxO = () => {
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
           gap: 2,
+          '@media (max-width: 649px)': {
+            display: 'flex',
+            flexDirection: 'column',
+          }
         }}
+        
       >
         {cards.map((card, index) => (
           <Card 
@@ -64,8 +69,11 @@ const BoxO = () => {
                 },
               }}
             >
-              <CardContent sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 8px' }}>
-                <Typography variant="subtitle1" component="div" sx={{ fontWeight: 'medium' }}>
+              <CardContent sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 8px'}}>
+               
+                <Typography variant="subtitle1" component="div" sx={{ fontWeight: 'medium' }}
+                 
+                >
                   {card.title}
                 </Typography>
                 <Typography variant="h6" color="text.primary" sx={{ fontWeight: 'bold' }}>

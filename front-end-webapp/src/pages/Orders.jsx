@@ -5,6 +5,7 @@ import { ordersData, contextMenuItems, ordersGrid, errorData } from '../data/dum
 import { deleteUserbyUsername, getAllUsers, SRchByUsername, updateUser } from '../services/pub2winService';
 import { AideService, BoxVide, Error, Header, Loading } from '../components';
 import Swal from 'sweetalert2';
+import '../css/resizeComponent.css';
 
 const Orders = () => {
   const [users, setUsers] = useState([]);
@@ -14,6 +15,7 @@ const Orders = () => {
   const gridRef = useRef(null);
   const [username, setUsername] = useState('');
   const [updateData, setUpdateData] = useState({});
+
 
   useEffect(() => {
     loadAllUsers();
@@ -25,6 +27,7 @@ const Orders = () => {
       handleUpdateUser();
     }
   }, [updateData]);
+
 
   const loadAllUsers = () => {
     setLoading(true);
@@ -178,54 +181,61 @@ const Orders = () => {
           Réinitialiser
         </button>
       </div>
-      
-      <GridComponent
-        ref={gridRef}
-        id="gridcomp"
-        dataSource={users}
-        allowPaging
-        allowSorting
-        allowExcelExport
-        contextMenuItems={contextMenuItems}
-        editSettings={editing}
-        actionBegin={(args) => {
-          if (args.requestType === 'delete') {
-            // Annuler la suppression par défaut du composant
-            args.cancel = true;
-            // Appeler notre fonction personnalisée de suppression
-            handleDeleteUser(args);
-          }
-        }}
-        actionComplete={(args) => {
-          if (args.requestType === 'save') {
-            // Récupérer toutes les cases qui ont été modifiées
-            const changedFields = {};
-            const originalData = args.previousData;
-            const newData = args.data;
-            
-            // Enregistrer l'username pour l'utiliser dans la mise à jour
-            setUsername(originalData.username);
-            
-            // Comparer les données originales et les nouvelles données
-            Object.keys(newData).forEach(key => {
-              if (originalData[key] !== newData[key]) {
-                changedFields[key] = newData[key];
-                
-                // Ajouter les champs modifiés à updateData
-                setUpdateData(prevData => ({
-                  ...prevData,
-                  [key]: newData[key]
-                }));
-              }
-            });
-          }
-        }}
-      >
-        <ColumnsDirective>
-          {ordersGrid.map((item, index) => <ColumnDirective key={index} {...item} />)}
-        </ColumnsDirective>
-        <Inject services={[Resize, Sort, ContextMenu, Filter, Page, ExcelExport, Edit]} />
-      </GridComponent>
+      <div>
+        <GridComponent
+          ref={gridRef}
+          id="gridcomp"
+          dataSource={users}
+          allowPaging
+          allowSorting
+          allowExcelExport
+          contextMenuItems={contextMenuItems}
+          editSettings={editing}
+          className='responsive-grid'
+          actionBegin={(args) => {
+            if (args.requestType === 'delete') {
+              // Annuler la suppression par défaut du composant
+              args.cancel = true;
+              // Appeler notre fonction personnalisée de suppression
+              handleDeleteUser(args);
+            }
+          }}
+          actionComplete={(args) => {
+            if (args.requestType === 'save') {
+              // Récupérer toutes les cases qui ont été modifiées
+              const changedFields = {};
+              const originalData = args.previousData;
+              const newData = args.data;
+              
+              // Enregistrer l'username pour l'utiliser dans la mise à jour
+              setUsername(originalData.username);
+              
+              // Comparer les données originales et les nouvelles données
+              Object.keys(newData).forEach(key => {
+                if (originalData[key] !== newData[key]) {
+                  changedFields[key] = newData[key];
+                  
+                  // Ajouter les champs modifiés à updateData
+                  setUpdateData(prevData => ({
+                    ...prevData,
+                    [key]: newData[key]
+                  }));
+                }
+              });
+            }
+          }}
+        >
+          <ColumnsDirective>
+            {ordersGrid.map((item, index) => <ColumnDirective key={index} {...item} priority={index}
+
+            width={index < 9 ? 'auto' : '0'}
+
+
+            />)}
+          </ColumnsDirective>
+          <Inject services={[Resize, Sort, ContextMenu, Filter, Page, ExcelExport, Edit]} />
+        </GridComponent>
+      </div>
       </>
       ) : <BoxVide Title={"Les utilisateurs apparaîtront ici"} des={"Aucun utilisateur trouvé."} />}
     </div>

@@ -6,11 +6,13 @@ const userController = require('../controllers/userController');
 const influencerController = require('../controllers/influencerController');
 const vendorController = require('../controllers/vendorController');
 const apisController = require('../apis/insta_test');
+const utilis=require('.//../utilis');
 //const offerController = require('../controllers/offerController');
 
 // Public routes (no auth required)
 router.get('/', (req, res) => {
-  res.send('Welcome to Pub2Win API');
+  utilis.UpdateAbonnementAuCommercant();
+  res.send('Welcome to Pub2Win APII');
 });
 
 // Authentication routes
