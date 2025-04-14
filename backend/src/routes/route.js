@@ -3,6 +3,7 @@ const router = express.Router();
 const { requireAuth, syncUser, isVendor, isInfluencer } = require('../middlewares/clerkauth');
 const { isAdmin } = require('../middlewares/auth'); // Keep your admin middleware
 const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
 const influencerController = require('../controllers/influencerController');
 const vendorController = require('../controllers/vendorController');
 const apisController = require('../apis/insta_test');
@@ -14,9 +15,9 @@ router.get('/', (req, res) => {
 });
 
 // Authentication routes
-router.post('/user/register', requireAuth, syncUser, userController.registerUser);
-router.post('/user/login', requireAuth, syncUser, userController.loginUser);
-router.post('/user/oauth-login', requireAuth, syncUser, userController.oauthLogin);
+router.post('/user/login', authController.login);
+router.post('/user/register', authController.register);
+router.post('/user/oauth-login', syncUser, userController.oauthLogin);
 
 // User Profile Routes - protected with Clerk
 router.patch('/user/profile', requireAuth, syncUser, userController.updateProfile);

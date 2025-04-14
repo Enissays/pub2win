@@ -94,77 +94,59 @@ const RegisterVender: React.FC<RegisterScreenProps> = ({ navigation }) => {
   };
 
   const handleVerification = async () => {
-    if (!isLoaded || !signUp) {
-      Alert.alert('Error', 'Authentication system is not ready. Please try again.');
+    if (!isLoaded || !signUp || !verificationCode) {
+      Alert.alert('Error', 'Please enter verification code');
       return;
     }
-
-    if (!verificationCode) {
-      Alert.alert('Error', 'Please enter the verification code');
-      return;
-    }
-
+  
     try {
-      dispatch(registerRequest());
-      
-      // Attempt to verify the email
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: verificationCode,
       });
-
+  
       if (completeSignUp.status !== "complete") {
-        // Handle verification error
-        throw new Error("Email verification failed");
+        throw new Error("Verification failed");
       }
-
-      // Set the user as active - add null check before calling setActive
-      if (setActive) {
-        await setActive({ session: completeSignUp.createdSessionId });
-      } else {
-        console.error("setActive is undefined");
-        throw new Error("Authentication error: Unable to set active session");
-      }
+  
+      await setActive({ session: completeSignUp.createdSessionId });
       
-      // Update Redux store with user info
-      if (completeSignUp.createdUserId) {
+      const clerkUserId = completeSignUp.createdUserId;
+      if (!clerkUserId) throw new Error('No user ID returned');
+      
+      try {
+        await api.post('/user/register', {
+          clerkUserId,
+          firstName,
+          lastName,
+          email,
+          username: identifier,
+          phoneNumber,
+          role: 'INFLUENCER', 
+          isInfluencer: true
+        });
+        
         dispatch(registerSuccess({
-          id: completeSignUp.createdUserId,
+          id: clerkUserId,
           name: `${firstName} ${lastName}`,
-          email: email,
-          isLoggedIn: true,
+          email,
+          role: 'INFLUENCER',
+          isLoggedIn: true
         }));
         
-        // Register the user in your backend using the API hook
-        try {
-          await api.post('/user/register', {
-            userId: completeSignUp.createdUserId,
-            firstName,
-            lastName,
-            email,
-            username: identifier || undefined,
-            phoneNumber: phoneNumber || undefined,
-            userType: 'vendor'
-          });
-          
-          // Navigate to vendor placement screen
-          navigation.navigate('VendorPlacement');
-        } catch (apiError: any) {
-          console.error("Error registering with backend:", apiError);
-          Alert.alert(
-            "Registration Warning",
-            "Your account was created but we couldn't complete your profile setup. Some features may be limited.",
-            [
-              { text: "OK", onPress: () => navigation.navigate('VendorPlacement') }
-            ]
-          );
-        }
-      } else {
-        // Navigate to vendor placement screen as fallback
         navigation.navigate('VendorPlacement');
+        
+      } catch (apiError) {
+        console.error("Backend registration error:", apiError);
+        Alert.alert(
+          "Warning", 
+          "Account created but profile setup incomplete. Please complete your profile.",
+          [{ text: "OK", onPress: () => navigation.navigate('VendorPlacement') }]
+        );
       }
+      
     } catch (err: any) {
-      console.error("Error verifying email:", err);
-      dispatch(registerFailure(err.message || "Verification failed. Please try again."));
+      console.error("Verification error:", err);
+      dispatch(registerFailure(err.message || "Verification failed"));
     }
   };
 

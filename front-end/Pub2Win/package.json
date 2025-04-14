@@ -10,7 +10,7 @@
     "web": "npx expo start --web"
   },
   "dependencies": {
-    "@clerk/clerk-expo": "^2.8.4",
+    "@clerk/clerk-expo": "latest",
     "@clerk/clerk-react": "^5.24.1",
     "@clerk/types": "^4.47.0",
     "@expo/vector-icons": "^14.0.4",

@@ -4,6 +4,7 @@ export interface User {
   name: string;
   email: string;
   isLoggedIn: boolean;
+  role: string;
 }
 
 export interface Influencer {

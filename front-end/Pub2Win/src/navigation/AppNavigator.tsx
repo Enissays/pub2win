@@ -70,22 +70,22 @@ const AuthNavigator = () => {
 
 const AppNavigator: React.FC = () => {
   // Comment out or remove the useSelector line since we won't use auth state
-  // const { token, userType } = useSelector((state: RootState) => state.auth);
+  const { token, userType } = useSelector((state: RootState) => state.auth);
 
   return (
     <NavigationContainer>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         {/* Directly show the influencer app for development */}
-        <RootStack.Screen name="InfluencerApp" component={InfluencerTabNavigator} />
+        {/* <RootStack.Screen name="InfluencerApp" component={LoginScreen} />
         <RootStack.Screen name="PartnerDetails" component={PartnerDetails} />
         <RootStack.Screen name="InfluencerNotifications" component={InfluencerNotifications} />
         <RootStack.Screen name="InfluencerHelp" component={InfluencerHelp} />
         <RootStack.Screen name="InfluencerSettings" component={InfluencerSettings} />
         <RootStack.Screen name="CreateEndroit" component={CreateEndroit} />
-        <RootStack.Screen name="EditEndroit" component={EditEndroit} />
+        <RootStack.Screen name="EditEndroit" component={EditEndroit} /> */}
         
         {/* Keep other screens commented out for now */}
-        {/* 
+        
         {!token ? (
           // Unauthenticated flow
           <>
@@ -103,7 +103,7 @@ const AppNavigator: React.FC = () => {
             <RootStack.Screen name="PartnerDetails" component={PartnerDetails} />
           </>
         )}
-        */}
+       
       </RootStack.Navigator>
     </NavigationContainer>
   );

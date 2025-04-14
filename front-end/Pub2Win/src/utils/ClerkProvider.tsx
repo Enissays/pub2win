@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ClerkProvider } from '@clerk/clerk-expo';
 import * as SecureStore from 'expo-secure-store';
 import { View, ActivityIndicator, StyleSheet, Text, Alert } from 'react-native';
+import { useAuth } from '@clerk/clerk-react';
 
 const tokenCache = {
   async getToken(key: string) {
@@ -25,10 +26,11 @@ interface ClerkAuthProviderProps {
 }
 
 const ClerkAuthProvider: React.FC<ClerkAuthProviderProps> = ({ children }) => {
-  // Replace with your actual Clerk publishable key
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { isLoaded: authLoaded } = useAuth();
   
   if (!publishableKey) {
     throw new Error("Missing Clerk publishable key");
@@ -41,6 +43,12 @@ const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
     
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (authLoaded) {
+      setIsLoaded(true);
+    }
+  }, [authLoaded])
 
   if (isLoading) {
     return (

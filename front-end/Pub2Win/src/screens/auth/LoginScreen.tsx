@@ -50,14 +50,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
   const handleEmailSignIn = async () => {
     if (!isLoaded) {
+      Alert.alert('Error', 'Authentication system is initializing');
       return;
     }
-
+  
     if (!email || !password) {
       Alert.alert('Error', 'Please enter both email and password');
       return;
     }
-
+  
     try {
       dispatch(loginRequest());
       
@@ -65,49 +66,49 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         identifier: email,
         password,
       });
-
+  
       if (result.status === "complete") {
-        // Set the user as active
         await setActive({ session: result.createdSessionId });
         
-        // Update Redux store with user info
-        // We need to wait for the user object to be available after sign-in
-        if (userId && user) {
-          const userData = {
-            id: userId,
-            name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-            email: user.primaryEmailAddress?.emailAddress || '',
-            isLoggedIn: true,
-          };
-          
-          dispatch(loginSuccess(userData));
-          
-          // Send login data to backend
-          try {
-            await api.post('/user/login', {
-              userId: userId,
-              email: user.primaryEmailAddress?.emailAddress || '',
-              lastLogin: new Date().toISOString()
-            });
-          } catch (apiError: any) {
-            console.error("Error syncing login with backend:", apiError);
-            // Continue with navigation even if backend sync fails
-          }
-        }
+        const { userId } = useAuth();
+        const { user } = useUser();
         
-        // Navigate to home
-        navigation.replace('Home');
+        if (!user) throw new Error('No user found');
+        
+        const role = (user.publicMetadata?.role as string) || 'CLIENT';
+        
+        try {
+          const response = await api.post('/user/login', {
+            clerkUserId: user.id,
+            email: user.primaryEmailAddress?.emailAddress || email,
+            role,
+            lastLogin: new Date().toISOString()
+          });
+          
+          dispatch(loginSuccess({
+            id: user.id,
+            email: user.primaryEmailAddress?.emailAddress || email,
+            name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+            role,
+            isLoggedIn: true
+          }));
+          
+          navigation.replace('Home');
+        } catch (apiError) {
+          console.error("Backend sync error:", apiError);
+          Alert.alert(
+            "Warning", 
+            "Logged in but couldn't sync with backend. Some features may be limited."
+          );
+          navigation.replace('Home');
+        }
       } else {
-        // Handle 2FA or other verification steps if needed
         console.log("Additional verification needed:", result);
-        Alert.alert(
-          "Verification Required",
-          "Please complete the additional verification steps."
-        );
+        Alert.alert("Verification Required", "Please complete additional verification steps.");
       }
     } catch (err: any) {
-      console.error("Error signing in:", err);
-      dispatch(loginFailure(err.errors?.[0]?.message || "An error occurred during sign in"));
+      console.error("Sign in error:", err);
+      dispatch(loginFailure(err.errors?.[0]?.message || "Sign in failed"));
     }
   };
 

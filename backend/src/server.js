@@ -26,8 +26,14 @@ const testRoutes = require('./routes/route');
 const { authenticateToken } = require('./middlewares/auth');
 const socketIO = require('socket.io');
 
-// Load environment variables
-dotenv.config();
+// At the top of your server.js file
+require('dotenv').config();
+
+// Check if JWT_SECRET is loaded
+if (!process.env.JWT_SECRET) {
+  console.warn('WARNING: JWT_SECRET is not set in environment variables. Using fallback secret.');
+}
+
 // Initialize Express app
 const app = express();
 const server = http.createServer(app);

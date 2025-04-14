@@ -62,7 +62,7 @@ const Search: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([
     {
       id: '1',
-      name: 'Restaurants',
+      name: 'Restaurant',
       imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4',
     },
     {

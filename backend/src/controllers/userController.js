@@ -1,56 +1,79 @@
 const UserDAO = require('../repository/user.dao');
 const Client = require('../models/client.model');
+const Commercant = require('../models/commercant.model');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 exports.updateProfile = async (req, res) => {
-    try {
-        const updates = req.body;
-        const user = await UserDAO.getUserByUsername(req.user.username); // TODO: Get user ID from token
+  try {
+      const updates = req.body;
+      const userId = req.userId; // From Clerk middleware
+      
+      // Prevent role changes via this endpoint
+      if (updates.role) {
+          return res.status(400).json({
+              success: false,
+              message: 'Role cannot be changed via this endpoint'
+          });
+      }
 
-        Object.keys(updates).forEach(key => {
-            if (user[key] !== undefined) {
-                user[key] = updates[key];
-            }
-        });
+      const user = await UserDAO.getUserById(userId);
+      if (!user) {
+          return res.status(404).json({
+              success: false,
+              message: 'User not found'
+          });
+      }
 
-        await user.save();
-        res.status(200).json({
-            success: true,
-            message: 'Profile updated successfully',
-            user: {
-                id: user._id,
-                nom: user.nom,
-                prenom: user.prenom,
-                pseudo: user.pseudo,
-                email: user.email
-            }
-        });
-    }
-    catch (error) {
-        console.error('Profile update error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Server error during profile update'
-        });
-    }
-}
+      // Only allow certain fields to be updated
+      const allowedUpdates = ['nom', 'prenom', 'pseudo', 'phone'];
+      Object.keys(updates).forEach(key => {
+          if (allowedUpdates.includes(key)) {
+              user[key] = updates[key];
+          }
+      });
+
+      await user.save();
+      res.status(200).json({
+          success: true,
+          message: 'Profile updated successfully',
+          user: {
+              id: user._id,
+              nom: user.nom,
+              prenom: user.prenom,
+              pseudo: user.pseudo,
+              email: user.email
+          }
+      });
+  } catch (error) {
+      console.error('Profile update error:', error);
+      res.status(500).json({
+          success: false,
+          message: 'Server error during profile update'
+      });
+  }
+};
 
 exports.deleteProfile = async (req, res) => {
-    try {
-        const user = await UserDAO.getUserByUsername(req.query.username); // TODO: Get user ID from token
-        await user.deleteOne();
-        res.status(200).json({
-            success: true,
-            message: 'Profile deleted successfully'
-        });
-    }
-    catch (error) {
-        console.error('Profile deletion error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Server error during profile deletion'
-        });
-    }
-}
+  try {
+      const userId = req.userId;
+      await UserDAO.deleteUserById(userId);
+      
+      await clerkClient.users.deleteUser(req.auth.userId);
+      
+      res.status(200).json({
+          success: true,
+          message: 'Profile deleted successfully'
+      });
+  } catch (error) {
+      console.error('Profile deletion error:', error);
+      res.status(500).json({
+          success: false,
+          message: 'Server error during profile deletion'
+      });
+  }
+};
+
 
 exports.getWallet = async (req, res) => {
     try {
@@ -133,35 +156,88 @@ exports.getProfile = async (req, res) => {
 // Handle user registration
 exports.registerUser = async (req, res) => {
   try {
-    // User is already created/synced by the syncUser middleware
-    // We can use this endpoint to add additional user data
-    const { userId, userType, phoneNumber } = req.body;
-    
-    // The user is already available as req.user from the syncUser middleware
-    const user = req.user;
-    
-    // Update any additional fields
-    if (phoneNumber) {
-      user.telephone = phoneNumber;
+    const { email, password, username, nom, prenom, role, isInfluenceur, phone, businessName, businessAddress } = req.body;
+
+    // Validate required fields
+    if (!email || !password || !username) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email, password, and username are required'
+      });
     }
-    
-    // Set user type if provided
-    if (userType === 'influencer' && user.role === 'CLIENT') {
-      user.isInfluenceur = true;
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ 
+      $or: [
+        { email: email },
+        { username: username }
+      ]
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'User with this email or username already exists'
+      });
     }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create user based on role
+    let user;
     
-    await user.save();
-    
-    res.status(200).json({
+    if (role && role.toUpperCase() === 'COMMERCANT') {
+      // Create a vendor (commercant) user
+      user = new Commercant({
+        email,
+        password: hashedPassword,
+        username,
+        nom: nom || '',
+        prenom: prenom || '',
+        role: 'COMMERCANT',
+        phone: phone || '',
+        businessName: businessName || '',
+        businessAddress: businessAddress || '',
+        date_inscription: new Date(),
+        status: 'pending'
+      });
+    } else {
+      // Create a regular user or influencer
+      user = new Client({
+        email,
+        password: hashedPassword,
+        username,
+        nom: nom || '',
+        prenom: prenom || '',
+        role: 'CLIENT',
+        isInfluenceur: isInfluenceur || false,
+        phone: phone || '',
+        date_inscription: new Date()
+      });
+    }
+
+    // Save the user to the database
+    const savedUser = await user.save();
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: savedUser._id, role: savedUser.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    res.status(201).json({
       success: true,
       message: 'User registered successfully',
+      token,
       user: {
-        id: user._id,
-        clerkId: user.clerkId,
-        email: user.email,
-        name: `${user.prenom} ${user.nom}`,
-        role: user.role,
-        isInfluencer: user.isInfluenceur || false
+        id: savedUser._id,
+        email: savedUser.email,
+        username: savedUser.username,
+        role: savedUser.role,
+        isInfluenceur: savedUser.isInfluenceur || false
       }
     });
   } catch (error) {

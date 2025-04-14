@@ -13,6 +13,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  Linking,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useSignUp, useAuth } from '@clerk/clerk-expo';
@@ -20,6 +21,7 @@ import { Feather } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { registerRequest, registerSuccess, registerFailure } from '../../store/slices/authSlice';
 import { useApi } from '../../hooks/useApi'; // Import useApi hook
+// import { EXPO_PUBLIC_INSTAGRAM_APP_ID, EXPO_PUBLIC_INSTAGRAM_REDIRECT_URI } from '@env';
 
 type RootStackParamList = {
   Home: undefined;
@@ -44,32 +46,28 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
   const [password, setPassword] = useState<string>('');
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   
-  // Add these state variables for verification
   const [verificationCode, setVerificationCode] = useState<string>('');
   const [showVerification, setShowVerification] = useState<boolean>(false);
   
-  // Add a loading state specifically for Clerk
   const [clerkReady, setClerkReady] = useState<boolean>(false);
-  
+  const { isLoaded: authLoaded } = useAuth();
+
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector(state => state.auth);
   const { isLoaded, signUp, setActive } = useSignUp();
   const api = useApi();
   
-  // Modify the useEffect to set our local state
   useEffect(() => {
-    if (!isLoaded) {
+    if (!authLoaded) {
       console.log('Clerk authentication is still loading...');
       setClerkReady(false);
     } else {
       console.log('Clerk authentication is ready');
       setClerkReady(true);
     }
-  }, [isLoaded]);
+  }, [authLoaded]);
   
-  // Add a delay before allowing sign up attempts
   useEffect(() => {
-    // Give Clerk some time to initialize fully
     const timer = setTimeout(() => {
       if (!clerkReady && isLoaded) {
         setClerkReady(true);
@@ -80,58 +78,34 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
   }, [clerkReady, isLoaded]);
   
   const handleSignUp = async () => {
-    // Check if Clerk is ready using our local state
-    if (!clerkReady) {
-      console.error('Clerk authentication is not loaded yet');
-      Alert.alert('Please wait', 'The authentication system is initializing. Please try again in a moment.');
+    if (!authLoaded || !signUp) {
+      Alert.alert('Error', 'Authentication system is initializing');
       return;
     }
-    
-    // Wait for Clerk to be fully loaded
-    if (!isLoaded) {
-      console.error('Clerk authentication is not loaded yet');
-      Alert.alert('Please wait', 'The authentication system is initializing. Please try again in a moment.');
+  
+    if (!firstName || !lastName || !email || !password || !acceptTerms) {
+      Alert.alert('Error', 'Please fill all required fields and accept terms');
       return;
     }
-    
-    // Check if signUp object is available
-    if (!signUp) {
-      console.error('SignUp object is not available');
-      Alert.alert('Error', 'Authentication system is not properly initialized. Please restart the app and try again.');
-      return;
-    }
-
-    if (!firstName || !lastName || !email || !password) {
-      Alert.alert('Error', 'Please fill in all required fields');
-      return;
-    }
-
-    if (!acceptTerms) {
-      Alert.alert('Error', 'You must accept the terms and conditions');
-      return;
-    }
-
+  
     try {
       dispatch(registerRequest());
       
-      // Start the sign up process
       await signUp.create({
         firstName,
         lastName,
         emailAddress: email,
         password,
-        username: identifier || undefined,
+        username: identifier,
       });
-
-      // Send verification email
+  
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
       
-      // Show verification UI instead of navigating immediately
       setShowVerification(true);
       
     } catch (err: any) {
-      console.error("Error signing up:", err);
-      dispatch(registerFailure(err.errors?.[0]?.message || "An error occurred during sign up"));
+      console.error("Sign up error:", err);
+      dispatch(registerFailure(err.errors?.[0]?.message || "Registration failed"));
     }
   };
 
@@ -140,83 +114,71 @@ const RegisterInfluencer: React.FC<RegisterScreenProps> = ({ navigation }) => {
   };
 
   const handleAddSocialMedia = () => {
-    // Handle adding social media links
-    console.log('Add social media links');
+    // Get the Instagram authentication URL
+    const instagramAuthUrl = `https://api.instagram.com/oauth/authorize?client_id=${process.env.EXPO_PUBLIC_INSTAGRAM_APP_ID}&redirect_uri=${encodeURIComponent(process.env.EXPO_PUBLIC_INSTAGRAM_REDIRECT_URI)}&scope=user_profile,user_media&response_type=code&state=${identifier}`;
+    
+    // Open the Instagram authentication URL in a web browser
+    Linking.openURL(instagramAuthUrl)
+      .catch(err => {
+        console.error('Error opening Instagram auth URL:', err);
+        Alert.alert('Error', 'Unable to open Instagram authentication page');
+      });
   };
 
   const handleVerification = async () => {
-    if (!isLoaded || !signUp) {
-      Alert.alert('Error', 'Authentication system is not ready. Please try again.');
+    if (!isLoaded || !signUp || !verificationCode) {
+      Alert.alert('Error', 'Please enter verification code');
       return;
     }
-
-    if (!verificationCode) {
-      Alert.alert('Error', 'Please enter the verification code');
-      return;
-    }
-
+  
     try {
-      dispatch(registerRequest());
-      
-      // Attempt to verify the email
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: verificationCode,
       });
-
+  
       if (completeSignUp.status !== "complete") {
-        // Handle verification error
-        throw new Error("Email verification failed");
+        throw new Error("Verification failed");
       }
-
-      // Set the user as active - add null check before calling setActive
-      if (setActive) {
-        await setActive({ session: completeSignUp.createdSessionId });
-      } else {
-        console.error("setActive is undefined");
-        throw new Error("Authentication error: Unable to set active session");
-      }
+  
+      await setActive({ session: completeSignUp.createdSessionId });
       
-      // Update Redux store with user info
-      if (completeSignUp.createdUserId) {
+      const clerkUserId = completeSignUp.createdUserId;
+      if (!clerkUserId) throw new Error('No user ID returned');
+      
+      try {
+        await api.post('/user/register', {
+          clerkUserId,
+          firstName,
+          lastName,
+          email,
+          username: identifier,
+          phoneNumber,
+          role: 'INFLUENCER', 
+          isInfluencer: true
+        });
+        
         dispatch(registerSuccess({
-          id: completeSignUp.createdUserId,
+          id: clerkUserId,
           name: `${firstName} ${lastName}`,
-          email: email,
-          isLoggedIn: true,
+          email,
+          role: 'INFLUENCER',
+          isLoggedIn: true
         }));
         
-        // Register the user in your backend using the API hook
-        try {
-          await api.post('/user/register', {
-            userId: completeSignUp.createdUserId,
-            firstName,
-            lastName,
-            email,
-            username: identifier || undefined,
-            phoneNumber: phoneNumber || undefined,
-            userType: 'influencer'
-          });
-          
-          // Navigate to influencer placement screen
-          navigation.navigate('InfluencerPlacement');
-        } catch (apiError: any) {
-          console.error("Error registering with backend:", apiError);
-          // Still navigate to placement screen but show an error
-          Alert.alert(
-            "Registration Warning",
-            "Your account was created but we couldn't complete your profile setup. Some features may be limited.",
-            [
-              { text: "OK", onPress: () => navigation.navigate('InfluencerPlacement') }
-            ]
-          );
-        }
-      } else {
-        // Navigate to influencer placement screen as fallback
         navigation.navigate('InfluencerPlacement');
+        
+      } catch (apiError) {
+        console.error("Backend registration error:", apiError);
+        Alert.alert(
+          "Warning", 
+          "Account created but profile setup incomplete. Please complete your profile.",
+          [{ text: "OK", onPress: () => navigation.navigate('InfluencerPlacement') }]
+        );
       }
+      
     } catch (err: any) {
-      console.error("Error verifying email:", err);
-      dispatch(registerFailure(err.message || "Verification failed. Please try again."));
+      console.error("Verification error:", err);
+      dispatch(registerFailure(err.message || "Verification failed"));
     }
   };
 
