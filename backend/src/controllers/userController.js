@@ -54,7 +54,7 @@ exports.deleteProfile = async (req, res) => {
 
 exports.getWallet = async (req, res) => {
     try {
-        const client = await Client.findOne({ userId: req.user.userId }); // TODO: Get user ID from token
+        const client = await Client.findOne({ userId: req.params.userId }); // TODO: Get user ID from token
         res.status(200).json({
             success: true,
             wallet: client.coins

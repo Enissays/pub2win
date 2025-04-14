@@ -21,12 +21,12 @@ router.post('/user/oauth-login', requireAuth, syncUser, userController.oauthLogi
 // User Profile Routes - protected with Clerk
 router.patch('/user/profile', requireAuth, syncUser, userController.updateProfile);
 router.delete('/user/profile', requireAuth, syncUser, userController.deleteProfile);
-router.get('/user/wallet', requireAuth, syncUser, userController.getWallet);
+router.get('/user/wallet', userController.getWallet);
 router.post('/user/wallet/withdraw', requireAuth, syncUser, userController.withdrawFunds); 
 router.get('/user/:username', requireAuth, syncUser, userController.getProfile);
 
 // Influencer Routes
-router.get('/influencer/:id', requireAuth, syncUser, influencerController.getProfile);
+router.get('/influencer/:id', influencerController.getProfile);
 router.post('/influencer/rate/:id', requireAuth, syncUser, influencerController.rateInfluencer);
 router.post('/influencer/comment/:id', requireAuth, syncUser, influencerController.commentInfluencer);
 router.post('/influencer/accept/:id', requireAuth, syncUser, isInfluencer, influencerController.acceptOffer);
@@ -41,10 +41,11 @@ router.post('/vendor/:id/validate', requireAuth, syncUser, isAdmin, vendorContro
 
 // Replace authenticateToken with requireAuth and syncUser
 router.post('/endroit/:id_endroit/conditions', requireAuth, syncUser, isVendor, vendorController.setConditions);
-router.get('/endroit/:id_endroit', requireAuth, syncUser, vendorController.getEndroit);
+router.get('/endroit/:id_endroit', vendorController.getEndroit);
 router.delete('/endroit/:id_endroit/delete', requireAuth, syncUser, isAdmin, vendorController.deleteEndroit);
 router.patch('/endroit/:id/update', requireAuth, syncUser, isVendor, vendorController.updateEndroit);
 router.post('/endroit/create', requireAuth, syncUser, isVendor, vendorController.createEndroit);
+router.get('/endroits', vendorController.getEndroits);
 
 // User Profile Routes
 router.patch('/user/profile', requireAuth, syncUser, userController.updateProfile);

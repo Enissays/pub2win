@@ -125,18 +125,18 @@ const Search: React.FC = () => {
     const fetchData = async () => {
       try {
         // Fetch partners from API
-        const response = await api.get('/endroit/all', {
+        const data = await api.get('/endroits', {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
         
-        if (response.data && response.data.success) {
+        if (data?.success) {
           // Transform the data to match our Partner interface
-          const partnerData = response.data.endroits.map((endroit: any) => ({
+          const partnerData = data.endroits.map((endroit: any) => ({
             id: endroit._id,
             name: endroit.nom,
-            category: 'Restaurant', // You might want to add a category field to your endroit model
+            category: endroit.category,
             imageUrl: endroit.imageUrl || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4', // Default image if none provided
             rating: endroit.rating || 4.5, // Default rating if none provided
             priceRange: '€€', // You might want to add this to your endroit model
@@ -158,7 +158,7 @@ const Search: React.FC = () => {
     };
     
     fetchData();
-  }, [token, api]); 
+  }, [token]); 
   
   // Filter partners based on search query
   const filteredPartners = searchQuery

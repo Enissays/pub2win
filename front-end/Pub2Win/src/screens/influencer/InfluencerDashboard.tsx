@@ -18,6 +18,7 @@ import { useApi } from '../../hooks/useApi';
 import { useAuth } from '@clerk/clerk-expo';
 import BottomNavigation from '../../components/BottomNavigation';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { getUserId } from '../../hooks/getUserId';
 const { width } = Dimensions.get('window');
 
 interface InfluencerStats {
@@ -66,24 +67,34 @@ const InfluencerDashboard: React.FC = () => {
   // Fetch influencer data on component mount
   useEffect(() => {
     const fetchInfluencerData = async () => {
+      let userId = getUserId();
       if (!userId) return;
       
       try {
         setLoading(true);
-        const response = await api.get(`/influencer/profile?userId=${userId}`);
-        
-        if (response.data && response.data.success) {
-          setInfluencerData(response.data.influencer);
+        const data = await api.get(`/influencer/${userId}`);
+        console.log(data);
+        if (data?.success) {
+          setInfluencerData(data.influencer);
           
           // Update stats based on influencer data
           setInfluencerStats({
-            rank: response.data.stats?.rank || 10,
-            totalPoints: response.data.stats?.totalPoints || 100,
-            status: response.data.influencer?.status || 'active',
+            rank: data.stats?.rank || 10,
+            totalPoints: data.stats?.totalPoints || 100,
+            status: data.influencer?.status || 'active',
           });
           
-          // Set partners
-          setPartners(response.data.partners || []);
+          const dataEndroits = await api.get(`/endroits`);
+
+          setPartners(dataEndroits?.endroits.map((endroit: any) => ({
+            id: endroit._id,
+            name: endroit.nom,
+            category: endroit.category,
+            imageUrl: endroit.imageUrl || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4',
+            rating: endroit.rating || 5,
+            totalSpent: endroit.totalSpent || 0,
+            points: endroit.points || 0
+          })));
         }
       } catch (error) {
         console.error('Error fetching influencer data:', error);
@@ -243,7 +254,7 @@ const InfluencerDashboard: React.FC = () => {
 
         {/* Help Section */}
         <TouchableOpacity style={styles.helpSection} onPress={handleHelp}>
-          <Text style={styles.helpText}>Besoin de l'aide ?</Text>
+          <Text style={styles.helpText}>Besoin d'aide ?</Text>
         </TouchableOpacity>
       </ScrollView>
 

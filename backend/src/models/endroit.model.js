@@ -7,6 +7,7 @@ const EndroitSchema = new Schema({
   adresse: { type: String, required: true },
   coordonnees_gps: { type: String },
   description: { type: String },
+  category: { type: String },
   conditions: [{ minConsommation: {type: Number},  wincoins: { type: Number } }]
 });
 

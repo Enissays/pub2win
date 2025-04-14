@@ -8,11 +8,13 @@ interface ApiOptions {
 
 export const useApi = () => {
   const { getToken } = useAuth();
-  const baseUrl = 'https://pub2-win-5e1030b0d14b.herokuapp.com'; // Change to your actual API URL
+  const baseUrl = 'https://holland-leaf-publication-observation.trycloudflare.com'; // Change to your actual API URL
 
   const fetchWithAuth = async (endpoint: string, options: ApiOptions = {}) => {
     try {
-      const token = await getToken();
+      console.log("Fetching with auth:", endpoint, options);
+      const token = '';
+      console.log("Token:", token);
       
       const headers = {
         'Content-Type': 'application/json',
@@ -28,10 +30,12 @@ export const useApi = () => {
       };
 
       // Make the request
+      console.log("Request options:", requestOptions);
       const response = await fetch(`${baseUrl}${endpoint}`, requestOptions);
       
       // Parse the JSON response
       const data = await response.json();
+      console.log("Response data:", data);
       
       // Check if the request was successful
       if (!response.ok) {

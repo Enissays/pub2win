@@ -15,6 +15,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useApi } from '../../hooks/useApi';
 import { useAuth } from '@clerk/clerk-expo';
 import BottomNavigation from '../../components/BottomNavigation';
+import { getUserId } from '../../hooks/getUserId';
 
 const { width } = Dimensions.get('window');
 
@@ -46,9 +47,9 @@ const Wallet: React.FC = () => {
     const fetchWalletData = async () => {
       try {
         setLoading(true);
-        
-        // In a real app, you would fetch wallet data from your API
-        // For now, we'll use sample data
+        const id = getUserId();
+        const response = await api.get(`/user/wallet?userId=${id}`);
+        setBalance(response.wallet);
         const sampleRewards: Reward[] = [
           {
             id: '1',

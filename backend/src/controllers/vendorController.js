@@ -2,6 +2,28 @@ const UserDAO = require('../repository/user.dao');
 const EndroitDAO = require('../repository/endroit.dao');
 const OfferDAO = require('../repository/offre.dao');
 
+exports.getEndroits = async (req, res) => {
+    try {
+        const endroits = await EndroitDAO.getAllEndroits();
+        if (!endroits) {
+            return res.status(404).json({
+                success: false,
+                message: 'No endroits found for this vendor'
+            });
+        }
+        res.status(200).json({
+            success: true,
+            endroits
+        });
+    } catch (error) {
+        console.error('Get endroits error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error during endroits retrieval'
+        });
+    }
+}
+
 exports.setConditions = async (req, res) => {
     try {
         const vendor = await UserDAO.getUserById(req.query.userId); // TODO: Get user ID from token

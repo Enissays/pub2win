@@ -58,31 +58,26 @@ const PartnerDetails: React.FC = () => {
   useEffect(() => {
     const fetchPartnerDetails = async () => {
       try {
-        setLoading(true);
+        setLoading(true);        
         
-        // In a real app, you would fetch partner details from your API
-        // For now, we'll use sample data
-        const samplePartner: PartnerDetails = {
-          id: partnerId,
-          name: 'Au Bonheur',
-          imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5',
-          rating: 4.5,
-          cuisines: [
-            { id: '1', name: 'Asiatique' },
-            { id: '2', name: 'Chinoise' },
-            { id: '3', name: 'Vietnamienne' },
-            { id: '4', name: 'Thaï' },
-          ],
-          description: 'Régimes spéciaux : Végétariens bienvenus.\nRepas : Déjeuner, Dîner.\nCaractéristiques : Réservations, Places assises, Accessible en fauteuil roulant, Cartes bancaires acceptées, Service de table.',
-          address: '61 rue de Paris, 95130 Franconville France',
-          latitude: 48.9805,
-          longitude: 2.2278,
-          openingHours: 'Lun-Dim: 11h30-14h30, 18h30-22h30',
-          priceRange: 'Plat conseillé : Crêpe vietnamienne',
-          features: ['Apéro bien habillé'],
+        const data = await api.get(`/endroit/${partnerId}`);
+        
+        const mappedData: PartnerDetails = {
+          id: data?.endroit._id,
+          name: data?.endroit.nom,
+          imageUrl: '', // Assuming no imageUrl is provided in the response
+          rating: 1, // Assuming no rating is provided in the response
+          cuisines: [], // Assuming no cuisines are provided in the response
+          description: data?.endroit.description,
+          address: data?.endroit.adresse,
+          latitude: parseFloat(data?.endroit.coordonnees_gps.split(', ')[0]),
+          longitude: parseFloat(data?.endroit.coordonnees_gps.split(', ')[1]),
+          openingHours: '', // Assuming no openingHours are provided in the response
+          priceRange: '', // Assuming no priceRange is provided in the response
+          features: [], // Assuming no features are provided in the response
         };
-        
-        setPartnerData(samplePartner);
+
+        setPartnerData(mappedData);
       } catch (error) {
         console.error('Error fetching partner details:', error);
       } finally {
