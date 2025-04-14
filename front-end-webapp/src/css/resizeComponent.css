@@ -1,0 +1,17 @@
+@media (max-width: 649px) {
+    .responsive-card-content {
+      display: flex;
+      flex-direction: column !important;
+    }
+}
+
+
+@media (min-width: 600px) {
+
+    .responsive-grid .e-headercell[aria-colindex="0"],
+    .responsive-grid .e-rowcell[aria-colindex="0"] img {
+      height: 40px;
+      width: 60px;
+    }
+  }
+  

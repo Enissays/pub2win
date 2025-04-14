@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective, Resize, Sort, ContextMenu, Filter, Page, ExcelExport, PdfExport, Edit, Inject } from '@syncfusion/ej2-react-grids';
 
-import { ordersData, contextMenuItems, ordersGrid } from '../data/dummy';
+import { ordersData, contextMenuItems, ordersGrid, errorData } from '../data/dummy';
 import { deleteUserbyUsername, getAllUsers, SRchByUsername, updateUser } from '../services/pub2winService';
-import { AideService, Header } from '../components';
+import { AideService, BoxVide, Error, Header, Loading } from '../components';
 import Swal from 'sweetalert2';
+import '../css/resizeComponent.css';
 
 const Orders = () => {
   const [users, setUsers] = useState([]);
@@ -14,6 +15,7 @@ const Orders = () => {
   const gridRef = useRef(null);
   const [username, setUsername] = useState('');
   const [updateData, setUpdateData] = useState({});
+
 
   useEffect(() => {
     loadAllUsers();
@@ -26,6 +28,7 @@ const Orders = () => {
     }
   }, [updateData]);
 
+
   const loadAllUsers = () => {
     setLoading(true);
     setError('');
@@ -37,8 +40,6 @@ const Orders = () => {
         .then(response => {
           if (response.success) {
             setUsers(response.allusers);
-          } else {
-            setError('Erreur lors du chargement des utilisateurs');
           }
         })
         .catch(error => {
@@ -142,12 +143,24 @@ const Orders = () => {
         });
       
   };
+
+  if (loading) {
+      return <Loading />;
+    }
+  
+    console.log("error: ",typeof error);
+    if (error) {
+      return <Error error={errorData.data} />
+  }
+
+
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <AideService 
           des={"Cher Administrateur, ceci est un espace de gestion de comptes avec toutes les fonctionnalités essentielles. Il intègre recherche avancée, multifiltrage et options d'exportation de données vers différents formats. En cliquant sur l'utilisateur souhaité, vous pouvez accéder à toutes les fonctionnalités de gestion disponibles."}
         />
-      
+      {users.length > 0 ? (
+        <>
       <div className="mb-6 flex flex-col md:flex-row items-start md:items-center gap-4">
         <form className="flex w-full md:w-auto">
           <input
@@ -160,8 +173,6 @@ const Orders = () => {
           />
         </form>
         
-        
-
         <button
           onClick={handleReset}
           className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md w-full md:w-auto"
@@ -170,61 +181,63 @@ const Orders = () => {
           Réinitialiser
         </button>
       </div>
-      
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
+      <div>
+        <GridComponent
+          ref={gridRef}
+          id="gridcomp"
+          dataSource={users}
+          allowPaging
+          allowSorting
+          allowExcelExport
+          contextMenuItems={contextMenuItems}
+          editSettings={editing}
+          className='responsive-grid'
+          actionBegin={(args) => {
+            if (args.requestType === 'delete') {
+              // Annuler la suppression par défaut du composant
+              args.cancel = true;
+              // Appeler notre fonction personnalisée de suppression
+              handleDeleteUser(args);
+            }
+          }}
+          actionComplete={(args) => {
+            if (args.requestType === 'save') {
+              // Récupérer toutes les cases qui ont été modifiées
+              const changedFields = {};
+              const originalData = args.previousData;
+              const newData = args.data;
+              
+              // Enregistrer l'username pour l'utiliser dans la mise à jour
+              setUsername(originalData.username);
+              
+              // Comparer les données originales et les nouvelles données
+              Object.keys(newData).forEach(key => {
+                if (originalData[key] !== newData[key]) {
+                  changedFields[key] = newData[key];
+                  
+                  // Ajouter les champs modifiés à updateData
+                  setUpdateData(prevData => ({
+                    ...prevData,
+                    [key]: newData[key]
+                  }));
+                }
+              });
+            }
+          }}
+        >
+          <ColumnsDirective>
+            {ordersGrid.map((item, index) => <ColumnDirective key={index} {...item} priority={index}
+
+            width={index < 9 ? 'auto' : '0'}
 
 
-<GridComponent
-  ref={gridRef}
-  id="gridcomp"
-  dataSource={users}
-  allowPaging
-  allowSorting
-  allowExcelExport
-  contextMenuItems={contextMenuItems}
-  editSettings={editing}
-  actionBegin={(args) => {
-    if (args.requestType === 'delete') {
-      // Annuler la suppression par défaut du composant
-      args.cancel = true;
-      // Appeler notre fonction personnalisée de suppression
-      handleDeleteUser(args);
-    }
-  }}
-  actionComplete={(args) => {
-    if (args.requestType === 'save') {
-      // Récupérer toutes les cases qui ont été modifiées
-      const changedFields = {};
-      const originalData = args.previousData;
-      const newData = args.data;
-      
-      // Enregistrer l'username pour l'utiliser dans la mise à jour
-      setUsername(originalData.username);
-      
-      // Comparer les données originales et les nouvelles données
-      Object.keys(newData).forEach(key => {
-        if (originalData[key] !== newData[key]) {
-          changedFields[key] = newData[key];
-          
-          // Ajouter les champs modifiés à updateData
-          setUpdateData(prevData => ({
-            ...prevData,
-            [key]: newData[key]
-          }));
-        }
-      });
-    }
-  }}
->
-  <ColumnsDirective>
-    {ordersGrid.map((item, index) => <ColumnDirective key={index} {...item} />)}
-  </ColumnsDirective>
-  <Inject services={[Resize, Sort, ContextMenu, Filter, Page, ExcelExport, Edit]} />
-</GridComponent>
+            />)}
+          </ColumnsDirective>
+          <Inject services={[Resize, Sort, ContextMenu, Filter, Page, ExcelExport, Edit]} />
+        </GridComponent>
+      </div>
+      </>
+      ) : <BoxVide Title={"Les utilisateurs apparaîtront ici"} des={"Aucun utilisateur trouvé."} />}
     </div>
   );
 };

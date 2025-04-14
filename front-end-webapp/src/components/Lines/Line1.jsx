@@ -23,7 +23,8 @@ const Line4 = () => {
   const [selectedYear, setSelectedYear] = useState('');
   const [chartData, setChartData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [isRequestSuccessful, setIsRequestSuccessful] = useState(false);
+
   useEffect(() => {
     setIsLoading(true);
     getAllUsersYears()
@@ -37,6 +38,7 @@ const Line4 = () => {
       })
       .catch(error => {
         console.error("Erreur lors de la récupération des années:", error);
+        setIsRequestSuccessful(false);
       })
       .finally(() => {
         setIsLoading(false);

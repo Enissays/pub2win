@@ -3,7 +3,7 @@ const utilisJSX = () => {
         <div>
             <div id="function1">
                 {
-                    /*
+                    /*  si condition est vraie
                         condition ? true : false (autre check)
                         {condition1 ? 
                             (résultat si condition1 est vraie) 

@@ -1,38 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Card, CardContent, Typography, Grid, Divider, CircularProgress, Paper } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import { AttractiveButton, BoxAide,AideService } from '../components';
+import { AttractiveButton, BoxAide,AideService, Loading, Error, BoxVide } from '../components';
 import { useAide } from '../contexts/AideContext';
 import { updateAIDE } from '../services/pub2winService';
+import { errorData } from '../data/dummy';
 
 const Customers = () => {
   // Utiliser le contexte partagé au lieu de gérer l'état localement
-  const { aide, loading, error, formValues, handleFieldChange, handleSaveField } = useAide();
+  const { aide, loading, error ,formValues, handleFieldChange, handleSaveField, refreshData } = useAide();
   
   // État pour suivre quel champ est en cours d'édition
   const [editingField, setEditingField] = useState('');
 
+  useEffect(() => { 
+      // Fetch admin data when component mounts
+      refreshData();
+    }, []);
+
   if (loading) {
-    return (
-      <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl flex justify-center items-center" style={{ minHeight: '300px' }}>
-        <CircularProgress />
-      </div>
-    );
+    return <Loading />;
+  }
+  
+  if (error) {
+    return <Error error={errorData.data} />
   }
 
-  if (error || !aide) {
-    return (
-      <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-        <Typography color="error" variant="h6" align="center">
-          {error || "Aucune donnée disponible"}
-        </Typography>
-      </div>
-    );
-  }
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
@@ -46,11 +43,13 @@ const Customers = () => {
         des="Bienvenue, cher administrateur ! Cet espace vous permet de visualiser les informations de contact actuelles de pub2win, ainsi vous permettra d'actualiser ces données dès que nécessaire."
       />
 
+      {aide ? (
+        <>
       <Card elevation={3} sx={{ borderRadius: '16px' }}>
         <CardContent>
           <Grid container spacing={3} direction="column">
             {/* Email */}
-            {aide.email && (
+            {aide?.email && (
               <Grid item>
                 <BoxAide 
                   icon={<EmailIcon fontSize="large" />}
@@ -72,7 +71,7 @@ const Customers = () => {
             )}
             
             {/* Téléphone */}
-            {aide.telephone && (
+            {aide?.telephone && (
               <Grid item>
                 <BoxAide 
                   icon={<PhoneIcon fontSize="large" />}
@@ -101,7 +100,7 @@ const Customers = () => {
             </Grid>
             
             {/* Facebook */}
-            {aide.facebook_url && (
+            {aide?.facebook_url && (
               <Grid item>
                 <BoxAide 
                   icon={<FacebookIcon fontSize="large" />}
@@ -123,7 +122,7 @@ const Customers = () => {
             )}
             
             {/* Instagram */}
-            {aide.instagram_url && (
+            {aide?.instagram_url && (
               <Grid item>
                 <BoxAide 
                   icon={<InstagramIcon fontSize="large" />}
@@ -145,7 +144,7 @@ const Customers = () => {
             )}
             
             {/* Twitter */}
-            {aide.twitter_url && (
+            {aide?.twitter_url && (
               <Grid item>
                 <BoxAide 
                   icon={<TwitterIcon fontSize="large" />}
@@ -170,6 +169,8 @@ const Customers = () => {
       </Card>
 
       <AttractiveButton func={updateAIDE} formValues={formValues} title={"Mettre à jour les informations"}/>
+      </>
+          ): <BoxVide Title={"Aucune information de contact trouvée"} des={"Les informations de contact de pub2win apparaîtront ici."}/>}
     </div>
   );
 };

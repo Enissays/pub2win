@@ -35,8 +35,6 @@
               instagram_url: response.data.instagram_url || '',
               twitter_url: response.data.twitter_url || ''
             });
-          } else {
-            setError("Impossible de récupérer les données");
           }
         })
         .catch(error => {
@@ -70,6 +68,11 @@
       }
     };
 
+    // Rafraîchir les données du profil
+    const refreshData = () => {
+      return loadAideData();
+    };
+
     // Exposer les valeurs et fonctions via le contexte
     const value = {
       aide,
@@ -79,7 +82,10 @@
       setFormValues,
       handleFieldChange,
       handleSaveField,
-      refresh: loadAideData
+      setLoading,
+      setError,
+      refresh: loadAideData,
+      refreshData
     };
 
     return <AideContext.Provider value={value}>{children}</AideContext.Provider>;

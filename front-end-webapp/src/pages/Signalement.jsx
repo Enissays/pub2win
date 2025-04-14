@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { createNotification, getAllSignalemntUsers } from "../services/pub2winService";
-import { AideService } from "../components";
-import { Typography } from "@mui/material";
+import { AideService, BoxVide, Error, Loading } from "../components";
+import { Box, Typography } from "@mui/material";
 import Swal from "sweetalert2";
+import { errorData } from "../data/dummy";
 
 
 const Signalement = () =>{
@@ -12,7 +13,8 @@ const Signalement = () =>{
     const [temporaryBlockDays, setTemporaryBlockDays] = useState(7);
     const [commentaire, setCommentaire] = useState('');
     const [openDetailsId, setOpenDetailsId] = useState(null);
-
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const warningMessages = {
       firstWarning: "Vous êtes averti",
       temporaryBlock: `Votre compte est bloqué temporairement pour ${temporaryBlockDays} jours.`,
@@ -21,6 +23,7 @@ const Signalement = () =>{
     
 
     useEffect(() => {
+      
       // Mettre à jour commentaire quand warningType change
       const initialMessage = 
         warningType === 'firstWarning' 
@@ -39,7 +42,7 @@ const Signalement = () =>{
   
     const handleSend = (e) => {
 
-      
+      setLoading(true);
       createNotification(openDetailsId, {
         type: warningType,
         content: commentaire,
@@ -59,7 +62,12 @@ const Signalement = () =>{
             icon: 'error',
             confirmButtonText: 'OK'
           });
+
         }
+      }).catch(err =>{
+          setError(err);
+      }).finally(() => {
+        setLoading(false);
       });// Délai de 1 seconde avant le rechargement
     };
   
@@ -77,6 +85,7 @@ const Signalement = () =>{
     };
 
     useEffect(() => {
+      setLoading(true);
         getAllSignalemntUsers()
           .then(response => {
             if (response.success) {
@@ -85,19 +94,31 @@ const Signalement = () =>{
           })
           .catch(error => {
             console.error("Erreur lors de la récupération des SignalementUsers:", error);
-          })
+            setError(true);
+          }).finally(() => {
+            setLoading(false);
+          });
       }, []);
-
+      
+      if (loading) {
+        return <Loading />;
+      }
+    
+      console.log("error: ",typeof error);
+      if (error) {
+        return <Error error={errorData.data} />
+      }
+      console.log("usersSignalement: ",usersSignalement);
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
             <AideService des={"Cher Administrateur, ceci est un espace de gestion de signalements où vous pouvez avertir, bloquer temporairement pour un nombre de jours défini ou bloquer définitivement un utilisateur selon le motif de signalement. Soyez très attentif à vos décisions !"}/>
-          {usersSignalement.map(user => (
+          {usersSignalement.length > 0 ?
+          usersSignalement.map (user => ( 
             <details key={user.user_signale_id} className="bg-white border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-all duration-300 mb-5"
             open={openDetailsId === user.user_signale_id}
             >
               <summary className="flex items-center justify-between p-4 cursor-pointer bg-gray-50 hover:bg-primary-50"
               onClick={(e) => {
-                e.preventDefault(); // Empêche le comportement par défaut
                 toggleDetails(user.user_signale_id);
               }}
               
@@ -224,7 +245,7 @@ const Signalement = () =>{
           </div>
         )}
             </details>
-          ))}
+          )) : <BoxVide Title={"Aucune signalement n'a été signé pour le moment"} des={"Les signalement posées par les utilisateurs apparaîtront ici"}/>}
         </div>
       );
 }

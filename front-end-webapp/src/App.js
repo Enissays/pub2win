@@ -5,7 +5,7 @@ import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 
 import { Navbar, Footer, Sidebar, ThemeSettings } from './components';
 import { Ecommerce, Orders, Calendar, Employees, Stacked, Pyramid, Customers, Kanban, Line, Area, Bar, Pie, Financial, ColorPicker, ColorMapping, Editor,FAQ } from './pages';
-import './App.css';
+import './/css/App.css';
 
 import { useStateContext } from './contexts/ContextProvider';
 import MonProfile from './pages/MonProfile';
@@ -74,7 +74,7 @@ const App = () => {
             }
           >
             <div 
-              className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+              className={`fixed top-0 left-0 right-0 z-20 transition-all duration-300 ${
                 scroll > 10 
                   ? 'bg-white/70 dark:bg-main-dark-bg/70 backdrop-blur-md shadow-md' 
                   : 'bg-main-bg dark:bg-main-dark-bg'

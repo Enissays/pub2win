@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
-import { Line1,CollapsibleChart,Line2, Line3, Line4, Line5, Line6, Line7, BoxO, AideService} from '../components';
-
-
-
+import React, { useEffect, useState } from 'react';
+import { Line1,CollapsibleChart,Line2, Line3, Line4, Line5, Line6, Line7, BoxO, Loading, Error} from '../components';
+import { useDashboard } from '../contexts/DashboardContext';
+import { errorData } from '../data/dummy';
 
 
 const Ecommerce = () => {
   const [openChart, setOpenChart] = useState(null);
-  
-  
+  const {loading,error,refreshDashboard} = useDashboard();
   // Gérer le clic sur un graphique
   const handleChartClick = (chartId, event) => {
     // Empêcher la propagation si on clique sur le sélecteur d'année
@@ -16,14 +14,28 @@ const Ecommerce = () => {
       event.stopPropagation();
       return;
     }
-    
     setOpenChart(openChart === chartId ? null : chartId);
   };
+
+  useEffect(() => { 
+      // Fetch admin data when component mounts
+      refreshDashboard();
+    }, []);
+
+
+  if (loading) {
+      return <Loading />;
+    }
+    
+    if (error) {
+      return <Error error={errorData.data} />
+    }
 
   return (
     <div className="mt-12">
       <div>
       </div>
+      
       <BoxO/>
 
       <div className="flex flex-col gap-4 dark:text-gray-200">
@@ -33,7 +45,9 @@ const Ecommerce = () => {
           isOpen={openChart === 'chart1'}
           onClick={(e) => handleChartClick('chart1', e)}
         >
-          <Line1 />
+          <Line1 onRequestStatus={(status)  =>{
+            console.log("Requête réussie ?", status);
+          }}/>
         </CollapsibleChart>
         
         {/* Graphique 2 */}
